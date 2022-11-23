@@ -1,0 +1,31 @@
+version: "3.1"
+services:
+  php:
+    image: ricardopedias/docker-project:php80
+    container_name: iquety-prospection
+    volumes:
+      - .:/application
+    networks:
+      - iquety-prospection-network
+  mysql:
+    image: ricardopedias/docker-project:mysql80
+    container_name: iquety-prospection-mysql
+    volumes:
+      - ./database:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=devel
+      - MYSQL_DATABASE=devel
+      - MYSQL_USER=devel
+      - MYSQL_PASSWORD=devel
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+    ports:
+      - "8081:3306"
+      - "8082:80"
+    networks:
+      - iquety-prospection-network
+networks:
+  iquety-prospection-network:
+    driver: bridge
