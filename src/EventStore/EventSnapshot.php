@@ -6,6 +6,7 @@ namespace Iquety\Prospection\EventStore;
 
 use BadMethodCallException;
 use DateTimeImmutable;
+use DateTimeZone;
 use InvalidArgumentException;
 use Iquety\Prospection\Domain\Core\IdentityObject;
 use Iquety\Prospection\Domain\Stream\DomainEvent;
@@ -35,6 +36,10 @@ class EventSnapshot extends DomainEvent
             );
         }
 
+        if (isset($state['occurredOn']) === false) {
+            $state['occurredOn'] = new DateTimeImmutable("now", new DateTimeZone("UTC"));
+        }
+
         $this->state = $state;
     }
 
@@ -57,7 +62,7 @@ class EventSnapshot extends DomainEvent
 
     public function occurredOn(): DateTimeImmutable
     {
-        return new DateTimeImmutable();
+        return $this->state['occurredOn'];
     }
 
     /** @override */

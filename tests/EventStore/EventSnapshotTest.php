@@ -7,6 +7,7 @@ namespace Tests\EventStore;
 use ArrayObject;
 use BadMethodCallException;
 use DateTimeImmutable;
+use DateTimeZone;
 use InvalidArgumentException;
 use Iquety\Prospection\Domain\Core\IdentityObject;
 use Iquety\Prospection\EventStore\EventSnapshot;
@@ -50,12 +51,35 @@ class EventSnapshotTest extends TestCase
 
         $this->assertEquals('snapshot', $event->label());
         $this->assertInstanceOf(IdentityObject::class, $event->aggregateId());
-        $this->assertEquals([
-            'aggregateId' => $event->aggregateId(),
-            'other' => 123
-        ], $event->toArray());
+        $this->assertEquals($event->aggregateId(), $event->toArray()['aggregateId']);
+        $this->assertEquals(123, $event->toArray()['other']);
+        $this->assertInstanceOf(DateTimeImmutable::class, $event->toArray()['occurredOn']);
+        $this->assertTrue(
+            new DateTimeImmutable("now", new DateTimeZone("UTC")) > $event->occurredOn()
+        );
+    }
 
-        $this->assertTrue(new DateTimeImmutable() < $event->occurredOn());
+    /** @test */
+    public function withOccurrenceDate(): void
+    {
+        /** @var InvocationMocker */
+        $aggregateId = $this->createMock(IdentityObject::class);
+        $aggregateId->method('value')->willReturn('1234567');
+ 
+        $occurrenceDate = new DateTimeImmutable("now", new DateTimeZone("UTC"));
+
+        $event = new EventSnapshot([
+            'aggregateId' => $aggregateId,
+            'other' => 123,
+            'occurredOn' => $occurrenceDate
+        ]);
+
+        $this->assertEquals('snapshot', $event->label());
+        $this->assertInstanceOf(IdentityObject::class, $event->aggregateId());
+        $this->assertEquals($event->aggregateId(), $event->toArray()['aggregateId']);
+        $this->assertEquals(123, $event->toArray()['other']);
+        $this->assertEquals($occurrenceDate, $event->toArray()['occurredOn']);
+        $this->assertEquals($occurrenceDate, $event->occurredOn());
     }
 
     /** @test */
