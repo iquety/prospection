@@ -18,4 +18,6 @@ abstract class DomainEvent extends Event
     abstract public function aggregateId(): IdentityObject;
 
     abstract public static function aggregateLabel(): string;
+
+    abstract public static function label(): string;
 }

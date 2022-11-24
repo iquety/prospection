@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Domain\Stream;
 
 use DateTimeImmutable;
+use DateTimeZone;
 use Iquety\Prospection\Domain\Core\IdentityObject;
 use Iquety\Prospection\Domain\Stream\DomainEvent;
 use Iquety\Prospection\Domain\Stream\State;
@@ -20,10 +21,13 @@ class StateChangeTest extends TestCase
         $aggregateId = $this->createMock(IdentityObject::class);
         $aggregateId->method('value')->willReturn('1234567');
  
+        $eventOccurence = new DateTimeImmutable("now", new DateTimeZone("UTC"));
+
         $event = new EventSnapshot([
             'aggregateId' => $aggregateId,
-            'name' => 'Ricardo',
-            'email' => 'contato@gmail.com'
+            'name'        => 'Ricardo',
+            'email'       => 'contato@gmail.com',
+            'occurredOn'  => $eventOccurence
         ]);
 
         $state = new State([
@@ -31,18 +35,16 @@ class StateChangeTest extends TestCase
             'name',
             'email'
         ]);
-        
-        $moment = new DateTimeImmutable();
 
-        $state->change($event);
+        $state->change($event); // seta o createdOn e UpdatedOn
 
         $this->assertEquals('1234567', $state->aggregateId()->value());
         $this->assertEquals('Ricardo', $state->value('name'));
         $this->assertEquals('contato@gmail.com', $state->value('email'));
         $this->assertInstanceOf(DateTimeImmutable::class, $state->createdOn());
-        $this->assertTrue($moment < $state->createdOn());
+        $this->assertEquals($eventOccurence, $state->createdOn());
         $this->assertInstanceOf(DateTimeImmutable::class, $state->updatedOn());
-        $this->assertTrue($moment < $state->updatedOn());
+        $this->assertEquals($eventOccurence, $state->updatedOn());
 
         $values = $state->toArray();
 
@@ -50,9 +52,9 @@ class StateChangeTest extends TestCase
         $this->assertEquals('Ricardo', $values['name']);
         $this->assertEquals('contato@gmail.com', $values['email']);
         $this->assertInstanceOf(DateTimeImmutable::class, $values['createdOn']);
-        $this->assertTrue($moment < $values['createdOn']);
+        $this->assertEquals($eventOccurence, $values['createdOn']);
         $this->assertInstanceOf(DateTimeImmutable::class, $values['updatedOn']);
-        $this->assertTrue($moment < $values['updatedOn']);
+        $this->assertEquals($eventOccurence, $values['updatedOn']);
     }
 
     /** @test */

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Iquety\Prospection\Domain\Stream;
 
 use DateTimeImmutable;
+use DomainException;
 use Exception;
 use InvalidArgumentException;
 use Iquety\Prospection\Domain\Core\Entity;
@@ -49,9 +50,7 @@ abstract class StreamEntity extends Entity
      */
     public function changeState(DomainEvent $domainEvent): void
     {
-        $this->state()->change($domainEvent);
-        
-        $this->localChange($domainEvent);
+        $this->applyStateChange($domainEvent);
 
         $this->listOfChanges[] = $domainEvent;
     }
@@ -76,14 +75,30 @@ abstract class StreamEntity extends Entity
         }
 
         foreach ($domainEventList as $event) {
-            $this->state()->change($event);
+            $this->applyStateChange($event);
         }
     }
 
     /** Fabrica a entidade com base em um evento de Snapshot */
-    public static function factory(EventSnapshot $domainEvent): self
+    public static function factory(array $stateValues): self
     {
-        return new self(...$domainEvent->toArray());
+        $constructorState = $stateValues;
+
+        if (isset($constructorState['occurredOn']) === true) {
+            unset($constructorState['occurredOn']);
+        }
+
+        try {
+            $instance = new static(...$constructorState);
+        } catch (Throwable $exception) {
+            throw new DomainException($exception->getMessage());
+        }
+
+        if (isset($stateValues['occurredOn']) === true) {
+            $instance->state()->internalChangeCreatedOn($stateValues['occurredOn']);
+        }
+
+        return $instance;
     }
 
     /**
@@ -103,7 +118,7 @@ abstract class StreamEntity extends Entity
     public function equalTo(Entity $other): bool
     {
         return $other instanceOf StreamEntity
-            && self::label() === $other::label()
+            && static::label() === $other::label()
             && $this->identity()->value() === $other->identity()->value();
     }
 
@@ -125,15 +140,20 @@ abstract class StreamEntity extends Entity
 
     // Support
 
-    protected function state(): State
+    private function applyStateChange(DomainEvent $domainEvent): void
     {
-        if ($this->state === null) {
-            $this->state = new State($this->stateProperties());
+        $this->state()->change($domainEvent);
+        
+        $this->localChange($domainEvent);
+    }
 
-            $this->consolidate([ new EventSnapshot($this->extractStateValues()) ]);
+    private function checkConstructorVisibility(): void
+    {
+        if ($this->reflectionConstructor()->isPublic() === true) {
+            throw new DomainException(
+                "Constructors of objects of type 'StreamEntity' must be protected"
+            );
         }
-
-        return $this->state;
     }
 
     /** Muda o estado local da entidade */
@@ -143,12 +163,35 @@ abstract class StreamEntity extends Entity
 
         try {
             foreach ($propertyList as $name => $value) {
-                $this->$name = $value;
+                if ($name === 'occurredOn') {
+                    continue;
+                }
+
+                $property = $this->reflection()->getProperty($name);
+                $property->setAccessible(true);
+                $property->setValue($this, $value);
             }
-        } catch(Throwable) {
-            throw new Exception(
+        } catch(Throwable $exception) {
+            throw new Exception(sprintf(
+                "%s in file %s on line %s. Important: %s",
+                $exception->getMessage(),
+                $exception->getFile(),
+                $exception->getLine(),
                 "State properties for an aggregation root must be 'protected' visibility"
-            );
+            ));
         }
+    }
+
+    protected function state(): State
+    {
+        if ($this->state === null) {
+            $this->checkConstructorVisibility();
+
+            $this->state = new State($this->stateProperties());
+
+            $this->consolidate([ new EventSnapshot($this->extractStateValues()) ]);
+        }
+
+        return $this->state;
     }
 }

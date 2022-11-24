@@ -91,7 +91,7 @@ class State
         $this->checkState();
 
         try {
-            return EventSnapshot::factory($this->toArray());
+            return EventSnapshot::factory($this->toArray(), $this->timezone);
         } catch (TypeError $exception) {
             throw new ErrorException(
                 sprintf(
@@ -167,5 +167,11 @@ class State
         }
 
         $this->empty = false;
+    }
+
+    public function internalChangeCreatedOn(DateTimeImmutable $createdOn): void
+    {
+        $this->state['createdOn'] = $createdOn;
+        $this->state['updatedOn'] = $createdOn;
     }
 }
