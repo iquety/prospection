@@ -6,6 +6,7 @@ namespace Iquety\Prospection\Domain\Core;
 
 use DateTimeInterface;
 use Exception;
+use ReflectionMethod;
 use ReflectionObject;
 
 /**
@@ -28,22 +29,29 @@ trait StateExtraction
         return $this->reflection;
     }
 
-    protected function stateProperties(): array
+    protected function reflectionConstructor(): ReflectionMethod
     {
-        if ($this->stateFields !== []) {
-            return $this->stateFields;
-        }
-
         $reflection = $this->reflection();
 
         $constructor = $reflection->getConstructor();
-    
+
         if ($constructor === null) {
             throw new Exception(
                 'Every object containing state must have a constructor ' .
                 'that takes its complete state'
             );
         }
+
+        return $constructor;
+    }
+
+    protected function stateProperties(): array
+    {
+        if ($this->stateFields !== []) {
+            return $this->stateFields;
+        }
+
+        $constructor = $this->reflectionConstructor();
     
         $this->stateFields = array_map(
             fn($item) => $item->getName(),
