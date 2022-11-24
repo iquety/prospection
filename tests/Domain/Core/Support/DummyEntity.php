@@ -19,4 +19,9 @@ class DummyEntity extends Entity
     {
         return $this->identity;
     }
+
+    public function myValue(): string
+    {
+        return $this->myValue;
+    }
 }
