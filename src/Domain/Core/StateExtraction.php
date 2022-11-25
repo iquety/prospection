@@ -118,6 +118,10 @@ trait StateExtraction
             );
         }
 
+        if (is_object($value) === true && method_exists($value, '__toString') === false) {
+            return $value::class . "()";
+        }
+
         $string = (string)$value;
 
         $firstLn = strpos($string, "\n");
