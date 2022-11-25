@@ -7,7 +7,6 @@ namespace Iquety\Prospection\Domain\Stream;
 use DateTimeImmutable;
 use DomainException;
 use Exception;
-use InvalidArgumentException;
 use Iquety\Prospection\Domain\Core\Entity;
 use Iquety\Prospection\Domain\Core\IdentityObject;
 use Iquety\Prospection\EventStore\EventSnapshot;
@@ -69,9 +68,7 @@ abstract class StreamEntity extends Entity
     public function consolidate(array $domainEventList): void
     {
         if ($domainEventList === []) {
-            throw new InvalidArgumentException(
-                "To consolidate the state of an aggregate, at least one event is required"
-            );
+            return;
         }
 
         foreach ($domainEventList as $event) {
@@ -94,8 +91,11 @@ abstract class StreamEntity extends Entity
             throw new DomainException($exception->getMessage());
         }
 
+        // chamado aqui para verificar a visibilidade do construtor
+        $state = $instance->state(); 
+
         if (isset($stateValues['occurredOn']) === true) {
-            $instance->state()->internalChangeCreatedOn($stateValues['occurredOn']);
+            $state->internalFactoryDateTime($stateValues['occurredOn']);
         }
 
         return $instance;
@@ -133,6 +133,11 @@ abstract class StreamEntity extends Entity
         return $this->state()->toArray();
     }
 
+    public function toSnapshot(): EventSnapshot
+    {
+        return $this->state()->toSnapshot();
+    }
+
     public function __toString(): string
     {
         return $this->extractStateString($this->toArray());
@@ -161,24 +166,14 @@ abstract class StreamEntity extends Entity
     {
         $propertyList = $domainEvent->toArray();
 
-        try {
-            foreach ($propertyList as $name => $value) {
-                if ($name === 'occurredOn') {
-                    continue;
-                }
-
-                $property = $this->reflection()->getProperty($name);
-                $property->setAccessible(true);
-                $property->setValue($this, $value);
+        foreach ($propertyList as $name => $value) {
+            if ($name === 'occurredOn') {
+                continue;
             }
-        } catch(Throwable $exception) {
-            throw new Exception(sprintf(
-                "%s in file %s on line %s. Important: %s",
-                $exception->getMessage(),
-                $exception->getFile(),
-                $exception->getLine(),
-                "State properties for an aggregation root must be 'protected' visibility"
-            ));
+
+            $property = $this->reflection()->getProperty($name);
+            $property->setAccessible(true);
+            $property->setValue($this, $value);
         }
     }
 

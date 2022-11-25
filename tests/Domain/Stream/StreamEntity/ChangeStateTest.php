@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Domain\Stream\StreamEntity;
 
+use DomainException;
 use Iquety\Prospection\Domain\Core\IdentityObject;
 use Iquety\Prospection\EventStore\EventSnapshot;
 use Tests\Domain\Core\Support\DummyEntity;
@@ -94,5 +95,21 @@ class ChangeStateTest extends StreamEntityCase
 
         // mudança do valor
         $this->assertEquals('test7', $object->seven()->myValue());
+    }
+
+    /** @test */
+    public function invalidAggregateId(): void
+    {
+        $this->expectException(DomainException::class);
+        $this->expectExceptionMessage("The aggregation ID contained in the event does not match the aggregation root ID");
+        
+        $object = $this->dummyStreamEntityFactory();
+
+        $this->assertTrue($object->aggregateId()->equalTo(new IdentityObject('123456')));
+        
+        $object->changeState(new EventSnapshot([
+            'aggregateId' => new IdentityObject('123456888888'), // id diferente
+            'seven' => new DummyEntity(new IdentityObject('111'), 'test7')
+        ]));
     }
 }

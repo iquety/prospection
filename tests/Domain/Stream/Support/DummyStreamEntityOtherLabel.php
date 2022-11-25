@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Domain\Stream\Support;
 
+use ArrayObject;
 use DateTime;
 use DateTimeImmutable;
 use Iquety\Prospection\Domain\Core\IdentityObject;
@@ -18,7 +19,7 @@ class DummyStreamEntityOtherLabel extends DummyStreamEntity
         private int $two,
         private float $three,
         private DateTimeImmutable $four,
-        private DateTime $five,
+        private ArrayObject $five,
         private DummyValue $six,
         private DummyEntity $seven
     ){

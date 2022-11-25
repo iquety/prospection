@@ -7,7 +7,6 @@ namespace Tests\Domain\Stream\StreamEntity;
 use Iquety\Prospection\Domain\Core\IdentityObject;
 use Iquety\Prospection\Domain\Stream\DomainEvent;
 use Iquety\Prospection\EventStore\EventSnapshot;
-use Tests\Domain\Core\Support\DummyValue;
 
 class ConsolidateTest extends StreamEntityCase
 {
@@ -107,5 +106,18 @@ class ConsolidateTest extends StreamEntityCase
         $this->assertCount(2, $object->changes());
         $this->assertInstanceOf(DomainEvent::class, $object->changes()[0]);
         $this->assertInstanceOf(DomainEvent::class, $object->changes()[1]);
+    }
+
+    /** @test */
+    public function consolidateEmpty(): void
+    {
+        $object = $this->dummyStreamEntityFactory();
+
+        $object->consolidate([]);
+
+        $this->assertEquals('Ricardo', $object->one());
+        $this->assertEquals(30, $object->two());
+        $this->assertEquals(5.5, $object->three());
+        $this->assertCount(0, $object->changes());
     }
 }

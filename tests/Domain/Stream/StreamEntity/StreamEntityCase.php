@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Domain\Stream\StreamEntity;
 
+use ArrayObject;
 use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
@@ -17,6 +18,20 @@ use Tests\TestCase;
 
 class StreamEntityCase extends TestCase
 {
+    public function stateValues(): array
+    {
+        return [
+            'aggregateId' => new IdentityObject('123456'),
+            'one' => 'Ricardo',
+            'two' => 30,
+            'three' => 5.5,
+            'four' => $this->dummyDateTimeFactory("now", "UTC"),
+            'five' => new ArrayObject(),
+            'six' => new DummyValue('test1'),
+            'seven' => new DummyEntity(new IdentityObject('111'), 'test2'),
+        ];
+    }
+
     public function dummyDateTimeFactory(
         string $expression = "now",
         string $timezone = "UTC",
@@ -31,19 +46,9 @@ class StreamEntityCase extends TestCase
         string $timezone = "UTC"
     ): DummyStreamEntity {
 
-        $dateOne = $this->dummyDateTimeFactory($expression, $timezone);
-        $dateTwo = $this->dummyDateTimeFactory($expression, $timezone, DateTime::class);
+        $values = $this->stateValues();
+        $values['occurredOn'] = $this->dummyDateTimeFactory($expression, $timezone);
 
-        return DummyStreamEntity::factory([
-            'aggregateId' => new IdentityObject('123456'),
-            'one' => 'Ricardo',
-            'two' => 30,
-            'three' => 5.5,
-            'four' => $dateOne,
-            'five' => $dateTwo,
-            'six' => new DummyValue('test1'),
-            'seven' => new DummyEntity(new IdentityObject('111'), 'test2'),
-            'occurredOn' => $dateOne // campo especial para setagem da ocorrência do evento
-        ]);
+        return DummyStreamEntity::factory($values);
     }
 }

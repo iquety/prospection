@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Domain\Stream\StreamEntity;
 
+use ArrayObject;
 use DateTime;
 use DateTimeImmutable;
 use Iquety\Prospection\Domain\Core\IdentityObject;
@@ -25,7 +26,7 @@ class BaseGettersTest extends StreamEntityCase
         $this->assertEquals(30, $object->two());
         $this->assertEquals(5.5, $object->three());
         $this->assertInstanceOf(DateTimeImmutable::class, $object->four());
-        $this->assertInstanceOf(DateTime::class, $object->five());
+        $this->assertInstanceOf(ArrayObject::class, $object->five());
         $this->assertTrue($object->six()->equalTo(new DummyValue('test1')));
         $this->assertTrue(
             $object->seven()->equalTo(new DummyEntity(new IdentityObject('111'), 'test2'))

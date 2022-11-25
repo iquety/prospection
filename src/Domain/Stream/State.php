@@ -11,6 +11,7 @@ use InvalidArgumentException;
 use Iquety\Prospection\Domain\Core\IdentityObject;
 use Iquety\Prospection\EventStore\EventSnapshot;
 use OutOfRangeException;
+use Throwable;
 use TypeError;
 
 class State
@@ -82,25 +83,15 @@ class State
     public function toArray(): array
     {
         $this->checkState();
-        
+
         return $this->state;
     }
 
     public function toSnapshot(): EventSnapshot
     {
         $this->checkState();
-
-        try {
-            return EventSnapshot::factory($this->toArray(), $this->timezone);
-        } catch (TypeError $exception) {
-            throw new ErrorException(
-                sprintf(
-                    "Could not manufacture event labeled '%s'. Reason: %s",
-                    EventSnapshot::label(),
-                    $exception->getMessage()
-                )
-            );
-        }
+        
+        return EventSnapshot::factory(['state' => $this->toArray()]);
     }
 
     public function createdOn(): DateTimeImmutable
@@ -169,9 +160,10 @@ class State
         $this->empty = false;
     }
 
-    public function internalChangeCreatedOn(DateTimeImmutable $createdOn): void
+    public function internalFactoryDateTime(DateTimeImmutable $createdOn): void
     {
         $this->state['createdOn'] = $createdOn;
         $this->state['updatedOn'] = $createdOn;
+        $this->state['occurredOn'] = $createdOn;
     }
 }
