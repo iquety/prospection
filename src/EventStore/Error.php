@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Iquety\Prospection\EventStore\Connection;
+namespace Iquety\Prospection\EventStore;
 
 class Error
 {

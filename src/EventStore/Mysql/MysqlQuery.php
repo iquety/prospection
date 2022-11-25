@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Iquety\Prospection\EventStore\Query;
+namespace Iquety\Prospection\EventStore\Mysql;
 
 use DateTimeImmutable;
-use Iquety\Prospection\EventStore\Connection\MysqlConnection;
 use Iquety\Prospection\EventStore\Interval;
+use Iquety\Prospection\EventStore\Query;
 
 class MysqlQuery implements Query
 {
@@ -50,13 +50,13 @@ class MysqlQuery implements Query
     /**
      * Devolve a lista de eventos a partir da versão especificada.
      * @return array<int,array<string,mixed>> */
-    public function eventListForVersion(string $aggregateId, int $version): array
+    public function eventListForVersion(string $aggregateLabel, string $aggregateId, int $version): array
     {
         $sql = "SELECT * FROM {$this->eventsTable} 
-            WHERE aggregate_id = ? AND version >= ? 
+            WHERE aggregate_label = ? AND aggregate_id = ? AND `version` >= ? 
             ORDER BY version ASC";
 
-        return $this->connection->select($sql, [ $aggregateId, $version ]);
+        return $this->connection->select($sql, [ $aggregateLabel, $aggregateId, $version ]);
     }
 
     /**
@@ -64,10 +64,10 @@ class MysqlQuery implements Query
      * último instantâneo gerado
      * @return array<int,array<string,mixed>>
      */
-    public function eventListForAggregate(string $aggregateId): array
+    public function eventListForAggregate(string $aggregateLabel, string $aggregateId): array
     {
         $sql = "SELECT * FROM {$this->eventsTable} AS stream
-            WHERE stream.aggregate_id = ? AND stream.version >= (
+            WHERE stream.aggregate_label = ? AND stream.aggregate_id = ? AND stream.version >= (
                 SELECT `event`.version 
                 FROM {$this->eventsTable} AS `event` 
                 WHERE `event`.aggregate_id = stream.aggregate_id AND `event`.`snapshot`=1
@@ -75,7 +75,7 @@ class MysqlQuery implements Query
             )
         ";
 
-        return $this->connection->select($sql, [ $aggregateId ]);
+        return $this->connection->select($sql, [ $aggregateLabel, $aggregateId ]);
     }
 
     /**

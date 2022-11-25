@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Iquety\Prospection\EventStore;
 
-use Iquety\Prospection\Domain\AggregateRoot;
+use Iquety\Prospection\Domain\Stream\StreamEntity;
 
 /**
  * Um descritor contém os dados de um agregado de forma simplificada, para ser
@@ -13,14 +13,14 @@ use Iquety\Prospection\Domain\AggregateRoot;
  */
 class Descriptor
 {
-    private bool $consolidatedAggregate = false;
+    private ?StreamEntity $entity = null;
 
     /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      * Promoção de propriedades ainda não é suportada no PHPMD
      */
     public function __construct(
-        private AggregateRoot $entity,
+        private string $aggregateSignature,
         private EventSnapshot $snapshot
     ) {
     }
@@ -31,11 +31,12 @@ class Descriptor
         return $this->snapshot->toArray();
     }
 
-    public function toAggregate(): AggregateRoot
+    public function toAggregate(): StreamEntity
     {
-        if ($this->consolidatedAggregate === false) {
-            $this->entity->consolidate([ $this->snapshot ]);
-            $this->consolidatedAggregate = true;
+        if ($this->entity === null) {
+            $className = $this->aggregateSignature;
+
+            $this->entity = new $className(...$this->toArray());
         }
 
         return $this->entity;
@@ -43,6 +44,6 @@ class Descriptor
 
     public function __toString(): string
     {
-        return (string)$this->snapshot;
+        return (string)$this->toAggregate();
     }
 }

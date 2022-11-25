@@ -2,15 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Iquety\Prospection\EventStore\Persistence;
+namespace Iquety\Prospection\EventStore\Mysql;
 
 use Closure;
 use DateTimeImmutable;
-use Iquety\Prospection\Domain\IdentityObject;
-use Iquety\Prospection\EventStore\Connection\MysqlConnection;
-use RuntimeException;
+use Iquety\Prospection\Domain\Core\IdentityObject;
+use Iquety\Prospection\EventStore\Store;
 
-class MysqlPersistence implements Persistence
+class MysqlStore implements Store
 {
     /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
@@ -100,8 +99,8 @@ class MysqlPersistence implements Persistence
     {
         $this->connection->transaction($operation);
 
-        if ($this->connection->lastError()->message() !== '') {
-            throw new RuntimeException($this->connection->lastError()->message());
-        }
+        // if ($this->connection->lastError()->message() !== '') {
+        //     throw new RuntimeException($this->connection->lastError()->message());
+        // }
     }
 }

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Iquety\Prospection\EventStore\Persistence;
+namespace Iquety\Prospection\EventStore;
 
 use Closure;
 use DateTimeImmutable;
-use Iquety\Prospection\Domain\IdentityObject;
+use Iquety\Prospection\Domain\Core\IdentityObject;
 
-interface Persistence
+interface Store
 {
     public function add(
         string $aggregateId,

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Iquety\Prospection\EventStore\Query;
+namespace Iquety\Prospection\EventStore;
 
 use DateTimeImmutable;
 use Iquety\Prospection\EventStore\Interval;
@@ -18,14 +18,14 @@ interface Query
     /**
      * Devolve a lista de eventos a partir da versão especificada.
      * @return array<int,array<string,mixed>> */
-    public function eventListForVersion(string $aggregateId, int $version): array;
+    public function eventListForVersion(string $aggregateLabel, string $aggregateId, int $version): array;
 
     /**
      * Devolve a lista de eventos para um agregado, partindo do
      * último instantâneo gerado
      * @return array<int,array<string,mixed>>
      */
-    public function eventListForAggregate(string $aggregateId): array;
+    public function eventListForAggregate(string $aggregateLabel, string $aggregateId): array;
 
     /**
      * Devolve a lista de eventos, para ser usada na consolidação de uma
