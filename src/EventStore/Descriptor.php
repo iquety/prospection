@@ -36,7 +36,9 @@ class Descriptor
         if ($this->entity === null) {
             $className = $this->aggregateSignature;
 
-            $this->entity = new $className(...$this->toArray());
+            $stateValues = $this->toArray();
+
+            $this->entity = $className::factory($stateValues);
         }
 
         return $this->entity;

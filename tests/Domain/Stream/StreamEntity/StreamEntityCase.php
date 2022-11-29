@@ -32,15 +32,6 @@ class StreamEntityCase extends TestCase
         ];
     }
 
-    public function dummyDateTimeFactory(
-        string $expression = "now",
-        string $timezone = "UTC",
-        string $signature = DateTimeImmutable::class
-    ): DateTimeInterface
-    {
-        return new $signature($expression, new  DateTimeZone($timezone));
-    }
-
     public function dummyStreamEntityFactory(
         string $expression = "now",
         string $timezone = "UTC"
