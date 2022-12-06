@@ -19,14 +19,10 @@ class StreamId
      * Promoção de propriedades ainda não é suportada no PHPMD
      */
     public function __construct(
+        private string $aggregateLabel,
         private IdentityObject $aggregateId,
         private int $version
     ) {
-    }
-
-    public function withNewVersion(int $version): self
-    {
-        return new self($this->aggregateId(), $version);
     }
 
     /**
@@ -39,6 +35,22 @@ class StreamId
     }
 
     /**
+     * Obtém a identificação da raiz de agregação para a qual
+     * o fluxo de eventos ocorreu.
+     */
+    public function aggregateLabel(): string
+    {
+        return $this->aggregateLabel;
+    }
+
+    public function equalTo(StreamId $other): bool
+    {
+        return $this->aggregateId()->equalTo($other->aggregateId()) 
+            && $this->aggregateLabel() === $other->aggregateLabel()
+            && $this->version() === $other->version();
+    }
+    
+    /**
      * Obtém a 'versao do estado' de um fluxo de eventos. Quando um novo evento
      * é emitido para um determinado agregado, ele é armazenado em disco contendo
      * metadados referentes ao estado atual do referido agregado. Entre os metadados,
@@ -50,5 +62,10 @@ class StreamId
     public function version(): int
     {
         return $this->version;
+    }
+
+    public function withNewVersion(int $version): self
+    {
+        return new self($this->aggregateLabel(), $this->aggregateId(), $version);
     }
 }

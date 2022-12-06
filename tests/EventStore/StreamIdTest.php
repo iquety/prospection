@@ -13,19 +13,18 @@ class StreamIdTest extends TestCase
     /** @test */
     public function withNewVersion(): void
     {
-        /** @var InvocationMocker */
-        $aggregateId = $this->createMock(IdentityObject::class);
-        $aggregateId->method('value')->willReturn('1234567');
+        $aggregateId = new IdentityObject('1234567');
 
         /** @var IdentityObject $aggregateId */
-        $streamId = new StreamId($aggregateId, 2);
+        $streamId = new StreamId('aggregate.one', $aggregateId, 2);
 
         $this->assertEquals(2, $streamId->version());
 
         $streamId2 = $streamId->withNewVersion(5);
         $this->assertEquals(5, $streamId2->version());
 
-        // $this->assertNotEquals($streamId, $streamId2);
-        // $this->assertTrue($streamId->aggregateId()->equalTo($streamId2->aggregateId()));
+        $this->assertNotEquals($streamId, $streamId2);
+        $this->assertFalse($streamId->equalTo($streamId2));
+        $this->assertTrue($streamId->aggregateId()->equalTo($streamId2->aggregateId()));
     }
 }
