@@ -9,11 +9,39 @@ use Iquety\Prospection\EventStore\Interval;
 
 interface Query
 {
+    public const ERROR_CONNECTION = '1';
+
+    public const ERROR_QUERY = '2';
+
+    /**
+     * Devolve a lista de agregados, para ser usada em grades de dados.
+     * A lista é baseada apenas no último instantaneo gerado e não possui
+     * seus dados consolidados.
+     * Cada agregado conterá dois valores adicionais:
+     * - createdOn: ocorrência do primeiro evento do agregado
+     * - updatedOn: ocorrência do último evento do agregado
+     * @return array<int,array<string,mixed>>
+     */
+    public function aggregateList(string $aggregateLabel, Interval $interval): array;
+
+    /**
+     * Devolve a lista de agregados baseando-se em uma data inicial
+     * @param DateTimeImmutable $initialMoment Momento da ocorrencia do evento
+     * @return array<int,array<string,mixed>>
+     */
+    public function aggregateListByDate(
+        string $aggregateLabel,
+        DateTimeImmutable $initialMoment,
+        Interval $interval
+    ): array;
+
+    /** Devolve a contagem de todos os eventos armazenados até o momento */
     public function countEvents(): int;
 
-    public function countAggregateEvents(string $aggregateLabel): int;
+    public function countAggregateEvents(string $aggregateLabel, string $aggregateId): int;
 
-    public function nextVersion(string $aggregateId): int;
+    /** Devolve a contagem de todos os eventos armazenados para o agregado */
+    public function countAggregates(string $aggregateLabel): int;
 
     /**
      * Devolve a lista de eventos a partir da versão especificada.
@@ -39,23 +67,14 @@ interface Query
      * tamanho em bytes, que uma cláusula pode ser recebida pelo Mysql.
      *
      * @see https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_max_allowed_packet
-     * @param array<int,array<string,mixed>> $registerList
+     * @param array<int,array<string,mixed>> $aggregateList
      * @return array<int,array<string,mixed>>
      */
-    public function eventListForRegisters(array $registerList): array;
+    public function eventListForConsolidation(array $aggregateList): array;
 
-    /**
-     * Devolve a lista de agregados, para ser usada em grades de dados.
-     * A lista é baseada apenas no último instantaneo gerado e não possui
-     * seus dados consolidados.
-     * @return array<int,array<string,mixed>>
-     */
-    public function aggregateList(string $aggregateLabel, Interval $interval): array;
+    public function hasError(): bool;
 
-    /**
-     * Devolve a lista de agregados baseando-se em uma data inicial
-     * @param DateTimeImmutable $initialMoment Momento da ocorrencia do evento
-     * @return array<int,array<string,mixed>>
-     */
-    public function aggregateListByDate(string $aggregateLabel, DateTimeImmutable $initialMoment, Interval $interval): array;
+    public function lastError(): Error;
+
+    public function nextVersion(string $aggregateLabel, string $aggregateId): int;
 }

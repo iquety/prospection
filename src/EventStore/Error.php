@@ -12,11 +12,11 @@ class Error
     
     public function message(): string
     {
-        return '';
+        return $this->message;
     }
 
     public function code(): string
     {
-        return '';
+        return $this->code;
     }
 }

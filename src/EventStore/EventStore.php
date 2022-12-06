@@ -46,25 +46,34 @@ class EventStore
             try {
                 $version = 0;
 
+                $aggregateLabel = $aggregateSignature::label();
+
+                $diffAggregateException = new RuntimeException(
+                    "All events must belong to the same aggregate",
+                    100180
+                );
+
                 foreach ($domainEventList as $event) {
-                    if ($aggregateId !== $event->aggregateId()->value()
-                    || $aggregateSignature::label() !== $event::aggregateLabel()
+                    if ($aggregateId !== $event->aggregateId()->value()) {
+                        throw $diffAggregateException;
+                    }
+
+                    if (
+                        ! $event instanceof EventSnapshot
+                        && $aggregateLabel !== $event::aggregateLabel()
                     ) {
-                        throw new RuntimeException(
-                            "All events must belong to the same aggregate",
-                            100180
-                        );
+                        throw $diffAggregateException;
                     }
 
                     $version = $version === 0
-                        ? $this->query->nextVersion($aggregateId)
+                        ? $this->query->nextVersion($aggregateLabel, $aggregateId)
                         : $version + 1;
 
                     $snapshot = (int)($version === 1);
 
                     $this->store->add(
                         $aggregateId,
-                        $event::aggregateLabel(),
+                        $aggregateLabel,
                         $event::label(),
                         $version,
                         $snapshot,
@@ -86,41 +95,6 @@ class EventStore
                 );
             }
         });
-    }
-
-    private function makeStateErrorMessage(Throwable $exception): string
-    {
-        if ($exception->getCode() === 100180) {
-            return $exception->getMessage();
-        }
-
-        return sprintf(
-            "It may be that the aggregate state is incomplete. Erro: %s",
-            $exception->getMessage()
-        );
-    }
-
-    /** @SuppressWarnings(PHPMD.StaticAccess) */
-    private function storeSnapshot(string $aggregateSignature, string $aggregateId): void
-    {
-        $eventList = $this->streamFor($aggregateSignature, $aggregateId)->events();
-        $stateValues = $eventList[0]->toArray();
-
-        /** @var StreamEntity $aggregate */
-        $aggregate = $aggregateSignature::factory($stateValues);
-        $aggregate->consolidate($eventList);
-
-        $event = $aggregate->toSnapshot();
-
-        $this->store->add(
-            $aggregateId,
-            $aggregateSignature::label(),
-            $event::label(),
-            $this->query->nextVersion($aggregateId),
-            1,
-            $this->serializer->serialize($event->toArray()),
-            new DateTimeImmutable()
-        );
     }
 
     public function countAll(): int
@@ -149,22 +123,6 @@ class EventStore
         $eventList = $this->query->eventListForAggregate($aggregateSignature::label(), $aggregateId);
 
         return $this->streamFactory($eventList);
-    }
-
-    /** @param array<array<string,mixed>> $eventList */
-    private function streamFactory(array $eventList): EventStream
-    {
-        $stream = new EventStream();
-
-        foreach ($eventList as $event) {
-            $domainEvent = new EventSnapshot(
-                $this->serializer->unserialize($event['data'])
-            );
-
-            $stream->addEvent($domainEvent, (int)$event['version']);
-        }
-
-        return $stream;
     }
 
     /** @return array<int,Descriptor> */
@@ -276,5 +234,56 @@ class EventStore
     public function removeAll(): void
     {
         $this->store->removeAll();
+    }
+
+    /** @param array<array<string,mixed>> $eventList */
+    private function streamFactory(array $eventList): EventStream
+    {
+        $stream = new EventStream();
+
+        foreach ($eventList as $event) {
+            $domainEvent = new EventSnapshot(
+                $this->serializer->unserialize($event['data'])
+            );
+
+            $stream->addEvent($domainEvent, (int)$event['version']);
+        }
+
+        return $stream;
+    }
+
+    private function makeStateErrorMessage(Throwable $exception): string
+    {
+        if ($exception->getCode() === 100180) {
+            return $exception->getMessage();
+        }
+
+        return sprintf(
+            "It may be that the aggregate state is incomplete. Erro: %s",
+            $exception->getMessage()
+        );
+    }
+
+    /** @SuppressWarnings(PHPMD.StaticAccess) */
+    private function storeSnapshot(string $aggregateSignature, string $aggregateId): void
+    {
+        $eventList = $this->streamFor($aggregateSignature, $aggregateId)->events();
+        $stateValues = $eventList[0]->toArray();
+
+        /** @var StreamEntity $aggregate */
+        $aggregate = $aggregateSignature::factory($stateValues);
+        $aggregate->consolidate($eventList);
+
+        $event = $aggregate->toSnapshot();
+
+        $this->store->add(
+            $aggregateId,
+            $aggregateSignature::label(),
+            $event::label(),
+            $this->query->nextVersion($aggregateId),
+            1,
+            $this->serializer->serialize($event->toArray()),
+            new DateTimeImmutable()
+        );
     }
 }

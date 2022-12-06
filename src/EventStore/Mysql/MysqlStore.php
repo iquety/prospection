@@ -7,6 +7,7 @@ namespace Iquety\Prospection\EventStore\Mysql;
 use Closure;
 use DateTimeImmutable;
 use Iquety\Prospection\Domain\Core\IdentityObject;
+use Iquety\Prospection\EventStore\Error;
 use Iquety\Prospection\EventStore\Store;
 
 class MysqlStore implements Store
@@ -70,11 +71,21 @@ class MysqlStore implements Store
         $this->connection->execute($sql, $values);
     }
 
+    public function hasError(): bool
+    {
+        return false;
+    }
+
+    public function lastError(): Error
+    {
+        return new Error('', '');
+    }
+    
     /**
      * Remove o evento especificado.
      * @todo Implementar restabelecimento da numeração de versões
      */
-    public function remove(IdentityObject $aggregateId, int $version): void
+    public function remove(string $aggregateLabel, IdentityObject $aggregateId, int $version): void
     {
         $sql = "DELETE FROM {$this->eventsTable} WHERE aggregate_id = ? AND `version` = ?";
         $this->connection->execute($sql, [ $aggregateId->value(), $version ]);
@@ -84,7 +95,7 @@ class MysqlStore implements Store
      * Remove o evento especificado.
      * @todo Implementar restabelecimento da numeração de versões
      */
-    public function removePrevious(IdentityObject $aggregateId, int $version): void
+    public function removePrevious(string $aggregateLabel, IdentityObject $aggregateId, int $version): void
     {
         $sql = "DELETE FROM {$this->eventsTable} WHERE aggregate_id = ? AND `version` < ?";
         $this->connection->execute($sql, [ $aggregateId->value(), $version ]);
