@@ -7,8 +7,9 @@ namespace Tests\Domain\Stream\StreamEntity;
 use Iquety\Prospection\Domain\Core\IdentityObject;
 use Iquety\Prospection\Domain\Stream\DomainEvent;
 use Iquety\Prospection\EventStore\EventSnapshot;
+use Tests\TestCase;
 
-class ConsolidateTest extends StreamEntityCase
+class ConsolidateTest extends TestCase
 {
     /** @test */
     public function consolidateOnly(): void

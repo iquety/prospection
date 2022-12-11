@@ -9,8 +9,9 @@ use Iquety\Prospection\Domain\Core\IdentityObject;
 use Iquety\Prospection\EventStore\EventSnapshot;
 use Tests\Domain\Core\Support\DummyEntity;
 use Tests\Domain\Core\Support\DummyValue;
+use Tests\TestCase;
 
-class ChangeStateTest extends StreamEntityCase
+class ChangeStateTest extends TestCase
 {
     public function changeStateProvider(): array
     {

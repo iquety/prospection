@@ -10,8 +10,9 @@ use DateTimeImmutable;
 use Iquety\Prospection\Domain\Core\IdentityObject;
 use Tests\Domain\Core\Support\DummyEntity;
 use Tests\Domain\Core\Support\DummyValue;
+use Tests\TestCase;
 
-class BaseGettersTest extends StreamEntityCase
+class BaseGettersTest extends TestCase
 {
     /** @test */
     public function stateGetters(): void

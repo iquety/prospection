@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace Tests\Domain\Stream\StreamEntity;
 
 use Iquety\Prospection\EventStore\EventSnapshot;
+use Tests\TestCase;
 
-class SnapshotFactoryTest extends StreamEntityCase
+class SnapshotFactoryTest extends TestCase
 {
     /** @test */
     public function toSnapshot(): void

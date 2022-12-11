@@ -8,8 +8,9 @@ use Iquety\Prospection\Domain\Core\IdentityObject;
 use Tests\Domain\Stream\Support\DummyStreamEntity;
 use Tests\Domain\Stream\Support\DummyStreamEntityOtherLabel;
 use Tests\Domain\Stream\Support\DummyStreamEntitySameLabel;
+use Tests\TestCase;
 
-class EqualityTest extends StreamEntityCase
+class EqualityTest extends TestCase
 {
     /** @test */
     public function sameObjectEqualIdentity(): void

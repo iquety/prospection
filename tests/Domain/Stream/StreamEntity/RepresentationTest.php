@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace Tests\Domain\Stream\StreamEntity;
 
 use Tests\Domain\Stream\Support\DummyStreamEntity;
+use Tests\TestCase;
 
-class RepresentationTest extends StreamEntityCase
+class RepresentationTest extends TestCase
 {
     /** @test */
     public function toArrayData(): void

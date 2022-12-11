@@ -91,7 +91,7 @@ class State
     {
         $this->checkState();
         
-        return EventSnapshot::factory(['state' => $this->toArray()]);
+        return EventSnapshot::factory($this->toArray());
     }
 
     public function createdOn(): DateTimeImmutable

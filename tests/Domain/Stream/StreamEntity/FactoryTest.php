@@ -13,8 +13,9 @@ use Tests\Domain\Core\Support\DummyEntity;
 use Tests\Domain\Core\Support\DummyValue;
 use Tests\Domain\Stream\Support\DummyStreamEntity;
 use Tests\Domain\Stream\Support\DummyStreamEntityVisibility;
+use Tests\TestCase;
 
-class FactoryTest extends StreamEntityCase
+class FactoryTest extends TestCase
 {
     /** @test */
     public function exactParams(): void
