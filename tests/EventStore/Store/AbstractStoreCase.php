@@ -114,17 +114,16 @@ abstract class AbstractStoreCase extends TestCase
     }
 
     /** @test */
-    public function transactionClosureException(): void
+    public function transactionClosure(): void
     {
         $this->assertCount(8, MemoryConnection::instance()->all());
 
         $store = $this->storeFactory();
 
-        $store->transaction(function(){
-            throw new Exception('teste');
+        $store->transaction(function(Store $store){
+            $store->removeAll();
         });
 
-        $this->assertTrue($store->hasError());
-        $this->assertEquals('teste', $store->lastError()->message());
+        $this->assertCount(0, MemoryConnection::instance()->all());
     }
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\EventStore\Store;
 
 use DateTimeImmutable;
+use Iquety\Prospection\EventStore\Error;
 use Iquety\Prospection\EventStore\Memory\MemoryConnection;
 use Iquety\Prospection\EventStore\Memory\MemoryStore;
 use Iquety\Prospection\EventStore\Store;
@@ -49,5 +50,17 @@ class MemoryStoreTest extends AbstractStoreCase
             'eventData'      => json_encode([]),
             'occurredOn'     => $now
         ];
+    }
+
+    /** @test */
+    public function errors(): void
+    {
+        $object = $this->storeFactory();
+
+        // MemoryStore nunca possui erros
+        $this->assertFalse($object->hasError());
+        $this->assertInstanceOf(Error::class, $object->lastError());
+        $this->assertEquals('', $object->lastError()->code());
+        $this->assertEquals('', $object->lastError()->message());
     }
 }

@@ -10,6 +10,7 @@ use DateTimeZone;
 use InvalidArgumentException;
 use Iquety\Prospection\Domain\Core\IdentityObject;
 use Iquety\Prospection\Domain\Stream\DomainEvent;
+use Iquety\PubSub\Event\Event;
 
 /**
  * Eventos de dominio devem possuir apenas objetos de valor (ObjetoValor,
@@ -53,6 +54,12 @@ class EventSnapshot extends DomainEvent
         throw new BadMethodCallException(
             "Snapshots do not have labels as their aggregates are dynamic"
         );
+    }
+
+    /** @param array<string,mixed> $values */
+    public static function factory(array $values): Event
+    {
+        return parent::factory(['state' => $values]);
     }
 
     public static function label(): string

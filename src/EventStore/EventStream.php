@@ -31,8 +31,13 @@ class EventStream
         $this->version = $version;
     }
 
+    public function count(): int
+    {
+        return count($this->eventList);
+    }
+
     /**
-     * Todos os eventos ocorridos nno período
+     * Todos os eventos ocorridos no período
      * @return array<DomainEvent>
      */
     public function events(): array

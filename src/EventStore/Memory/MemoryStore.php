@@ -116,11 +116,7 @@ class MemoryStore implements Store
 
     public function transaction(Closure $operation): void
     {
-        try {
-            $operation($this);
-        } catch (Throwable $exception) {
-            $this->error = new Error(self::ERROR_TRANSACTION, $exception->getMessage());
-        }
+        $operation($this);
     }
 
     protected function sortVersions(string $aggregateLabel, string $aggregateId): void

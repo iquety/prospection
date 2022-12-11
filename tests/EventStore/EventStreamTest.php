@@ -34,6 +34,7 @@ class EventStreamTest extends TestCase
 
         $this->assertCount(3, $stream->events());
         $this->assertEquals(3, $stream->version());
+        $this->assertEquals(3, $stream->count());
     }
 
     /** @test */

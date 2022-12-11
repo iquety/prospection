@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Iquety\Prospection\EventStore;
 
+use Closure;
 use DateTimeImmutable;
 use InvalidArgumentException;
 use Iquety\Prospection\Domain\Stream\DomainEvent;
@@ -14,6 +15,9 @@ use Throwable;
 class EventStore
 {
     private const SNAPSHOT_SIZE = 10;
+
+    /** @var array<string,string> */
+    private array $eventRegisterList = [];
 
     /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
@@ -48,12 +52,22 @@ class EventStore
 
                 $aggregateLabel = $aggregateSignature::label();
 
+                // para identificar exceções não ligadas ao estado do evento
+                $commonExceptionCode = 100180;
+
                 $diffAggregateException = new RuntimeException(
                     "All events must belong to the same aggregate",
-                    100180
+                    $commonExceptionCode
                 );
 
                 foreach ($domainEventList as $event) {
+                    if (! $event instanceof DomainEvent){
+                        throw new RuntimeException(
+                            "Only domain events can be stored",
+                            $commonExceptionCode
+                        );
+                    }
+
                     if ($aggregateId !== $event->aggregateId()->value()) {
                         throw $diffAggregateException;
                     }
@@ -91,7 +105,9 @@ class EventStore
                 throw new RuntimeException(
                     $this->makeStateErrorMessage($error)
                     . " in line " . $error->getLine() 
-                    . " of file " . $error->getFile()
+                    . " of file " . $error->getFile(),
+                    $error->getCode(),
+                    $error
                 );
             }
         });
@@ -102,9 +118,9 @@ class EventStore
         return $this->query->countEvents();
     }
 
-    public function countAggregate(string $aggregateLabel): int
+    public function countAggregates(string $aggregateLabel): int
     {
-        return $this->query->countAggregateEvents($aggregateLabel);
+        return $this->query->countAggregates($aggregateLabel);
     }
 
     public function streamSince(string $aggregateSignature, StreamId $streamId): EventStream
@@ -145,7 +161,7 @@ class EventStore
     /** @return array<int,Descritor> */
     public function listConsolidated(string $aggregateSignature, Interval $interval): array
     {
-        $aggregateEvents = $this->query->eventListForRegisters(
+        $aggregateEvents = $this->query->eventListForConsolidation(
             $this->query->aggregateList($aggregateSignature::label(), $interval)
         );
 
@@ -182,7 +198,7 @@ class EventStore
         DateTimeImmutable $initialMoment,
         Interval $interval
     ): array {
-        $aggregateEvents = $this->query->eventListForRegisters(
+        $aggregateEvents = $this->query->eventListForConsolidation(
             $this->query->aggregateListByDate($aggregateSignature::label(), $initialMoment, $interval)
         );
 
@@ -199,7 +215,7 @@ class EventStore
 
             $groupedOccurrenceList[$aggregateId][] = new DateTimeImmutable($event['occurredOn']);
 
-            $groupedEventList[$aggregateId][] = $this->serializer->unserialize($event['data']);
+            $groupedEventList[$aggregateId][] = $this->serializer->unserialize($event['eventData']);
         }
 
         $list = [];
@@ -221,14 +237,19 @@ class EventStore
         return $list;
     }
 
+    public function registerEventType(string $eventSignature): void
+    {
+        $this->eventRegisterList[$eventSignature::label()] = $eventSignature;
+    }
+    
     public function remove(StreamId $streamId): void
     {
-        $this->store->remove($streamId->aggregateId(), $streamId->version());
+        $this->store->remove($streamId->aggregateLabel(), $streamId->aggregateId(), $streamId->version());
     }
 
     public function removePrevious(StreamId $streamId): void
     {
-        $this->store->removePrevious($streamId->aggregateId(), $streamId->version());
+        $this->store->removePrevious($streamId->aggregateLabel(), $streamId->aggregateId(), $streamId->version());
     }
 
     public function removeAll(): void
@@ -242,14 +263,24 @@ class EventStore
         $stream = new EventStream();
 
         foreach ($eventList as $event) {
-            $domainEvent = new EventSnapshot(
-                $this->serializer->unserialize($event['data'])
-            );
+            $state = $this->serializer->unserialize($event['eventData']);
+            $domainEvent = $this->eventFactory($event['eventLabel'], $state);
 
             $stream->addEvent($domainEvent, (int)$event['version']);
         }
 
         return $stream;
+    }
+
+    private function eventFactory(string $eventLabel, array $state): DomainEvent
+    {
+        $factory = EventSnapshot::class;
+
+        if (isset($this->eventRegisterList[$eventLabel]) === true) {
+            $factory = $this->eventRegisterList[$eventLabel];
+        }
+
+        return call_user_func([$factory, "factory"], $state);
     }
 
     private function makeStateErrorMessage(Throwable $exception): string
@@ -280,7 +311,7 @@ class EventStore
             $aggregateId,
             $aggregateSignature::label(),
             $event::label(),
-            $this->query->nextVersion($aggregateId),
+            $this->query->nextVersion($aggregateSignature::label(), $aggregateId),
             1,
             $this->serializer->serialize($event->toArray()),
             new DateTimeImmutable()
