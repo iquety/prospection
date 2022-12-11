@@ -4,13 +4,16 @@ declare(strict_types=1);
 
 namespace Tests\EventStore\Query;
 
+use Iquety\Prospection\Domain\Core\IdentityObject;
 use Iquety\Prospection\EventStore\Interval;
+use Iquety\Prospection\EventStore\Query;
 
 trait AbstractQueryListConsol
 {
     /** @test */
     public function emptyEventListForConsolidation(): void
     {
+        /** @var Query */
         $object = $this->queryFactory();
         
         $eventsAfterSnapshot = $object->eventListForConsolidation([]);
@@ -22,6 +25,7 @@ trait AbstractQueryListConsol
     /** @test */
     public function eventListForThrConsolidation(): void
     {
+        /** @var Query */
         $object = $this->queryFactory();
         
         $eventsAfterSnapshot = $object->eventListForConsolidation(
@@ -38,7 +42,10 @@ trait AbstractQueryListConsol
         $this->assertEquals('2022-10-10 16:10:10', $eventsAfterSnapshot[5]['occurredOn']);
 
         // o último snapshot está na versão 11
-        $aggregateEvents = $object->eventListForAggregate('aggregate.thr', '67890');
+        $aggregateEvents = $object->eventListForAggregate(
+            'aggregate.thr',
+            new IdentityObject('67890')
+        );
         $this->assertCount(6, $aggregateEvents);
 
         $this->assertEquals(
@@ -63,6 +70,7 @@ trait AbstractQueryListConsol
     /** @test */
     public function eventListForManyConsolidation(): void
     {
+        /** @var Query */
         $object = $this->queryFactory();
 
         // existem duas entidades para aggregate.one
@@ -76,7 +84,10 @@ trait AbstractQueryListConsol
         $this->assertCount(20, $eventsAfterSnapshot);
         
         // o último snapshot está na versão 1
-        $aggregateEvents = $object->eventListForAggregate('aggregate.one', '12345');
+        $aggregateEvents = $object->eventListForAggregate(
+            'aggregate.one',
+            new IdentityObject('12345')
+        );
         $this->assertCount(10, $aggregateEvents);
 
         // aggregate.one 12345

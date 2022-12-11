@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Iquety\Prospection\EventStore;
 
 use DateTimeImmutable;
+use Iquety\Prospection\Domain\Core\IdentityObject;
 use Iquety\Prospection\EventStore\Interval;
 
 interface Query
@@ -38,7 +39,7 @@ interface Query
     /** Devolve a contagem de todos os eventos armazenados até o momento */
     public function countEvents(): int;
 
-    public function countAggregateEvents(string $aggregateLabel, string $aggregateId): int;
+    public function countAggregateEvents(string $aggregateLabel, IdentityObject $aggregateId): int;
 
     /** Devolve a contagem de todos os eventos armazenados para o agregado */
     public function countAggregates(string $aggregateLabel): int;
@@ -46,14 +47,21 @@ interface Query
     /**
      * Devolve a lista de eventos a partir da versão especificada.
      * @return array<int,array<string,mixed>> */
-    public function eventListForVersion(string $aggregateLabel, string $aggregateId, int $version): array;
+    public function eventListForVersion(
+        string $aggregateLabel,
+        IdentityObject $aggregateId,
+        int $version
+    ): array;
 
     /**
      * Devolve a lista de eventos para um agregado, partindo do
      * último instantâneo gerado
      * @return array<int,array<string,mixed>>
      */
-    public function eventListForAggregate(string $aggregateLabel, string $aggregateId): array;
+    public function eventListForAggregate(
+        string $aggregateLabel,
+        IdentityObject $aggregateId
+    ): array;
 
     /**
      * Devolve a lista de eventos, para ser usada na consolidação de uma
@@ -76,5 +84,5 @@ interface Query
 
     public function lastError(): Error;
 
-    public function nextVersion(string $aggregateLabel, string $aggregateId): int;
+    public function nextVersion(string $aggregateLabel, IdentityObject $aggregateId): int;
 }

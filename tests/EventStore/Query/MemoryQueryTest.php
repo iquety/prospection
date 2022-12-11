@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\EventStore\Query;
 
 use DateTimeImmutable;
+use Iquety\Prospection\Domain\Core\IdentityObject;
 use Iquety\Prospection\EventStore\Error;
 use Iquety\Prospection\EventStore\EventSnapshot;
 use Iquety\Prospection\EventStore\Memory\MemoryConnection;
@@ -89,7 +90,7 @@ class MemoryQueryTest extends AbstractQueryCase
         }
 
         return [
-            'aggregateId'    => $id,
+            'aggregateId'    => new IdentityObject($id),
             'aggregateLabel' => $aggregateLabel,
             'eventLabel'     => md5($now->format('Y-m-d H:i:s')),
             'version'        => $version,
@@ -109,7 +110,7 @@ class MemoryQueryTest extends AbstractQueryCase
         }
 
         return [
-            'aggregateId'    => $id,
+            'aggregateId'    => new IdentityObject($id),
             'aggregateLabel' => $aggregateLabel,
             'eventLabel'     => EventSnapshot::label(),
             'version'        => $version,
@@ -122,6 +123,7 @@ class MemoryQueryTest extends AbstractQueryCase
     /** @test */
     public function errors(): void
     {
+        /** @var Query */
         $object = $this->queryFactory();
 
         // MemoryQuery nunca possui erros

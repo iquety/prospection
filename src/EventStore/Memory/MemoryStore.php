@@ -9,8 +9,6 @@ use DateTimeImmutable;
 use Iquety\Prospection\Domain\Core\IdentityObject;
 use Iquety\Prospection\EventStore\Error;
 use Iquety\Prospection\EventStore\Store;
-use RuntimeException;
-use Throwable;
 
 class MemoryStore implements Store
 {
@@ -27,7 +25,7 @@ class MemoryStore implements Store
     }
 
     public function add(
-        string $aggregateId,
+        IdentityObject $aggregateId,
         string $aggregateLabel,
         string $eventLabel,
         int $version,
@@ -70,7 +68,7 @@ class MemoryStore implements Store
         foreach($list as $index => $register) {
             if (
                 $register['aggregateLabel'] === $aggregateLabel 
-                && $register['aggregateId'] === $aggregateId->value()
+                && $register['aggregateId']->value() === $aggregateId->value()
                 && $register['version'] === $version
             ) {
                 $this->connection()->remove($index);
@@ -80,7 +78,7 @@ class MemoryStore implements Store
 
         $this->connection()->reindex();
 
-        $this->sortVersions($aggregateLabel, $aggregateId->value());
+        $this->sortVersions($aggregateLabel, $aggregateId);
     }
 
     /**
@@ -97,7 +95,7 @@ class MemoryStore implements Store
         foreach($list as $index => $register) {
             if (
                 $register['aggregateLabel'] === $aggregateLabel 
-                && $register['aggregateId'] === $aggregateId->value()
+                && $register['aggregateId']->value() === $aggregateId->value()
                 && $register['version'] < $version
             ) {
                 $this->connection()->remove($index);
@@ -106,7 +104,7 @@ class MemoryStore implements Store
 
         $this->connection()->reindex();
         
-        $this->sortVersions($aggregateLabel, $aggregateId->value());
+        $this->sortVersions($aggregateLabel, $aggregateId);
     }
 
     public function removeAll(): void
@@ -119,7 +117,7 @@ class MemoryStore implements Store
         $operation($this);
     }
 
-    protected function sortVersions(string $aggregateLabel, string $aggregateId): void
+    protected function sortVersions(string $aggregateLabel, IdentityObject $aggregateId): void
     {
         $version = 1;
 
@@ -128,7 +126,7 @@ class MemoryStore implements Store
         foreach($eventList as $index => $event) {
             if (
                 $aggregateLabel === $event['aggregateLabel']
-                && $aggregateId === $event['aggregateId']
+                && $aggregateId->value() === $event['aggregateId']->value()
             ) {
                 $this->connection()->changeVersion($index, $version);
                 $version++;

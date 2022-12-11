@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\EventStore\Store;
 
 use DateTimeImmutable;
+use Iquety\Prospection\Domain\Core\IdentityObject;
 use Iquety\Prospection\EventStore\Error;
 use Iquety\Prospection\EventStore\Memory\MemoryConnection;
 use Iquety\Prospection\EventStore\Memory\MemoryStore;
@@ -42,7 +43,7 @@ class MemoryStoreTest extends AbstractStoreCase
         $now = $now->modify("+$version hours");
 
         return [
-            'aggregateId'    => $id,
+            'aggregateId'    => new IdentityObject($id),
             'aggregateLabel' => $aggregateLabel,
             'eventLabel'     => md5($now->format('Y-m-d H:i:s')),
             'version'        => $version,

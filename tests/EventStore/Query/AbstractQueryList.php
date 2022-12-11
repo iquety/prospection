@@ -4,13 +4,16 @@ declare(strict_types=1);
 
 namespace Tests\EventStore\Query;
 
+use Iquety\Prospection\Domain\Core\IdentityObject;
 use Iquety\Prospection\EventStore\Interval;
+use Iquety\Prospection\EventStore\Query;
 
 trait AbstractQueryList
 {
     /** @test */
     public function snapshotListTwoEntities(): void
     {
+        /** @var Query */
         $object = $this->queryFactory();
         
         $aggregateList = $object->aggregateList('aggregate.one', new Interval(999, 0));
@@ -20,8 +23,11 @@ trait AbstractQueryList
 
         // cada entidade possui 10 eventos
         // onde o evento 1 é o único snapshot
-        $this->assertEquals(10, $object->countAggregateEvents('aggregate.one', '12345'));
-        $this->assertEquals('12345', $aggregateList[0]['aggregateId']);
+        $this->assertEquals(
+            10,
+            $object->countAggregateEvents('aggregate.one', new IdentityObject('12345'))
+        );
+        $this->assertEquals(new IdentityObject('12345'), $aggregateList[0]['aggregateId']);
         // último snapshot
         $this->assertEquals('2022-10-10 01:10:10', $aggregateList[0]['occurredOn']);
         // primeiro evento
@@ -29,8 +35,11 @@ trait AbstractQueryList
         // último evento
         $this->assertEquals('2022-10-10 10:10:10', $aggregateList[0]['updatedOn']); 
 
-        $this->assertEquals(10, $object->countAggregateEvents('aggregate.one', '54321'));
-        $this->assertEquals('54321', $aggregateList[1]['aggregateId']);
+        $this->assertEquals(
+            10,
+            $object->countAggregateEvents('aggregate.one', new IdentityObject('54321'))
+        );
+        $this->assertEquals(new IdentityObject('54321'), $aggregateList[1]['aggregateId']);
         // último snapshot
         $this->assertEquals('2022-10-10 06:10:10', $aggregateList[1]['occurredOn']);
         // primeiro evento
@@ -42,6 +51,7 @@ trait AbstractQueryList
     /** @test */
     public function snapshotListLimitInterval(): void
     {
+        /** @var Query */
         $object = $this->queryFactory();
         
         $aggregateList = $object->aggregateList('aggregate.one', new Interval(999, 0));
@@ -60,6 +70,7 @@ trait AbstractQueryList
     /** @test */
     public function snapshotListSameId(): void
     {
+        /** @var Query */
         $object = $this->queryFactory();
         
         $aggregateOne = $object->aggregateList('aggregate.one', new Interval(1));
@@ -71,9 +82,12 @@ trait AbstractQueryList
 
         // a entidade possui 10 eventos
         // onde o evento 1 é o único snapshot
-        $this->assertEquals(10, $object->countAggregateEvents('aggregate.two', '12345'));
-        $this->assertEquals('12345', $aggregateOne[0]['aggregateId']); // aggregate.one
-        $this->assertEquals('12345', $aggregateList[0]['aggregateId']); // aggregate.two
+        $this->assertEquals(
+            10,
+            $object->countAggregateEvents('aggregate.two', new IdentityObject('12345'))
+        );
+        $this->assertEquals(new IdentityObject('12345'), $aggregateOne[0]['aggregateId']); // aggregate.one
+        $this->assertEquals(new IdentityObject('12345'), $aggregateList[0]['aggregateId']); // aggregate.two
         // último snapshot
         $this->assertEquals('2022-10-10 01:10:10', $aggregateList[0]['occurredOn']);
         // primeiro evento
@@ -85,6 +99,7 @@ trait AbstractQueryList
     /** @test */
     public function snapshotListTwoSnapshots(): void
     {
+        /** @var Query */
         $object = $this->queryFactory();
         
         $aggregateList = $object->aggregateList('aggregate.thr', new Interval(999, 0));
@@ -94,7 +109,7 @@ trait AbstractQueryList
 
         // a entidade possui 16 eventos
         // onde os eventos 1 e 11 são snapshots
-        $this->assertEquals('67890', $aggregateList[0]['aggregateId']);
+        $this->assertEquals(new IdentityObject('67890'), $aggregateList[0]['aggregateId']);
         // último snapshot = evento 11
         $this->assertEquals('2022-10-10 11:10:10', $aggregateList[0]['occurredOn']);
         // primeiro evento = primeiro snapshot

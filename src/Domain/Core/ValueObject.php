@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace Iquety\Prospection\Domain\Core;
 
-use JsonSerializable;
-
 /**
  * Os objetos de valor não possuem indentidade e são diferenciados pelos seus
  * valores. Um objeto de valor composto, contendo dois valores (ex: 'Nome' e 'Sobrenome'),
  * deve ser comparado levando em conta seus dois valores.
  */
-abstract class ValueObject implements JsonSerializable
+abstract class ValueObject
 {
     use StateExtraction;
 
@@ -36,11 +34,6 @@ abstract class ValueObject implements JsonSerializable
     public function toArray(): array
     {
         return $this->extractStateValues();
-    }
-
-    public function jsonSerialize(): mixed
-    {
-        return [self::class => $this->value()];
     }
 
     public function __toString(): string

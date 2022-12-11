@@ -22,7 +22,7 @@ abstract class AbstractStoreCase extends TestCase
         MemoryConnection::instance()->reset();
 
         $this->storeFactory()->add(
-            '12345',
+            new IdentityObject('12345'),
             'aggregate.one',
             'user.create',
             1,
@@ -35,7 +35,7 @@ abstract class AbstractStoreCase extends TestCase
 
         $this->assertCount(1, $list);
         $this->assertEquals([
-            'aggregateId' => '12345',
+            'aggregateId' => new IdentityObject('12345'),
             'aggregateLabel' => 'aggregate.one',
             'eventLabel' => 'user.create',
             'version' => 1,

@@ -23,7 +23,7 @@ interface Store
     public const ERROR_TRANSACTION = '6';
 
     public function add(
-        string $aggregateId,
+        IdentityObject $aggregateId,
         string $aggregateLabel,
         string $eventLabel,
         int $version,

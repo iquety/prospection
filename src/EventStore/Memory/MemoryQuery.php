@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Iquety\Prospection\EventStore\Memory;
 
 use DateTimeImmutable;
+use Iquety\Prospection\Domain\Core\IdentityObject;
 use Iquety\Prospection\EventStore\Error;
 use Iquety\Prospection\EventStore\Interval;
 use Iquety\Prospection\EventStore\Query;
@@ -50,7 +51,7 @@ class MemoryQuery implements Query
                 continue;
             }
 
-            $id = $event['aggregateId'];
+            $id = $event['aggregateId']->value();
 
             if (isset($creations[$id]) === false) {
                 $creations[$id] = $event['occurredOn'];
@@ -122,8 +123,10 @@ class MemoryQuery implements Query
         return count($this->connection()->all());
     }
 
-    public function countAggregateEvents(string $aggregateLabel, string $aggregateId): int
-    {
+    public function countAggregateEvents(
+        string $aggregateLabel,
+        IdentityObject $aggregateId
+    ): int {
         $eventList = [];
 
         $list = $this->connection()->all();
@@ -133,9 +136,9 @@ class MemoryQuery implements Query
                 continue;
             }
 
-            $id = $event['aggregateId'];
+            $id = $event['aggregateId']->value();
 
-            if ($id !== $aggregateId) {
+            if ($id !== $aggregateId->value()) {
                 continue;
             }
 
@@ -156,7 +159,7 @@ class MemoryQuery implements Query
                 continue;
             }
 
-            $id = $event['aggregateId'];
+            $id = $event['aggregateId']->value();
 
             $entities[$id] = $id;
         }
@@ -167,8 +170,11 @@ class MemoryQuery implements Query
     /**
      * Devolve a lista de eventos a partir da versão especificada.
      * @return array<int,array<string,mixed>> */
-    public function eventListForVersion(string $aggregateLabel, string $aggregateId, int $version): array
-    {
+    public function eventListForVersion(
+        string $aggregateLabel,
+        IdentityObject $aggregateId,
+        int $version
+    ): array {
         $eventList = [];
 
         $list = $this->connection()->all();
@@ -176,7 +182,7 @@ class MemoryQuery implements Query
         foreach($list as $event) {
             if (
                 $event['aggregateLabel'] === $aggregateLabel
-                && $event['aggregateId'] === $aggregateId
+                && $event['aggregateId']->value() === $aggregateId->value()
                 && $event['version'] >= $version
             ) {
                 $eventList[] = $event;
@@ -191,8 +197,10 @@ class MemoryQuery implements Query
      * último instantâneo gerado
      * @return array<int,array<string,mixed>>
      */
-    public function eventListForAggregate(string $aggregateLabel, string $aggregateId): array
-    {
+    public function eventListForAggregate(
+        string $aggregateLabel,
+        IdentityObject $aggregateId
+    ): array {
         $list = $this->eventListForVersion($aggregateLabel, $aggregateId, 1);
 
         $lastSnapshot = $list[0];
@@ -253,7 +261,7 @@ class MemoryQuery implements Query
         return $this->error;
     }
 
-    public function nextVersion(string $aggregateLabel, string $aggregateId): int
+    public function nextVersion(string $aggregateLabel, IdentityObject $aggregateId): int
     {
         $eventList = $this->eventListForVersion($aggregateLabel, $aggregateId, 1);
 
