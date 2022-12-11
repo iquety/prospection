@@ -5,7 +5,7 @@
     "keywords": ["framework", "event sourcing", "prospection", "materialization"],
     "license": "MIT",
     "require": {
-        "php": "^8.0.0",
+        "php": "^8.2.0",
         "iquety/pubsub": "dev-main"
     },
     "require-dev": {
