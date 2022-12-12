@@ -85,20 +85,20 @@ class MysqlStore implements Store
      * Remove o evento especificado.
      * @todo Implementar restabelecimento da numeração de versões
      */
-    public function remove(string $aggregateLabel, IdentityObject $aggregateId, int $version): void
+    public function remove(string $aggregateLabel, string $aggregateId, int $version): void
     {
         $sql = "DELETE FROM {$this->eventsTable} WHERE aggregate_id = ? AND `version` = ?";
-        $this->connection->execute($sql, [ $aggregateId->value(), $version ]);
+        $this->connection->execute($sql, [ $aggregateId, $version ]);
     }
 
     /**
      * Remove o evento especificado.
      * @todo Implementar restabelecimento da numeração de versões
      */
-    public function removePrevious(string $aggregateLabel, IdentityObject $aggregateId, int $version): void
+    public function removePrevious(string $aggregateLabel, string $aggregateId, int $version): void
     {
         $sql = "DELETE FROM {$this->eventsTable} WHERE aggregate_id = ? AND `version` < ?";
-        $this->connection->execute($sql, [ $aggregateId->value(), $version ]);
+        $this->connection->execute($sql, [ $aggregateId, $version ]);
     }
 
     public function removeAll(): void

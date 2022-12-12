@@ -43,7 +43,7 @@ class MemoryStoreTest extends AbstractStoreCase
         $now = $now->modify("+$version hours");
 
         return [
-            'aggregateId'    => new IdentityObject($id),
+            'aggregateId'    => $id,
             'aggregateLabel' => $aggregateLabel,
             'eventLabel'     => md5($now->format('Y-m-d H:i:s')),
             'version'        => $version,

@@ -44,7 +44,7 @@ trait AbstractQueryListConsol
         // o último snapshot está na versão 11
         $aggregateEvents = $object->eventListForAggregate(
             'aggregate.thr',
-            new IdentityObject('67890')
+            '67890'
         );
         $this->assertCount(6, $aggregateEvents);
 
@@ -86,7 +86,7 @@ trait AbstractQueryListConsol
         // o último snapshot está na versão 1
         $aggregateEvents = $object->eventListForAggregate(
             'aggregate.one',
-            new IdentityObject('12345')
+            '12345'
         );
         $this->assertCount(10, $aggregateEvents);
 

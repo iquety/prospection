@@ -39,7 +39,7 @@ interface Query
     /** Devolve a contagem de todos os eventos armazenados até o momento */
     public function countEvents(): int;
 
-    public function countAggregateEvents(string $aggregateLabel, IdentityObject $aggregateId): int;
+    public function countAggregateEvents(string $aggregateLabel, string $aggregateId): int;
 
     /** Devolve a contagem de todos os eventos armazenados para o agregado */
     public function countAggregates(string $aggregateLabel): int;
@@ -49,7 +49,7 @@ interface Query
      * @return array<int,array<string,mixed>> */
     public function eventListForVersion(
         string $aggregateLabel,
-        IdentityObject $aggregateId,
+        string $aggregateId,
         int $version
     ): array;
 
@@ -60,7 +60,7 @@ interface Query
      */
     public function eventListForAggregate(
         string $aggregateLabel,
-        IdentityObject $aggregateId
+        string $aggregateId
     ): array;
 
     /**
@@ -84,5 +84,5 @@ interface Query
 
     public function lastError(): Error;
 
-    public function nextVersion(string $aggregateLabel, IdentityObject $aggregateId): int;
+    public function nextVersion(string $aggregateLabel, string $aggregateId): int;
 }

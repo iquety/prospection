@@ -4,13 +4,15 @@ declare(strict_types=1);
 
 namespace Tests\EventStore\EventHandler;
 
+use InvalidArgumentException;
 use Iquety\Prospection\Domain\Core\IdentityObject;
 use Iquety\Prospection\EventStore\EventSnapshot;
+use Iquety\Prospection\EventStore\Memory\MemoryConnection;
 use Tests\EventStore\Support\DummyEntityOne;
 use Tests\EventStore\Support\DummyEventOne;
 use Tests\EventStore\Support\DummyEventTwo;
 
-class StreamTest extends EventStoreCase
+class StreamTest extends EventHandlerCase
 {
     /** @test */
     public function streamFor(): void
@@ -20,17 +22,20 @@ class StreamTest extends EventStoreCase
         $object->registerEventType(DummyEventOne::class);
         $object->registerEventType(DummyEventTwo::class);
 
+        /** @var EventSnapshot $one */
         $one = EventSnapshot::factory([ 
             'aggregateId' => new IdentityObject('12345'),
             'one' => 'Ricardo',
             'two' => 'Pereira',
         ]);
 
+        /** @var DummyEventOne $two */
         $two = DummyEventOne::factory([ 
             'aggregateId' => new IdentityObject('12345'),
             'one' => 'Ricardo',
         ]);
 
+        /** @var DummyEventTwo $thr */
         $thr = DummyEventTwo::factory([ 
             'aggregateId' => new IdentityObject('12345'),
             'two' => 'Ricardo',
@@ -42,7 +47,7 @@ class StreamTest extends EventStoreCase
             $thr
         ]);
 
-        $stream = $object->streamFor(DummyEntityOne::class, '12345');
+        $stream = $object->streamFor(DummyEntityOne::class, new IdentityObject('12345'));
 
         $this->assertEquals(3, $stream->count());
 
@@ -68,5 +73,101 @@ class StreamTest extends EventStoreCase
             $thr->occurredOn()->format('Y-m-d H:i:s.u'),
             $stream->events()[2]->occurredOn()->format('Y-m-d H:i:s.u')
         );
+    }
+
+    /** @test */
+    public function streamForEmpty(): void
+    {
+        $object = $this->eventStoreFactory();
+
+        $object->registerEventType(DummyEventOne::class);
+        $object->registerEventType(DummyEventTwo::class);
+
+        $stream = $object->streamFor(DummyEntityOne::class, new IdentityObject('12345'));
+
+        $this->assertEquals(0, $stream->count());
+        $this->assertEquals([], $stream->events());
+    }
+
+    /** @test */
+    public function streamSince(): void
+    {
+        $object = $this->eventStoreFactory();
+
+        $object->registerEventType(DummyEventOne::class);
+        $object->registerEventType(DummyEventTwo::class);
+
+        /** @var EventSnapshot $one */
+        $one = EventSnapshot::factory([ 
+            'aggregateId' => new IdentityObject('12345'),
+            'one' => 'Ricardo',
+            'two' => 'Pereira',
+        ]);
+
+        /** @var DummyEventOne $two */
+        $two = DummyEventOne::factory([ 
+            'aggregateId' => new IdentityObject('12345'),
+            'one' => 'Ricardo',
+        ]);
+
+        /** @var DummyEventTwo $thr */
+        $thr = DummyEventTwo::factory([ 
+            'aggregateId' => new IdentityObject('12345'),
+            'two' => 'Ricardo',
+        ]);
+
+        $object->storeMultiple(DummyEntityOne::class, [
+            $one,
+            $two,
+            $thr
+        ]);
+
+        $this->assertEquals(
+            1,
+            $object->streamSince(DummyEntityOne::class, new IdentityObject('12345'), 3)->count()
+        );
+        $this->assertEquals(
+            2,
+            $object->streamSince(DummyEntityOne::class, new IdentityObject('12345'), 2)->count()
+        );
+        $this->assertEquals(
+            3,
+            $object->streamSince(DummyEntityOne::class, new IdentityObject('12345'), 1)->count()
+        );
+    }
+
+    /** @test */
+    public function streamSinceEmpty(): void
+    {
+        $object = $this->eventStoreFactory();
+
+        $object->registerEventType(DummyEventOne::class);
+        $object->registerEventType(DummyEventTwo::class);
+
+        $this->assertEquals(
+            0,
+            $object->streamSince(DummyEntityOne::class, new IdentityObject('12345'), 3)->count()
+        );
+        $this->assertEquals(
+            0,
+            $object->streamSince(DummyEntityOne::class, new IdentityObject('12345'), 2)->count()
+        );
+        $this->assertEquals(
+            0,
+            $object->streamSince(DummyEntityOne::class, new IdentityObject('12345'), 1)->count()
+        );
+    }
+
+    /** @test */
+    public function streamSinceVersionException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'Invalid version provided. Event versions always start with 1'
+        );
+
+        $object = $this->eventStoreFactory();
+
+        $object->streamSince(DummyEntityOne::class, new IdentityObject('12345'), 0);
     }
 }

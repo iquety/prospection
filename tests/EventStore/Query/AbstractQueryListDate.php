@@ -30,9 +30,9 @@ trait AbstractQueryListDate
         // onde o evento 1 é o único snapshot
         $this->assertEquals(
             10,
-            $object->countAggregateEvents('aggregate.one', new IdentityObject('12345'))
+            $object->countAggregateEvents('aggregate.one', '12345')
         );
-        $this->assertEquals(new IdentityObject('12345'), $aggregateList[0]['aggregateId']);
+        $this->assertEquals('12345', $aggregateList[0]['aggregateId']);
         // último snapshot
         $this->assertEquals('2022-10-10 01:10:10', $aggregateList[0]['occurredOn']);
         // primeiro evento
@@ -42,9 +42,9 @@ trait AbstractQueryListDate
 
         $this->assertEquals(
             10,
-            $object->countAggregateEvents('aggregate.one', new IdentityObject('54321'))
+            $object->countAggregateEvents('aggregate.one', '54321')
         );
-        $this->assertEquals(new IdentityObject('54321'), $aggregateList[1]['aggregateId']);
+        $this->assertEquals('54321', $aggregateList[1]['aggregateId']);
         // último snapshot
         $this->assertEquals('2022-10-10 06:10:10', $aggregateList[1]['occurredOn']);
         // primeiro evento
@@ -72,9 +72,9 @@ trait AbstractQueryListDate
         // onde o evento 1 é o único snapshot
         $this->assertEquals(
             10,
-            $object->countAggregateEvents('aggregate.one', new IdentityObject('54321'))
+            $object->countAggregateEvents('aggregate.one', '54321')
         );
-        $this->assertEquals(new IdentityObject('54321'), $aggregateList[0]['aggregateId']);
+        $this->assertEquals('54321', $aggregateList[0]['aggregateId']);
         // último snapshot
         $this->assertEquals('2022-10-10 06:10:10', $aggregateList[0]['occurredOn']);
         // primeiro evento

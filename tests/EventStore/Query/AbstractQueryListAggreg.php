@@ -16,13 +16,13 @@ trait AbstractQueryListAggreg
         /** @var Query */
         $object = $this->queryFactory();
         
-        $allEvents = $object->eventListForVersion('aggregate.thr', new IdentityObject('67890'), 1);
+        $allEvents = $object->eventListForVersion('aggregate.thr', '67890', 1);
 
         // total de eventos do agregado é 16
         $this->assertCount(16, $allEvents);
         
         // o último snapshot está na versão 11
-        $aggregateEvents = $object->eventListForAggregate('aggregate.thr', new IdentityObject('67890'));
+        $aggregateEvents = $object->eventListForAggregate('aggregate.thr', '67890');
 
         $this->assertCount(6, $aggregateEvents);
 

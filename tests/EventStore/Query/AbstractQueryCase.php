@@ -26,41 +26,41 @@ abstract class AbstractQueryCase extends TestCase
 
         $this->assertEquals(
             10,
-            $object->countAggregateEvents('aggregate.one', new IdentityObject('12345'))
+            $object->countAggregateEvents('aggregate.one', '12345')
         );
         $this->assertEquals(
             10,
-            $object->countAggregateEvents('aggregate.one', new IdentityObject('54321'))
+            $object->countAggregateEvents('aggregate.one', '54321')
         );
         $this->assertEquals(
             10,
-            $object->countAggregateEvents('aggregate.two', new IdentityObject('12345'))
+            $object->countAggregateEvents('aggregate.two', '12345')
         );
         $this->assertEquals(
             16,
-            $object->countAggregateEvents('aggregate.thr', new IdentityObject('67890'))
+            $object->countAggregateEvents('aggregate.thr', '67890')
         );
 
         $this->assertEquals(
             11,
-            $object->nextVersion('aggregate.one', new IdentityObject('12345'))
+            $object->nextVersion('aggregate.one', '12345')
         );
         $this->assertEquals(
             11,
-            $object->nextVersion('aggregate.one', new IdentityObject('54321'))
+            $object->nextVersion('aggregate.one', '54321')
         );
         $this->assertEquals(
             11,
-            $object->nextVersion('aggregate.two', new IdentityObject('12345'))
+            $object->nextVersion('aggregate.two', '12345')
         );
         $this->assertEquals(
             17,
-            $object->nextVersion('aggregate.thr', new IdentityObject('67890'))
+            $object->nextVersion('aggregate.thr', '67890')
         );
 
         $this->assertEquals(
             1,
-            $object->nextVersion('aggregate.notexists', new IdentityObject('12345'))
+            $object->nextVersion('aggregate.notexists', '12345')
         );
     }
 }

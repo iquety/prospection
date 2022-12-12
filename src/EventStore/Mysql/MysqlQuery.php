@@ -107,7 +107,7 @@ class MysqlQuery implements Query
         return $results === false ? 0 : (int)$results['amount'];
     }
 
-    public function countAggregateEvents(string $aggregateLabel, string $aggregateId = ''): int
+    public function countAggregateEvents(string $aggregateLabel, string $aggregateId): int
     {
         $sql = "SELECT COUNT(DISTINCT aggregate_id) AS amount FROM {$this->eventsTable} "
             . "WHERE aggregate_label = ?";

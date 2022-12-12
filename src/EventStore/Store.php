@@ -23,7 +23,7 @@ interface Store
     public const ERROR_TRANSACTION = '6';
 
     public function add(
-        IdentityObject $aggregateId,
+        string $aggregateId,
         string $aggregateLabel,
         string $eventLabel,
         int $version,
@@ -42,7 +42,7 @@ interface Store
      */
     public function remove(
         string $aggregateLabel,
-        IdentityObject $aggregateId,
+        string $aggregateId,
         int $version
     ): void;
 
@@ -52,7 +52,7 @@ interface Store
      */
     public function removePrevious(
         string $aggregateLabel,
-        IdentityObject $aggregateId,
+        string $aggregateId,
         int $version
     ): void;
 

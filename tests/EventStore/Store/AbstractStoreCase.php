@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace Tests\EventStore\Store;
 
 use DateTimeImmutable;
-use Exception;
 use Iquety\Prospection\Domain\Core\IdentityObject;
 use Iquety\Prospection\EventStore\Memory\MemoryConnection;
 use Iquety\Prospection\EventStore\Store;
-use RuntimeException;
 use Tests\TestCase;
 
 abstract class AbstractStoreCase extends TestCase
@@ -22,7 +20,7 @@ abstract class AbstractStoreCase extends TestCase
         MemoryConnection::instance()->reset();
 
         $this->storeFactory()->add(
-            new IdentityObject('12345'),
+            '12345',
             'aggregate.one',
             'user.create',
             1,
@@ -35,7 +33,7 @@ abstract class AbstractStoreCase extends TestCase
 
         $this->assertCount(1, $list);
         $this->assertEquals([
-            'aggregateId' => new IdentityObject('12345'),
+            'aggregateId' => '12345',
             'aggregateLabel' => 'aggregate.one',
             'eventLabel' => 'user.create',
             'version' => 1,
@@ -61,7 +59,7 @@ abstract class AbstractStoreCase extends TestCase
         $this->assertEquals(4, $list[7]['version']);
         $this->assertEquals('2022-10-10 04:10:10', $list[7]['occurredOn']->format('Y-m-d H:i:s'));
 
-        $this->storeFactory()->remove('aggregate.one', new IdentityObject('54321'), 2);
+        $this->storeFactory()->remove('aggregate.one', '54321', 2);
 
         $list = MemoryConnection::instance()->all();
 
@@ -91,7 +89,7 @@ abstract class AbstractStoreCase extends TestCase
         $this->assertEquals(4, $list[7]['version']);
         $this->assertEquals('2022-10-10 04:10:10', $list[7]['occurredOn']->format('Y-m-d H:i:s'));
 
-        $this->storeFactory()->removePrevious('aggregate.one', new IdentityObject('54321'), 4);
+        $this->storeFactory()->removePrevious('aggregate.one', '54321', 4);
 
         $list = MemoryConnection::instance()->all();
 

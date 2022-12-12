@@ -51,7 +51,7 @@ class MemoryQuery implements Query
                 continue;
             }
 
-            $id = $event['aggregateId']->value();
+            $id = $event['aggregateId'];
 
             if (isset($creations[$id]) === false) {
                 $creations[$id] = $event['occurredOn'];
@@ -125,7 +125,7 @@ class MemoryQuery implements Query
 
     public function countAggregateEvents(
         string $aggregateLabel,
-        IdentityObject $aggregateId
+        string $aggregateId
     ): int {
         $eventList = [];
 
@@ -136,9 +136,9 @@ class MemoryQuery implements Query
                 continue;
             }
 
-            $id = $event['aggregateId']->value();
+            $id = $event['aggregateId'];
 
-            if ($id !== $aggregateId->value()) {
+            if ($id !== $aggregateId) {
                 continue;
             }
 
@@ -159,7 +159,7 @@ class MemoryQuery implements Query
                 continue;
             }
 
-            $id = $event['aggregateId']->value();
+            $id = $event['aggregateId'];
 
             $entities[$id] = $id;
         }
@@ -172,7 +172,7 @@ class MemoryQuery implements Query
      * @return array<int,array<string,mixed>> */
     public function eventListForVersion(
         string $aggregateLabel,
-        IdentityObject $aggregateId,
+        string $aggregateId,
         int $version
     ): array {
         $eventList = [];
@@ -182,7 +182,7 @@ class MemoryQuery implements Query
         foreach($list as $event) {
             if (
                 $event['aggregateLabel'] === $aggregateLabel
-                && $event['aggregateId']->value() === $aggregateId->value()
+                && $event['aggregateId'] === $aggregateId
                 && $event['version'] >= $version
             ) {
                 $eventList[] = $event;
@@ -199,9 +199,13 @@ class MemoryQuery implements Query
      */
     public function eventListForAggregate(
         string $aggregateLabel,
-        IdentityObject $aggregateId
+        string $aggregateId
     ): array {
         $list = $this->eventListForVersion($aggregateLabel, $aggregateId, 1);
+
+        if ($list === []) {
+            return [];
+        }
 
         $lastSnapshot = $list[0];
 
@@ -261,7 +265,7 @@ class MemoryQuery implements Query
         return $this->error;
     }
 
-    public function nextVersion(string $aggregateLabel, IdentityObject $aggregateId): int
+    public function nextVersion(string $aggregateLabel, string $aggregateId): int
     {
         $eventList = $this->eventListForVersion($aggregateLabel, $aggregateId, 1);
 

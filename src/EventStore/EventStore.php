@@ -7,6 +7,7 @@ namespace Iquety\Prospection\EventStore;
 use Closure;
 use DateTimeImmutable;
 use InvalidArgumentException;
+use Iquety\Prospection\Domain\Core\IdentityObject;
 use Iquety\Prospection\Domain\Stream\DomainEvent;
 use Iquety\PubSub\Event\Serializer\EventSerializer;
 use RuntimeException;
@@ -30,117 +31,24 @@ class EventStore
     ) {
     }
 
-    public function store(string $aggregateSignature, DomainEvent $event): void
-    {
-        $this->storeMultiple($aggregateSignature, [ $event ]);
-    }
-
-    /** @param array<DomainEvent> $domainEventList */
-    public function storeMultiple(string $aggregateSignature, array $domainEventList): void
-    {
-        if ($domainEventList === []) {
-            throw new InvalidArgumentException(
-                "You must provide at least one event to store"
-            );
-        }
-
-        $aggregateId = $domainEventList[0]->aggregateId()->value();
-
-        $this->store->transaction(function () use ($aggregateSignature, $aggregateId, $domainEventList) {
-            try {
-                $version = 0;
-
-                $aggregateLabel = $aggregateSignature::label();
-
-                // para identificar exceções não ligadas ao estado do evento
-                $commonExceptionCode = 100180;
-
-                $diffAggregateException = new RuntimeException(
-                    "All events must belong to the same aggregate",
-                    $commonExceptionCode
-                );
-
-                foreach ($domainEventList as $event) {
-                    if (! $event instanceof DomainEvent){
-                        throw new RuntimeException(
-                            "Only domain events can be stored",
-                            $commonExceptionCode
-                        );
-                    }
-
-                    if ($aggregateId !== $event->aggregateId()->value()) {
-                        throw $diffAggregateException;
-                    }
-
-                    if (
-                        ! $event instanceof EventSnapshot
-                        && $aggregateLabel !== $event::aggregateLabel()
-                    ) {
-                        throw $diffAggregateException;
-                    }
-
-                    $version = $version === 0
-                        ? $this->query->nextVersion($aggregateLabel, $aggregateId)
-                        : $version + 1;
-
-                    $snapshot = (int)($version === 1);
-
-                    $this->store->add(
-                        $aggregateId,
-                        $aggregateLabel,
-                        $event::label(),
-                        $version,
-                        $snapshot,
-                        $this->serializer->serialize($event->toArray()),
-                        $event->occurredOn()
-                    );
-
-                    $createSnapshot = ($version % self::SNAPSHOT_SIZE) === 0;
-                    if ($createSnapshot === true) {
-                        $version++;
-                        $this->storeSnapshot($aggregateSignature, $aggregateId);
-                    }
-                }
-            } catch (Throwable $error) {
-                throw new RuntimeException(
-                    $this->makeStateErrorMessage($error)
-                    . " in line " . $error->getLine() 
-                    . " of file " . $error->getFile(),
-                    $error->getCode(),
-                    $error
-                );
-            }
-        });
-    }
-
     public function countAll(): int
     {
         return $this->query->countEvents();
     }
 
-    public function countAggregates(string $aggregateLabel): int
+    public function countAggregateEvents(string $aggregateSignature, IdentityObject $aggregateId): int
     {
-        return $this->query->countAggregates($aggregateLabel);
-    }
-
-    public function streamSince(string $aggregateSignature, StreamId $streamId): EventStream
-    {
-        $eventList = $this->query->eventListForVersion(
+        return $this->query->countAggregateEvents(
             $aggregateSignature::label(),
-            $streamId->aggregateId()->value(),
-            $streamId->version()
+            $aggregateId->value()
         );
-
-        return $this->streamFactory($eventList);
     }
 
-    public function streamFor(string $aggregateSignature, string $aggregateId): EventStream
+    public function countAggregates(string $aggregateSignature): int
     {
-        $eventList = $this->query->eventListForAggregate($aggregateSignature::label(), $aggregateId);
-
-        return $this->streamFactory($eventList);
+        return $this->query->countAggregates($aggregateSignature::label());
     }
-
+    
     /** @return array<int,Descriptor> */
     public function list(string $aggregateSignature, Interval $interval): array
     {
@@ -242,19 +150,148 @@ class EventStore
         $this->eventRegisterList[$eventSignature::label()] = $eventSignature;
     }
     
-    public function remove(StreamId $streamId): void
+    public function remove(
+        string $aggregateSignature,
+        IdentityObject $aggregateId,
+        int $version
+    ): void
     {
-        $this->store->remove($streamId->aggregateLabel(), $streamId->aggregateId(), $streamId->version());
+        $this->store->remove(
+            $aggregateSignature::label(),
+            $aggregateId->value(),
+            $version
+        );
     }
 
-    public function removePrevious(StreamId $streamId): void
+    public function removePrevious(
+        string $aggregateSignature,
+        IdentityObject $aggregateId,
+        int $version
+    ): void
     {
-        $this->store->removePrevious($streamId->aggregateLabel(), $streamId->aggregateId(), $streamId->version());
+        $this->store->removePrevious(
+            $aggregateSignature::label(),
+            $aggregateId->value(),
+            $version
+        );
     }
 
     public function removeAll(): void
     {
         $this->store->removeAll();
+    }
+
+    public function store(string $aggregateSignature, DomainEvent $event): void
+    {
+        $this->storeMultiple($aggregateSignature, [ $event ]);
+    }
+
+    /** @param array<DomainEvent> $domainEventList */
+    public function storeMultiple(string $aggregateSignature, array $domainEventList): void
+    {
+        if ($domainEventList === []) {
+            throw new InvalidArgumentException(
+                "You must provide at least one event to store"
+            );
+        }
+
+        $aggregateId = $domainEventList[0]->aggregateId();
+
+        $this->store->transaction(function () use ($aggregateSignature, $aggregateId, $domainEventList) {
+            try {
+                $version = 0;
+
+                $aggregateLabel = $aggregateSignature::label();
+
+                // para identificar exceções não ligadas ao estado do evento
+                $commonExceptionCode = 100180;
+
+                $diffAggregateException = new RuntimeException(
+                    "All events must belong to the same aggregate",
+                    $commonExceptionCode
+                );
+
+                foreach ($domainEventList as $event) {
+                    if (! $event instanceof DomainEvent){
+                        throw new RuntimeException(
+                            "Only domain events can be stored",
+                            $commonExceptionCode
+                        );
+                    }
+
+                    if ($aggregateId->value() !== $event->aggregateId()->value()) {
+                        throw $diffAggregateException;
+                    }
+
+                    if (
+                        ! $event instanceof EventSnapshot
+                        && $aggregateLabel !== $event::aggregateLabel()
+                    ) {
+                        throw $diffAggregateException;
+                    }
+
+                    $version = $version === 0
+                        ? $this->query->nextVersion($aggregateLabel, $aggregateId->value())
+                        : $version + 1;
+
+                    $snapshot = (int)($version === 1);
+
+                    $this->store->add(
+                        $aggregateId->value(),
+                        $aggregateLabel,
+                        $event::label(),
+                        $version,
+                        $snapshot,
+                        $this->serializer->serialize($event->toArray()),
+                        $event->occurredOn()
+                    );
+
+                    $createSnapshot = ($version % self::SNAPSHOT_SIZE) === 0;
+                    if ($createSnapshot === true) {
+                        $version++;
+                        $this->storeSnapshot($aggregateSignature, $aggregateId);
+                    }
+                }
+            } catch (Throwable $error) {
+                throw new RuntimeException(
+                    $this->makeStateErrorMessage($error)
+                    . " in line " . $error->getLine() 
+                    . " of file " . $error->getFile(),
+                    $error->getCode(),
+                    $error
+                );
+            }
+        });
+    }
+
+    public function streamFor(string $aggregateSignature, IdentityObject $aggregateId): EventStream
+    {
+        $eventList = $this->query->eventListForAggregate(
+            $aggregateSignature::label(),
+            $aggregateId->value()
+        );
+
+        return $this->streamFactory($eventList);
+    }
+
+    public function streamSince(
+        string $aggregateSignature,
+        IdentityObject $aggregateId,
+        int $version
+    ): EventStream {
+        if ($version === 0) {
+            throw new InvalidArgumentException(
+                'Invalid version provided. Event versions always start with 1'
+            );
+        }
+
+        $eventList = $this->query->eventListForVersion(
+            $aggregateSignature::label(),
+            $aggregateId->value(),
+            $version
+        );
+
+        return $this->streamFactory($eventList);
     }
 
     /** @param array<array<string,mixed>> $eventList */
@@ -296,7 +333,7 @@ class EventStore
     }
 
     /** @SuppressWarnings(PHPMD.StaticAccess) */
-    private function storeSnapshot(string $aggregateSignature, string $aggregateId): void
+    private function storeSnapshot(string $aggregateSignature, IdentityObject $aggregateId): void
     {
         $eventList = $this->streamFor($aggregateSignature, $aggregateId)->events();
         $stateValues = $eventList[0]->toArray();
@@ -308,10 +345,10 @@ class EventStore
         $event = $aggregate->toSnapshot();
 
         $this->store->add(
-            $aggregateId,
+            $aggregateId->value(),
             $aggregateSignature::label(),
             $event::label(),
-            $this->query->nextVersion($aggregateSignature::label(), $aggregateId),
+            $this->query->nextVersion($aggregateSignature::label(), $aggregateId->value()),
             1,
             $this->serializer->serialize($event->toArray()),
             new DateTimeImmutable()

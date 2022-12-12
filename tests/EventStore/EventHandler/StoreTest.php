@@ -15,7 +15,7 @@ use Tests\EventStore\Support\DummyEventOne;
 use Tests\EventStore\Support\DummyEventThr;
 use Tests\EventStore\Support\DummyEventTwo;
 
-class StoreTest extends EventStoreCase
+class StoreTest extends EventHandlerCase
 {
     /** @test */
     public function emptyEventListException(): void
@@ -208,5 +208,32 @@ class StoreTest extends EventStoreCase
             $index = $version - 1;
             $this->assertEquals($version, $storedList[$index]['version']);
         }
+    }
+
+    /** @test */
+    public function storeOne(): void
+    {
+        $object = $this->eventStoreFactory();
+
+        $event = EventSnapshot::factory([ 
+            'aggregateId' => new IdentityObject('12345'),
+            'one' => 'Ricardo',
+            'two' => 'Pereira',
+            'thr' => 'Dias',
+        ]);
+
+        $object->store(DummyEntityOne::class, $event);
+
+        $list = MemoryConnection::instance()->all();
+        
+        $this->assertEquals(1, $list[0]['version']);
+        $this->assertEquals(
+            $event->occurredOn()->format('Y-m-d H:i:s.u'),
+            $list[0]['occurredOn']->format('Y-m-d H:i:s.u')
+        );
+        $this->assertEquals(
+            $event->occurredOn()->format('Y-m-d H:i:s.u'),
+            json_decode($list[0]['eventData'])->occurredOn->date
+        );
     }
 }

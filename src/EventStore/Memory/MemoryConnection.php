@@ -25,12 +25,6 @@ class MemoryConnection
 
     public function add(array $event): void
     {
-        if (! $event['aggregateId'] instanceof IdentityObject) {
-            throw new InvalidArgumentException(
-                sprintf('The aggregateid parameter must be of type %s', IdentityObject::class)
-            );
-        }
-
         $this->eventList[] = [
             'aggregateId'    => $event['aggregateId'],
             'aggregateLabel' => $event['aggregateLabel'],

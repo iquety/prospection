@@ -25,7 +25,7 @@ class MemoryStore implements Store
     }
 
     public function add(
-        IdentityObject $aggregateId,
+        string $aggregateId,
         string $aggregateLabel,
         string $eventLabel,
         int $version,
@@ -60,7 +60,7 @@ class MemoryStore implements Store
      */
     public function remove(
         string $aggregateLabel,
-        IdentityObject $aggregateId,
+        string $aggregateId,
         int $version
     ): void {
         $list = $this->connection()->all();
@@ -68,7 +68,7 @@ class MemoryStore implements Store
         foreach($list as $index => $register) {
             if (
                 $register['aggregateLabel'] === $aggregateLabel 
-                && $register['aggregateId']->value() === $aggregateId->value()
+                && $register['aggregateId'] === $aggregateId
                 && $register['version'] === $version
             ) {
                 $this->connection()->remove($index);
@@ -87,7 +87,7 @@ class MemoryStore implements Store
      */
     public function removePrevious(
         string $aggregateLabel,
-        IdentityObject $aggregateId,
+        string $aggregateId,
         int $version
     ): void {
         $list = $this->connection()->all();
@@ -95,7 +95,7 @@ class MemoryStore implements Store
         foreach($list as $index => $register) {
             if (
                 $register['aggregateLabel'] === $aggregateLabel 
-                && $register['aggregateId']->value() === $aggregateId->value()
+                && $register['aggregateId'] === $aggregateId
                 && $register['version'] < $version
             ) {
                 $this->connection()->remove($index);
@@ -117,16 +117,16 @@ class MemoryStore implements Store
         $operation($this);
     }
 
-    protected function sortVersions(string $aggregateLabel, IdentityObject $aggregateId): void
+    protected function sortVersions(string $aggregateLabel, string $aggregateId): void
     {
         $version = 1;
 
         $eventList = $this->connection()->all();
 
-        foreach($eventList as $index => $event) {
+        foreach($eventList as $index => $register) {
             if (
-                $aggregateLabel === $event['aggregateLabel']
-                && $aggregateId->value() === $event['aggregateId']->value()
+                $register['aggregateLabel'] === $aggregateLabel
+                && $register['aggregateId'] === $aggregateId
             ) {
                 $this->connection()->changeVersion($index, $version);
                 $version++;
