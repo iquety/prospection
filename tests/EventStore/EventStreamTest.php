@@ -12,17 +12,6 @@ use Tests\TestCase;
 
 class EventStreamTest extends TestCase
 {
-    private function eventFactory(): DomainEvent
-    {
-        /** @var InvocationMocker */
-        $event = $this->createMock(DomainEvent::class);
-        // $event->method('aggregateId')->willReturn('1234567');
-        // $event->method('label')->willReturn('monomo.mono');
-
-        /** @var DomainEvent $event */
-        return $event;
-    }
-
     /** @test */
     public function addEvent(): void
     {
@@ -57,5 +46,14 @@ class EventStreamTest extends TestCase
         $stream = new EventStream();
         $stream->addEvent($this->eventFactory(), 2);
         $stream->addEvent($this->eventFactory(), 1);
+    }
+
+    private function eventFactory(): DomainEvent
+    {
+        /** @var InvocationMocker */
+        $event = $this->createMock(DomainEvent::class);
+
+        /** @var DomainEvent $event */
+        return $event;
     }
 }

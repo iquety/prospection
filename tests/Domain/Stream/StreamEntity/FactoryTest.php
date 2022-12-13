@@ -38,7 +38,7 @@ class FactoryTest extends TestCase
     /** @test */
     public function withOcurredOn(): void
     {
-        $occurredOn = $this->dummyDateTimeFactory();
+        $occurredOn = new DateTimeImmutable();
 
         $values = $this->stateValues();
         $values['occurredOn'] = $occurredOn;
@@ -61,7 +61,7 @@ class FactoryTest extends TestCase
     /** @test */
     public function withOcurredOnCustomPos(): void
     {
-        $occurredOn = $this->dummyDateTimeFactory();
+        $occurredOn = new DateTimeImmutable();
 
         $values = $this->stateValues();
         $values['occurredOn'] = $occurredOn;

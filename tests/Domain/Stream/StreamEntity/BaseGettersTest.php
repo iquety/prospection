@@ -35,13 +35,13 @@ class BaseGettersTest extends TestCase
 
         $this->assertInstanceOf(DateTimeImmutable::class, $object->createdOn());
         $this->assertEquals(
-            $this->dummyDateTimeFactory($occurredOn, "UTC"),
+            new DateTimeImmutable($occurredOn),
             $object->createdOn()
         );
         
         $this->assertInstanceOf(DateTimeImmutable::class, $object->updatedOn());
         $this->assertEquals(
-            $this->dummyDateTimeFactory($occurredOn, "UTC", DateTime::class),
+            new DateTime($occurredOn),
             $object->updatedOn()
         );
     }

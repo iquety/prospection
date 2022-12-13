@@ -40,7 +40,7 @@ class MemoryStore implements Store
             'version'        => $version,
             'snapshot'       => $snapshot,
             'eventData'      => $eventData,
-            'occurredOn'     => $occurredOn
+            'occurredOn'     => $occurredOn->format('Y-m-d H:i:s.u')
         ]);
     }
 

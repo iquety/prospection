@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Domain\Stream\StreamEntity;
 
+use DateTimeImmutable;
 use Tests\Domain\Stream\Support\DummyStreamEntity;
 use Tests\TestCase;
 
@@ -15,7 +16,7 @@ class RepresentationTest extends TestCase
         $stateValues = $this->stateValues();
 
         $factoryValues = $stateValues;
-        $factoryValues['occurredOn'] = $this->dummyDateTimeFactory("now", "UTC");
+        $factoryValues['occurredOn'] = new DateTimeImmutable("now");
 
         $object = DummyStreamEntity::factory($factoryValues);
        
@@ -31,8 +32,8 @@ class RepresentationTest extends TestCase
     public function stringRepresentation(): void
     {
         $values = $this->stateValues();
-        $values['four'] = $this->dummyDateTimeFactory("2022-10-10 10:10:10", "UTC");
-        $values['occurredOn'] = $this->dummyDateTimeFactory("2022-10-10 10:10:10", "UTC");
+        $values['four'] = new DateTimeImmutable("2022-10-10 10:10:10");
+        $values['occurredOn'] = new DateTimeImmutable("2022-10-10 10:10:10");
 
         $object = DummyStreamEntity::factory($values);
 

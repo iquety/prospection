@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Iquety\Prospection\EventStore\Memory;
 
 use DateTimeImmutable;
-use Iquety\Prospection\Domain\Core\IdentityObject;
 use Iquety\Prospection\EventStore\Error;
 use Iquety\Prospection\EventStore\Interval;
 use Iquety\Prospection\EventStore\Query;
@@ -77,7 +76,9 @@ class MemoryQuery implements Query
             $aggregateList[$index]['entityCount'] = $entityCount;
         }
 
-        return array_slice($aggregateList, $offset, $limit);
+        $list = array_slice($aggregateList, $offset, $limit);
+
+        return array_values($list); // para indexar sequencialmente
     }
 
     /**
@@ -115,7 +116,9 @@ class MemoryQuery implements Query
             $aggregateList[$index]['entityCount'] = $entityCount;
         }
 
-        return array_slice($aggregateList, $offset, $limit);
+        $list = array_slice($aggregateList, $offset, $limit);
+        
+        return array_values($list); // para indexar sequencialmente
     }
 
     public function countEvents(): int

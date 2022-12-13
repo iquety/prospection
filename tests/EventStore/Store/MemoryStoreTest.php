@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\EventStore\Store;
 
-use DateTimeImmutable;
-use Iquety\Prospection\Domain\Core\IdentityObject;
 use Iquety\Prospection\EventStore\Error;
 use Iquety\Prospection\EventStore\Memory\MemoryConnection;
 use Iquety\Prospection\EventStore\Memory\MemoryStore;
@@ -13,19 +11,14 @@ use Iquety\Prospection\EventStore\Store;
 
 class MemoryStoreTest extends AbstractStoreCase
 {
-    public function setUp(): void
+    public function getPersistedEvents(): array
+    {
+        return MemoryConnection::instance()->all();
+    }
+
+    public function resetDatabase(): void
     {
         MemoryConnection::instance()->reset();
-
-        MemoryConnection::instance()->add($this->eventDataFactory('aggregate.one', '12345', 1, 1));
-        MemoryConnection::instance()->add($this->eventDataFactory('aggregate.one', '12345', 2));
-        MemoryConnection::instance()->add($this->eventDataFactory('aggregate.one', '12345', 3));
-        MemoryConnection::instance()->add($this->eventDataFactory('aggregate.one', '12345', 4));
-
-        MemoryConnection::instance()->add($this->eventDataFactory('aggregate.one', '54321', 1, 1));
-        MemoryConnection::instance()->add($this->eventDataFactory('aggregate.one', '54321', 2));
-        MemoryConnection::instance()->add($this->eventDataFactory('aggregate.one', '54321', 3));
-        MemoryConnection::instance()->add($this->eventDataFactory('aggregate.one', '54321', 4));
     }
 
     public function storeFactory(): Store
@@ -33,24 +26,32 @@ class MemoryStoreTest extends AbstractStoreCase
         return new MemoryStore(MemoryConnection::instance());
     }
 
-    private function eventDataFactory(
-        string $aggregateLabel,
-        string $id,
-        int $version,
-        int $snapshot = 0
-    ): array {
-        $now = new DateTimeImmutable("2022-10-10 00:10:10");
-        $now = $now->modify("+$version hours");
+    public function setUp(): void
+    {
+        $this->resetDatabase();
 
-        return [
-            'aggregateId'    => $id,
-            'aggregateLabel' => $aggregateLabel,
-            'eventLabel'     => md5($now->format('Y-m-d H:i:s')),
-            'version'        => $version,
-            'snapshot'       => $snapshot,
-            'eventData'      => json_encode([]),
-            'occurredOn'     => $now
-        ];
+        $this->persistEvent('12345', 1, 1);
+        $this->persistEvent('12345', 2, 0);
+        $this->persistEvent('12345', 3, 0);
+        $this->persistEvent('12345', 4, 0);
+
+        $this->persistEvent('54321', 1, 1);
+        $this->persistEvent('54321', 2, 0);
+        $this->persistEvent('54321', 3, 0);
+        $this->persistEvent('54321', 4, 0);
+    }
+
+    protected function persistEvent(string $id, int $version, int $snapshot): void
+    {
+        $eventData = $this->persistedEventData(
+            "aggregate.one",
+            "event.$version",
+            $id,
+            $version,
+            $snapshot
+        );
+
+        MemoryConnection::instance()->add($eventData);
     }
 
     /** @test */

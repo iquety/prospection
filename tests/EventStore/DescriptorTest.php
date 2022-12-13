@@ -6,7 +6,6 @@ namespace Tests\EventStore;
 
 use ArrayObject;
 use DateTimeImmutable;
-use DateTimeZone;
 use Iquety\Prospection\Domain\Core\IdentityObject;
 use Iquety\Prospection\EventStore\Descriptor;
 use Iquety\Prospection\EventStore\EventSnapshot;
@@ -21,20 +20,20 @@ class DescriptorTest extends TestCase
     {
         return [
             'aggregateId' => new IdentityObject('123456'),
-            'one' => 'Ricardo',
-            'two' => 30,
-            'three' => 5.5,
-            'four' => $this->dummyDateTimeFactory('2022-10-10 10:10:10.703961'),
-            'five' => new ArrayObject(),
-            'six' => new DummyValue('test1'),
-            'seven' => new DummyEntity(new IdentityObject('111'), 'test2'),
+            'one'         => 'Ricardo',
+            'two'         => 30,
+            'three'       => 5.5,
+            'four'        => new DateTimeImmutable('2022-10-10 10:10:10.703961'),
+            'five'        => new ArrayObject(),
+            'six'         => new DummyValue('test1'),
+            'seven'       => new DummyEntity(new IdentityObject('111'), 'test2'),
         ];
     }
     
     /** @test */
     public function toArray(): void
     {
-        $occurredOn = $this->dummyDateTimeFactory("2022-10-10 10:10:10.703961");
+        $occurredOn = new DateTimeImmutable("2022-10-10 10:10:10.703961");
 
         $stateValues = $this->stateValues();
         $stateValues['occurredOn'] = $occurredOn;
@@ -49,7 +48,7 @@ class DescriptorTest extends TestCase
     /** @test */
     public function toAggregate(): void
     {
-        $occurredOn = $this->dummyDateTimeFactory("2022-10-10 10:10:10.703961");
+        $occurredOn = new DateTimeImmutable("2022-10-10 10:10:10.703961");
 
         $stateValues = $this->stateValues();
         $stateValues['occurredOn'] = $occurredOn;
@@ -64,7 +63,7 @@ class DescriptorTest extends TestCase
     /** @test */
     public function toStringRepresentation(): void
     {
-        $occurredOn = $this->dummyDateTimeFactory("2022-10-10 10:10:10.703961");
+        $occurredOn = new DateTimeImmutable("2022-10-10 10:10:10.703961");
 
         $stateValues = $this->stateValues();
         $stateValues['occurredOn'] = $occurredOn;

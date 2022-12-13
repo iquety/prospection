@@ -2,19 +2,22 @@
 
 declare(strict_types=1);
 
-namespace Tests\EventStore\Query;
+namespace Tests\EventStore\Query\Case;
 
 use DateTimeImmutable;
 use Iquety\Prospection\Domain\Core\IdentityObject;
 use Iquety\Prospection\EventStore\Interval;
 use Iquety\Prospection\EventStore\Query;
 
+/**
+ * @method Query queryFactory
+ * @method void resetDatabase
+ */
 trait AbstractQueryListDate
 {
     /** @test */
     public function snapshotDateTwoEntities(): void
     {
-        /** @var Query */
         $object = $this->queryFactory();
         
         $aggregateList = $object->aggregateListByDate(
@@ -24,33 +27,27 @@ trait AbstractQueryListDate
         );
         
         // existem duas entidades para 'aggregate.one'
-        $this->assertCount(2, $aggregateList);
+        $this->assertCount(5, $aggregateList);
 
         // cada entidade possui 10 eventos
         // onde o evento 1 é o único snapshot
-        $this->assertEquals(
-            10,
-            $object->countAggregateEvents('aggregate.one', '12345')
-        );
+        $this->assertEquals(10, $object->countAggregateEvents('aggregate.one', '12345'));
         $this->assertEquals('12345', $aggregateList[0]['aggregateId']);
         // último snapshot
-        $this->assertEquals('2022-10-10 01:10:10', $aggregateList[0]['occurredOn']);
+        $this->assertEquals('2022-10-10 01:10:10.000000', $aggregateList[0]['occurredOn']);
         // primeiro evento
-        $this->assertEquals('2022-10-10 01:10:10', $aggregateList[0]['createdOn']); 
+        $this->assertEquals('2022-10-10 01:10:10.000000', $aggregateList[0]['createdOn']); 
         // último evento
-        $this->assertEquals('2022-10-10 10:10:10', $aggregateList[0]['updatedOn']); 
+        $this->assertEquals('2022-10-10 10:10:10.000000', $aggregateList[0]['updatedOn']); 
 
-        $this->assertEquals(
-            10,
-            $object->countAggregateEvents('aggregate.one', '54321')
-        );
-        $this->assertEquals('54321', $aggregateList[1]['aggregateId']);
+        $this->assertEquals(10, $object->countAggregateEvents('aggregate.one', '54321+5h'));
+        $this->assertEquals('54321+5h', $aggregateList[1]['aggregateId']);
         // último snapshot
-        $this->assertEquals('2022-10-10 06:10:10', $aggregateList[1]['occurredOn']);
+        $this->assertEquals('2022-10-10 06:10:10.000000', $aggregateList[1]['occurredOn']);
         // primeiro evento
-        $this->assertEquals('2022-10-10 06:10:10', $aggregateList[1]['createdOn']);
+        $this->assertEquals('2022-10-10 06:10:10.000000', $aggregateList[1]['createdOn']);
         // último evento
-        $this->assertEquals('2022-10-10 15:10:10', $aggregateList[1]['updatedOn']);
+        $this->assertEquals('2022-10-10 15:10:10.000000', $aggregateList[1]['updatedOn']);
     }
 
     /** @test */
@@ -70,17 +67,14 @@ trait AbstractQueryListDate
 
         // a entidade possui 10 eventos
         // onde o evento 1 é o único snapshot
-        $this->assertEquals(
-            10,
-            $object->countAggregateEvents('aggregate.one', '54321')
-        );
-        $this->assertEquals('54321', $aggregateList[0]['aggregateId']);
+        $this->assertEquals(10, $object->countAggregateEvents('aggregate.one', '54321+5h'));
+        $this->assertEquals('54321+5h', $aggregateList[0]['aggregateId']);
         // último snapshot
-        $this->assertEquals('2022-10-10 06:10:10', $aggregateList[0]['occurredOn']);
+        $this->assertEquals('2022-10-10 06:10:10.000000', $aggregateList[0]['occurredOn']);
         // primeiro evento
-        $this->assertEquals('2022-10-10 06:10:10', $aggregateList[0]['createdOn']);
+        $this->assertEquals('2022-10-10 06:10:10.000000', $aggregateList[0]['createdOn']);
         // último evento
-        $this->assertEquals('2022-10-10 15:10:10', $aggregateList[0]['updatedOn']);
+        $this->assertEquals('2022-10-10 15:10:10.000000', $aggregateList[0]['updatedOn']);
     }
 
     /** @test */

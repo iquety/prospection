@@ -26,15 +26,6 @@ class TestCase extends FrameworkTestCase
         return $property->getValue($instance);
     }
 
-    public function dummyDateTimeFactory(
-        string $expression = "now",
-        string $timezone = "UTC",
-        string $signature = DateTimeImmutable::class
-    ): DateTimeInterface
-    {
-        return new $signature($expression, new  DateTimeZone($timezone));
-    }
-
     public function stateValues(): array
     {
         return [
@@ -42,7 +33,7 @@ class TestCase extends FrameworkTestCase
             'one' => 'Ricardo',
             'two' => 30,
             'three' => 5.5,
-            'four' => $this->dummyDateTimeFactory("now", "UTC"),
+            'four' => new DateTimeImmutable(),
             'five' => new ArrayObject(),
             'six' => new DummyValue('test1'),
             'seven' => new DummyEntity(new IdentityObject('111'), 'test2'),
@@ -55,7 +46,7 @@ class TestCase extends FrameworkTestCase
     ): DummyStreamEntity {
 
         $values = $this->stateValues();
-        $values['occurredOn'] = $this->dummyDateTimeFactory($expression, $timezone);
+        $values['occurredOn'] = new DateTimeImmutable($expression, new DateTimeZone($timezone));
 
         return DummyStreamEntity::factory($values);
     }
