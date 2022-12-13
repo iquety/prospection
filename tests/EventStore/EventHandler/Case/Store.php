@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Tests\EventStore\EventHandler;
+namespace Tests\EventStore\EventHandler\Case;
 
+use DateTimeImmutable;
 use InvalidArgumentException;
 use Iquety\Prospection\Domain\Core\IdentityObject;
 use Iquety\Prospection\EventStore\EventSnapshot;
-use Iquety\Prospection\EventStore\Memory\MemoryConnection;
 use RuntimeException;
 use Tests\EventStore\Support\DummyEntityOne;
 use Tests\EventStore\Support\DummyEventCommon;
@@ -15,7 +15,12 @@ use Tests\EventStore\Support\DummyEventOne;
 use Tests\EventStore\Support\DummyEventThr;
 use Tests\EventStore\Support\DummyEventTwo;
 
-class StoreTest extends EventHandlerCase
+/**
+ * @method array getPersistedEvents()
+ * @method EventStore eventStoreFactory()
+ * @method void resetDatabase()
+ */
+trait Store
 {
     /** @test */
     public function emptyEventListException(): void
@@ -91,6 +96,8 @@ class StoreTest extends EventHandlerCase
     /** @test */
     public function storeVersioning(): void
     {
+        $this->resetDatabase();
+
         $object = $this->eventStoreFactory();
 
         $one = EventSnapshot::factory([ 
@@ -112,14 +119,11 @@ class StoreTest extends EventHandlerCase
 
         $object->storeMultiple(DummyEntityOne::class, [ $one, $two, $thr ]);
 
-        $list = MemoryConnection::instance()->all();
+        $list = $this->getPersistedEvents();
         
         // one - - - - - -
         $this->assertEquals(1, $list[0]['version']);
-        $this->assertEquals(
-            $one->occurredOn()->format('Y-m-d H:i:s.u'),
-            $list[0]['occurredOn']->format('Y-m-d H:i:s.u')
-        );
+        $this->assertEquals($one->occurredOn()->format('Y-m-d H:i:s.u'), $list[0]['occurredOn']);
         $this->assertEquals(
             $one->occurredOn()->format('Y-m-d H:i:s.u'),
             json_decode($list[0]['eventData'])->occurredOn->date
@@ -129,7 +133,7 @@ class StoreTest extends EventHandlerCase
         $this->assertEquals(2, $list[1]['version']);
         $this->assertEquals(
             $two->occurredOn()->format('Y-m-d H:i:s.u'),
-            $list[1]['occurredOn']->format('Y-m-d H:i:s.u')
+            $list[1]['occurredOn']
         );
         $this->assertEquals(
             $two->occurredOn()->format('Y-m-d H:i:s.u'),
@@ -138,10 +142,7 @@ class StoreTest extends EventHandlerCase
 
         // thr - - - - - -
         $this->assertEquals(3, $list[2]['version']);
-        $this->assertEquals(
-            $thr->occurredOn()->format('Y-m-d H:i:s.u'),
-            $list[2]['occurredOn']->format('Y-m-d H:i:s.u')
-        );
+        $this->assertEquals($thr->occurredOn()->format('Y-m-d H:i:s.u'), $list[2]['occurredOn']);
         $this->assertEquals(
             $thr->occurredOn()->format('Y-m-d H:i:s.u'),
             json_decode($list[2]['eventData'])->occurredOn->date
@@ -151,6 +152,8 @@ class StoreTest extends EventHandlerCase
     /** @test */
     public function storeSnapshot(): void
     {
+        $this->resetDatabase();
+
         $object = $this->eventStoreFactory();
 
         $first = EventSnapshot::factory([
@@ -171,7 +174,7 @@ class StoreTest extends EventHandlerCase
 
         $object->storeMultiple(DummyEntityOne::class, $eventList);
 
-        $storedList = MemoryConnection::instance()->all();
+        $storedList = $this->getPersistedEvents();
 
         $this->assertCount(16, $storedList);
         
@@ -179,7 +182,7 @@ class StoreTest extends EventHandlerCase
         $this->assertEquals(1, $storedList[0]['version']);
         $this->assertEquals(
             $first->occurredOn()->format('Y-m-d H:i:s.u'),
-            $storedList[0]['occurredOn']->format('Y-m-d H:i:s.u')
+            $storedList[0]['occurredOn']
         );
         $this->assertEquals(
             $first->occurredOn()->format('Y-m-d H:i:s.u'),
@@ -197,7 +200,7 @@ class StoreTest extends EventHandlerCase
         $this->assertEquals(1, $storedList[10]['snapshot']);
         $this->assertEquals(
             $first->occurredOn()->format('Y-m-d H:i:s'),
-            $storedList[10]['occurredOn']->format('Y-m-d H:i:s')
+            (new DateTimeImmutable($storedList[10]['occurredOn']))->format('Y-m-d H:i:s')
         );
         $this->assertEquals(
             $first->occurredOn()->format('Y-m-d H:i:s'),
@@ -211,8 +214,40 @@ class StoreTest extends EventHandlerCase
     }
 
     /** @test */
+    public function storeSnapshotException(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessageMatches(
+            '/It may be that the aggregate state is incomplete. Erro: .*/'
+        );
+
+        $object = $this->eventStoreFactory();
+
+        $first = EventSnapshot::factory([
+            'aggregateId' => new IdentityObject('12345'),
+            'one' => 'Ricardo',
+            'two' => 'Pereira',
+            'thr' => 'Dias',
+            'fou' => 'Extra'
+        ]);
+
+        $others = DummyEventOne::factory([ 
+            'aggregateId' => new IdentityObject('12345'),
+            'one' => 'Ricardo',
+        ]);
+
+        $eventList = [ $first, ... array_fill(0, 14, $others) ];
+        
+        $this->assertCount(15, $eventList);
+
+        $object->storeMultiple(DummyEntityOne::class, $eventList);
+    }
+
+    /** @test */
     public function storeOne(): void
     {
+        $this->resetDatabase();
+
         $object = $this->eventStoreFactory();
 
         $event = EventSnapshot::factory([ 
@@ -224,12 +259,12 @@ class StoreTest extends EventHandlerCase
 
         $object->store(DummyEntityOne::class, $event);
 
-        $list = MemoryConnection::instance()->all();
+        $list = $this->getPersistedEvents();
         
         $this->assertEquals(1, $list[0]['version']);
         $this->assertEquals(
             $event->occurredOn()->format('Y-m-d H:i:s.u'),
-            $list[0]['occurredOn']->format('Y-m-d H:i:s.u')
+            $list[0]['occurredOn']
         );
         $this->assertEquals(
             $event->occurredOn()->format('Y-m-d H:i:s.u'),

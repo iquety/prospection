@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\EventStore\EventHandler;
+namespace Tests\EventStore\EventHandler\Case;
 
 use InvalidArgumentException;
 use Iquety\Prospection\Domain\Core\IdentityObject;
@@ -12,11 +12,18 @@ use Tests\EventStore\Support\DummyEntityOne;
 use Tests\EventStore\Support\DummyEventOne;
 use Tests\EventStore\Support\DummyEventTwo;
 
-class StreamTest extends EventHandlerCase
+/**
+ * @method array getPersistedEvents()
+ * @method EventStore eventStoreFactory()
+ * @method void resetDatabase()
+ */
+trait Stream
 {
     /** @test */
     public function streamFor(): void
     {
+        $this->resetDatabase();
+        
         $object = $this->eventStoreFactory();
 
         $object->registerEventType(DummyEventOne::class);
@@ -83,7 +90,7 @@ class StreamTest extends EventHandlerCase
         $object->registerEventType(DummyEventOne::class);
         $object->registerEventType(DummyEventTwo::class);
 
-        $stream = $object->streamFor(DummyEntityOne::class, new IdentityObject('12345'));
+        $stream = $object->streamFor(DummyEntityOne::class, new IdentityObject('77777'));
 
         $this->assertEquals(0, $stream->count());
         $this->assertEquals([], $stream->events());
@@ -92,6 +99,8 @@ class StreamTest extends EventHandlerCase
     /** @test */
     public function streamSince(): void
     {
+        $this->resetDatabase();
+        
         $object = $this->eventStoreFactory();
 
         $object->registerEventType(DummyEventOne::class);
@@ -146,15 +155,15 @@ class StreamTest extends EventHandlerCase
 
         $this->assertEquals(
             0,
-            $object->streamSince(DummyEntityOne::class, new IdentityObject('12345'), 3)->count()
+            $object->streamSince(DummyEntityOne::class, new IdentityObject('77777'), 3)->count()
         );
         $this->assertEquals(
             0,
-            $object->streamSince(DummyEntityOne::class, new IdentityObject('12345'), 2)->count()
+            $object->streamSince(DummyEntityOne::class, new IdentityObject('77777'), 2)->count()
         );
         $this->assertEquals(
             0,
-            $object->streamSince(DummyEntityOne::class, new IdentityObject('12345'), 1)->count()
+            $object->streamSince(DummyEntityOne::class, new IdentityObject('77777'), 1)->count()
         );
     }
 
@@ -168,6 +177,6 @@ class StreamTest extends EventHandlerCase
 
         $object = $this->eventStoreFactory();
 
-        $object->streamSince(DummyEntityOne::class, new IdentityObject('12345'), 0);
+        $object->streamSince(DummyEntityOne::class, new IdentityObject('77777'), 0);
     }
 }

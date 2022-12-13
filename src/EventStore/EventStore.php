@@ -31,7 +31,7 @@ class EventStore
     ) {
     }
 
-    public function countAll(): int
+    public function countAllEvents(): int
     {
         return $this->query->countEvents();
     }
@@ -49,7 +49,15 @@ class EventStore
         return $this->query->countAggregates($aggregateSignature::label());
     }
     
-    /** @return array<int,Descriptor> */
+    /**
+     * Devolve a lista de agregados, para ser usada em grades de dados.
+     * A lista é baseada apenas no último instantaneo gerado e não possui
+     * seus dados consolidados.
+     * Cada agregado conterá dois valores adicionais:
+     * - createdOn: ocorrência do primeiro evento do agregado
+     * - updatedOn: ocorrência do último evento do agregado
+     * @return array<int,Descriptor>
+     */
     public function list(string $aggregateSignature, Interval $interval): array
     {
         $aggregateList = $this->query->aggregateList($aggregateSignature::label(), $interval);
@@ -58,7 +66,9 @@ class EventStore
 
         foreach ($aggregateList as $register) {
             /** @var EventSnapshot $snapshot */
-            $snapshot = $this->serializer->unserialize($register['data']);
+            $snapshot = EventSnapshot::factory(
+                $this->serializer->unserialize($register['eventData'])
+            );
 
             $list[] = new Descriptor($aggregateSignature, $snapshot);
         }
@@ -66,7 +76,14 @@ class EventStore
         return $list;
     }
 
-    /** @return array<int,Descritor> */
+    /**
+     * Devolve a lista de agregados, para ser usada em grades de dados.
+     * Cada item da lista é o resultado da consolidação de todos os eventos ocorridos.
+     * Cada agregado conterá dois valores adicionais:
+     * - createdOn: ocorrência do primeiro evento do agregado
+     * - updatedOn: ocorrência do último evento do agregado
+     * @return array<int,Descriptor>
+     */
     public function listConsolidated(string $aggregateSignature, Interval $interval): array
     {
         $aggregateEvents = $this->query->eventListForConsolidation(
@@ -74,27 +91,38 @@ class EventStore
         );
 
         $groupedByAggregate = [];
-        foreach ($aggregateEvents as $event) {
-            $aggregateId = $event['aggregate_id'];
+        foreach ($aggregateEvents as $eventRegister) {
+            $aggregateId = $eventRegister['aggregateId'];
 
             if (isset($groupedByAggregate[$aggregateId]) === false) {
                 $groupedByAggregate[$aggregateId] = [];
             }
 
-            $groupedByAggregate[$aggregateId][] = $this->serializer->unserialize($event['data']);
+            $groupedByAggregate[$aggregateId][] = $eventRegister;
         }
 
         $list = [];
-
         foreach ($groupedByAggregate as $aggregateId => $eventList) {
-            /** @var AggregateRoot $entity */
-            $entity = new $aggregateSignature();
+            $firstEvent = array_shift($eventList);
 
-            foreach ($eventList as $evento) {
-                $entity->consolidate([ $evento ]);
+            /** @var StreamEntity $entity */
+            $entity = $aggregateSignature::factory(
+                $this->serializer->unserialize($firstEvent['eventData'])
+            );
+
+            foreach ($eventList as $eventRegister) {
+                $entity->consolidate([ 
+                    $this->eventFactory(
+                        $eventRegister['eventLabel'],
+                        $this->serializer->unserialize($eventRegister['eventData'])
+                    )
+                 ]);
             }
 
-            $list[] = new Descriptor($aggregateSignature, new EventSnapshot($entity->toArray()));
+            $list[] = new Descriptor(
+                $aggregateSignature,
+                EventSnapshot::factory($entity->toArray())
+            );
         }
 
         return $list;
@@ -114,7 +142,7 @@ class EventStore
         $groupedOccurrenceList = [];
 
         foreach ($aggregateEvents as $event) {
-            $aggregateId = $event['aggregate_id'];
+            $aggregateId = $event['aggregateId'];
 
             if (isset($groupedEventList[$aggregateId]) === false) {
                 $groupedOccurrenceList[$aggregateId] = [];
