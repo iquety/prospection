@@ -76,9 +76,9 @@ class MemoryQuery implements Query
             $aggregateList[$index]['entityCount'] = $entityCount;
         }
 
-        $list = array_slice($aggregateList, $offset, $limit);
+        $listInterval = array_slice($aggregateList, $offset, $limit);
 
-        return array_values($list); // para indexar sequencialmente
+        return array_values($listInterval); // para indexar sequencialmente
     }
 
     /**
@@ -116,9 +116,9 @@ class MemoryQuery implements Query
             $aggregateList[$index]['entityCount'] = $entityCount;
         }
 
-        $list = array_slice($aggregateList, $offset, $limit);
+        $listInterval = array_slice($aggregateList, $offset, $limit);
         
-        return array_values($list); // para indexar sequencialmente
+        return array_values($listInterval); // para indexar sequencialmente
     }
 
     public function countEvents(): int
@@ -182,14 +182,33 @@ class MemoryQuery implements Query
 
         $list = $this->connection()->all();
 
-        foreach($list as $event) {
-            if (
-                $event['aggregateLabel'] === $aggregateLabel
-                && $event['aggregateId'] === $aggregateId
-                && $event['version'] >= $version
-            ) {
-                $eventList[] = $event;
+        $count = 0;
+        $createdOn = null;
+        $updatedOn = null;
+
+        foreach($list as $eventRegister) {
+            $isAggregateEvent = $eventRegister['aggregateLabel'] === $aggregateLabel
+                && $eventRegister['aggregateId'] === $aggregateId
+                && $eventRegister['version'] >= $version;
+
+            if ($isAggregateEvent === false) {
+                continue;
             }
+
+            if ($createdOn === null) {
+                $createdOn = $eventRegister['occurredOn'];
+            }
+
+            $updatedOn = $eventRegister['occurredOn'];
+
+            $eventList[] = $eventRegister;
+
+            $count++;
+        }
+
+        for ($x = 0; $x < $count; $x++) {
+            $eventList[$x]['createdOn'] = $createdOn;
+            $eventList[$x]['updatedOn'] = $updatedOn;
         }
 
         return $eventList;

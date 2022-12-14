@@ -29,8 +29,12 @@ trait AbstractQueryListAggreg
 
         $this->assertEquals(11, $aggregateEvents[0]['version']);
         $this->assertEquals('2022-10-10 11:10:10.000000', $aggregateEvents[0]['occurredOn']);
+        $this->assertEquals('2022-10-10 11:10:10.000000', $aggregateEvents[0]['createdOn']);
+        $this->assertEquals('2022-10-10 16:10:10.000000', $aggregateEvents[0]['updatedOn']);
 
         $this->assertEquals(16, $aggregateEvents[5]['version']);
         $this->assertEquals('2022-10-10 16:10:10.000000', $aggregateEvents[5]['occurredOn']);
+        $this->assertEquals('2022-10-10 11:10:10.000000', $aggregateEvents[0]['createdOn']);
+        $this->assertEquals('2022-10-10 16:10:10.000000', $aggregateEvents[0]['updatedOn']);
     }
 }

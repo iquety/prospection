@@ -75,22 +75,38 @@ trait AbstractQueryListConsol
         // ambas possuem 10 eventos desde o último instantâneo
         $this->assertCount(23, $eventsAfterSnapshot);
         
-        // o último snapshot está na versão 1
-        $aggregateEvents = $object->eventListForAggregate('aggregate.one', '12345');
-        $this->assertCount(10, $aggregateEvents);
+        // // o último snapshot está na versão 1
+        // $aggregateEvents = $object->eventListForAggregate('aggregate.one', '12345');
+        // $this->assertCount(10, $aggregateEvents);
 
         // aggregate.one 12345
+        // evento inicial = 01:10:10
+        // evento final   = 10:10:10
         $this->assertEquals(1, $eventsAfterSnapshot[0]['version']);
+        $this->assertEquals('12345', $eventsAfterSnapshot[0]['aggregateId']);
         $this->assertEquals('2022-10-10 01:10:10.000000', $eventsAfterSnapshot[0]['occurredOn']);
-
+        $this->assertEquals('2022-10-10 01:10:10.000000', $eventsAfterSnapshot[0]['createdOn']);
+        $this->assertEquals('2022-10-10 10:10:10.000000', $eventsAfterSnapshot[0]['updatedOn']);
+        
         $this->assertEquals(10, $eventsAfterSnapshot[9]['version']);
+        $this->assertEquals('12345', $eventsAfterSnapshot[9]['aggregateId']);
         $this->assertEquals('2022-10-10 10:10:10.000000', $eventsAfterSnapshot[9]['occurredOn']);
+        $this->assertEquals('2022-10-10 01:10:10.000000', $eventsAfterSnapshot[9]['createdOn']);
+        $this->assertEquals('2022-10-10 10:10:10.000000', $eventsAfterSnapshot[9]['updatedOn']);
 
-        // aggregate.one 54321
+        // aggregate.one 54321+5h -> 01:10:10 + 5h = 06:10:10
+        // evento inicial = 06:10:10 
+        // evento final   = 15:10:10
         $this->assertEquals(1, $eventsAfterSnapshot[10]['version']);
+        $this->assertEquals('54321+5h', $eventsAfterSnapshot[10]['aggregateId']);
         $this->assertEquals('2022-10-10 06:10:10.000000', $eventsAfterSnapshot[10]['occurredOn']);
+        $this->assertEquals('2022-10-10 06:10:10.000000', $eventsAfterSnapshot[10]['createdOn']);
+        $this->assertEquals('2022-10-10 15:10:10.000000', $eventsAfterSnapshot[10]['updatedOn']);
 
         $this->assertEquals(10, $eventsAfterSnapshot[19]['version']);
+        $this->assertEquals('54321+5h', $eventsAfterSnapshot[19]['aggregateId']);
         $this->assertEquals('2022-10-10 15:10:10.000000', $eventsAfterSnapshot[19]['occurredOn']);
+        $this->assertEquals('2022-10-10 06:10:10.000000', $eventsAfterSnapshot[19]['createdOn']);
+        $this->assertEquals('2022-10-10 15:10:10.000000', $eventsAfterSnapshot[19]['updatedOn']);
     }
 }
