@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\EventStore\EventHandler\Case;
 
+use Iquety\Prospection\EventStore\Descriptor;
 use Iquety\Prospection\EventStore\EventStore;
 use Iquety\Prospection\EventStore\Interval;
 use Tests\EventStore\Support\DummyEntityOne;
@@ -18,26 +19,41 @@ use Tests\EventStore\Support\DummyEventTwo;
  */
 trait Consolidation
 {
-    /** @test */
-    public function consolidationList(): void
+    /**
+     * @test 
+     * @dataProvider eventStoreProvider
+     */
+    public function consolidationList(EventStore $object): void
     {
-        $object = $this->eventStoreFactory();
+        $listOne = $object->listConsolidated(DummyEntityOne::class, new Interval(5));
+        $this->assertCount(5, $listOne);
 
-        $object->registerEventType(DummyEventOne::class);
-        $object->registerEventType(DummyEventTwo::class);
+        $date = fn($hour) => "2022-10-10 0$hour:00:00.000000";
 
-        $this->assertCount(5, $object->listConsolidated(DummyEntityOne::class, new Interval(5)));
-        $this->assertCount(2, $object->listConsolidated(DummyEntityTwo::class, new Interval(5)));
+        $this->assertInstanceOf(Descriptor::class, $listOne[0]);
+        $this->assertEquals($date(0), $listOne[0]->createdOn()->format('Y-m-d H:i:s.u'));
+        $this->assertEquals($date(2), $listOne[0]->updatedOn()->format('Y-m-d H:i:s.u'));
+        $this->assertEquals($date(0), $listOne[1]->createdOn()->format('Y-m-d H:i:s.u'));
+        $this->assertEquals($date(2), $listOne[1]->updatedOn()->format('Y-m-d H:i:s.u'));
+        $this->assertEquals($date(0), $listOne[2]->createdOn()->format('Y-m-d H:i:s.u'));
+        $this->assertEquals($date(2), $listOne[2]->updatedOn()->format('Y-m-d H:i:s.u'));
+
+        $listTwo = $object->listConsolidated(DummyEntityTwo::class, new Interval(5));
+        $this->assertCount(2, $listTwo);
+
+        $this->assertInstanceOf(Descriptor::class, $listTwo[0]);
+        $this->assertEquals($date(0), $listTwo[0]->createdOn()->format('Y-m-d H:i:s.u'));
+        $this->assertEquals($date(1), $listTwo[0]->updatedOn()->format('Y-m-d H:i:s.u'));
+        $this->assertEquals($date(0), $listTwo[1]->createdOn()->format('Y-m-d H:i:s.u'));
+        $this->assertEquals($date(1), $listTwo[1]->updatedOn()->format('Y-m-d H:i:s.u'));
     }
 
-    /** @test */
-    public function consolidationIntervalLimit(): void
+    /**
+     * @test 
+     * @dataProvider eventStoreProvider
+     */
+    public function consolidationIntervalLimit(EventStore $object): void
     {
-        $object = $this->eventStoreFactory();
-
-        $object->registerEventType(DummyEventOne::class);
-        $object->registerEventType(DummyEventTwo::class);
-
         $this->assertCount(0, $object->listConsolidated(DummyEntityOne::class, new Interval(0)));
         $this->assertCount(1, $object->listConsolidated(DummyEntityOne::class, new Interval(1)));
         $this->assertCount(2, $object->listConsolidated(DummyEntityOne::class, new Interval(2)));
@@ -46,13 +62,13 @@ trait Consolidation
         $this->assertCount(5, $object->listConsolidated(DummyEntityOne::class, new Interval(5)));
     }
 
-    /** @test */
-    public function consolidationIntervalOffset(): void
+    /**
+     * @test 
+     * @dataProvider eventStoreProvider
+     */
+    public function consolidationIntervalOffset(EventStore $object): void
     {
-        $object = $this->eventStoreFactory();
-
-        $object->registerEventType(DummyEventOne::class);
-        $object->registerEventType(DummyEventTwo::class);
+        $this->resetDatabase();
 
         $object->storeMultiple(DummyEntityOne::class, $this->aggregateOneListFactory('12345'));
         $object->storeMultiple(DummyEntityOne::class, $this->aggregateOneListFactory('67890'));

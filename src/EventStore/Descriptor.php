@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Iquety\Prospection\EventStore;
 
+use DateTimeImmutable;
 use Iquety\Prospection\Domain\Stream\StreamEntity;
 
 /**
@@ -21,8 +22,20 @@ class Descriptor
      */
     public function __construct(
         private string $aggregateSignature,
-        private EventSnapshot $snapshot
+        private EventSnapshot $snapshot,
+        private DateTimeImmutable $createdOn,
+        private DateTimeImmutable $updatedOn
     ) {
+    }
+
+    public function createdOn(): DateTimeImmutable
+    {
+        return $this->createdOn;
+    }
+
+    public function updatedOn(): DateTimeImmutable
+    {
+        return $this->updatedOn;
     }
 
     /** @return array<string,mixed> */

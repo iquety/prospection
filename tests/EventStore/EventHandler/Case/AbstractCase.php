@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\EventStore\EventHandler\Case;
 
+use DateTimeImmutable;
 use Iquety\Prospection\Domain\Core\IdentityObject;
 use Iquety\Prospection\EventStore\EventSnapshot;
 use Iquety\Prospection\EventStore\EventStore;
@@ -22,6 +23,7 @@ abstract class AbstractCase extends EventStoreCase
     use Materialization;
     use Remove;
     use Store;
+    use Stream;
     
     abstract public function getPersistedEvents(): array;
 
@@ -46,6 +48,20 @@ abstract class AbstractCase extends EventStoreCase
         $this->eventStoreFactory()->storeMultiple(DummyEntityTwo::class, $twoFactory('abcde'));
     }
 
+    public function eventStoreProvider(): array
+    {
+        $simple = $this->eventStoreFactory();
+
+        $eventResolution = $this->eventStoreFactory();
+        $eventResolution->registerEventType(DummyEventOne::class);
+        $eventResolution->registerEventType(DummyEventTwo::class);
+
+        return [
+            [$simple],
+            [$eventResolution]
+        ];
+    }
+
     private function aggregateOneListFactory(string $id): array
     {
         return [
@@ -53,17 +69,20 @@ abstract class AbstractCase extends EventStoreCase
                 'aggregateId' => new IdentityObject($id),
                 'one' => 'Fulano',
                 'two' => 'Ciclano',
-                'thr' => 'Naitis'
+                'thr' => 'Naitis',
+                'occurredOn' => new DateTimeImmutable('2022-10-10 00:00:00')
             ]),
 
             DummyEventOne::factory([ 
                 'aggregateId' => new IdentityObject($id),
                 'one' => 'Ricardo',
+                'occurredOn' => new DateTimeImmutable('2022-10-10 01:00:00')
             ]),
 
             DummyEventTwo::factory([ 
                 'aggregateId' => new IdentityObject($id),
                 'two' => 'Pereira',
+                'occurredOn' => new DateTimeImmutable('2022-10-10 02:00:00')
             ])
         ];
     }
@@ -75,95 +94,16 @@ abstract class AbstractCase extends EventStoreCase
                 'aggregateId' => new IdentityObject($id),
                 'one' => 'Fulano',
                 'two' => 'Ciclano',
-                'thr' => 'Naitis'
+                'thr' => 'Naitis',
+                'occurredOn' => new DateTimeImmutable('2022-10-10 00:00:00')
             ]),
 
             DummyEventThr::factory([ 
                 'aggregateId' => new IdentityObject($id),
                 'one' => 'Ricardo',
                 'two' => 'Pereira',
+                'occurredOn' => new DateTimeImmutable('2022-10-10 01:00:00')
             ])
         ];
     }
-
-    // private function eventData(string $id, DateTimeImmutable $occurredOn): array
-    // {
-    //     return [
-    //         "aggregateId" => new IdentityObject($id),
-    //         "one" => "Ricardo",
-    //         "two" => "Pereira",
-    //         "occurredOn" => [
-    //             "date" => $occurredOn->format('Y-m-d H:i:s.u'),
-    //             "timezone_type" => 3,
-    //             "timezone"=>"UTC"
-    //         ]
-    //     ];
-    // }
-
-    // private function eventDataFactory(string $aggregateLabel, string $id, int $version): array
-    // {
-    //     $now = new DateTimeImmutable("2022-10-10 00:10:10");
-    //     $now = $now->modify("+$version hours");
-
-    //     if ($id === '54321') {
-    //         $now = $now->modify("+5 hours");
-    //     }
-
-    //     $serializer = new JsonEventSerializer();
-
-    //     return [
-    //         'aggregateId'    => $id,
-    //         'aggregateLabel' => $aggregateLabel,
-    //         'eventLabel'     => md5($now->format('Y-m-d H:i:s')),
-    //         'version'        => $version,
-    //         'snapshot'       => 0,
-    //         'eventData'      => $serializer->serialize($this->eventData($id, $now)),
-    //         'occurredOn'     => $now->format('Y-m-d H:i:s')
-    //     ];
-    // }
-
-    // private function snapshotDataFactory(string $aggregateLabel, string $id, int $version): array
-    // {
-    //     $now = new DateTimeImmutable("2022-10-10 00:10:10");
-    //     $now = $now->modify("+$version hours");
-
-    //     if ($id === '54321') {
-    //         $now = $now->modify("+5 hours");
-    //     }
-
-    //     $serializer = new JsonEventSerializer();
-        
-    //     return [
-    //         'aggregateId'    => $id,
-    //         'aggregateLabel' => $aggregateLabel,
-    //         'eventLabel'     => EventSnapshot::label(),
-    //         'version'        => $version,
-    //         'snapshot'       => 1,
-    //         'eventData'      => $serializer->serialize($this->eventData($id, $now)),
-    //         'occurredOn'     => $now->format('Y-m-d H:i:s')
-    //     ];
-    // }
-
-    // protected function databaseFactory(): void
-    // {
-    //     MemoryConnection::instance()->add(
-    //         $this->snapshotDataFactory('aggregate.one', '12345', 1)
-    //     );
-
-    //     MemoryConnection::instance()->add( // mesmo agregado, id diferente
-    //         $this->snapshotDataFactory('aggregate.one', '54321', 1)
-    //     );
-
-    //     MemoryConnection::instance()->add( // agregado diferente, mesmo id
-    //         $this->snapshotDataFactory('aggregate.two', '12345', 1)
-    //     );
-
-    //     MemoryConnection::instance()->add( // tudo diferente
-    //         $this->snapshotDataFactory('aggregate.thr', '67890', 1)
-    //     );
-
-    //     MemoryConnection::instance()->add( // tudo diferente
-    //         $this->eventDataFactory('aggregate.thr', '67890', 2)
-    //     );
-    // }
 }

@@ -31,6 +31,29 @@ class DescriptorTest extends TestCase
     }
     
     /** @test */
+    public function getters(): void
+    {
+        $occurredOn = new DateTimeImmutable("2022-10-10 10:10:10.703961");
+
+        $stateValues = $this->stateValues();
+        $stateValues['occurredOn'] = $occurredOn;
+
+        $eventSnapshot = new EventSnapshot($stateValues);
+
+        $descriptor = new Descriptor(
+            DummyStreamEntity::class,
+            $eventSnapshot,
+            new DateTimeImmutable("2022-10-10 10:10:10.703961"),
+            new DateTimeImmutable("2022-10-10 11:10:10.703961")
+        );
+
+        $this->assertEquals(
+            new DateTimeImmutable("2022-10-10 10:10:10.703961"),
+            $descriptor->createdOn()
+        );
+    }
+
+    /** @test */
     public function toArray(): void
     {
         $occurredOn = new DateTimeImmutable("2022-10-10 10:10:10.703961");
@@ -40,7 +63,12 @@ class DescriptorTest extends TestCase
 
         $eventSnapshot = new EventSnapshot($stateValues);
 
-        $descriptor = new Descriptor(DummyStreamEntity::class, $eventSnapshot);
+        $descriptor = new Descriptor(
+            DummyStreamEntity::class,
+            $eventSnapshot,
+            new DateTimeImmutable("2022-10-10 10:10:10.703961"),
+            new DateTimeImmutable("2022-10-10 11:10:10.703961")
+        );
 
         $this->assertEquals($stateValues, $descriptor->toArray());
     }
@@ -55,7 +83,12 @@ class DescriptorTest extends TestCase
 
         $eventSnapshot = new EventSnapshot($stateValues);
 
-        $descriptor = new Descriptor(DummyStreamEntity::class, $eventSnapshot);
+        $descriptor = new Descriptor(
+            DummyStreamEntity::class,
+            $eventSnapshot,
+            new DateTimeImmutable("2022-10-10 10:10:10.703961"),
+            new DateTimeImmutable("2022-10-10 11:10:10.703961")
+        );
 
         $this->assertInstanceOf(DummyStreamEntity::class, $descriptor->toAggregate());
     }
@@ -70,7 +103,12 @@ class DescriptorTest extends TestCase
 
         $eventSnapshot = new EventSnapshot($stateValues);
 
-        $object = new Descriptor(DummyStreamEntity::class, $eventSnapshot);
+        $object = new Descriptor(
+            DummyStreamEntity::class,
+            $eventSnapshot,
+            new DateTimeImmutable("2022-10-10 10:10:10.703961"),
+            new DateTimeImmutable("2022-10-10 11:10:10.703961")
+        );
 
         $this->assertEquals("DummyStreamEntity [\n" . 
             "    aggregateId = IdentityObject [123456]\n" .

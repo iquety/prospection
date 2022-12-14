@@ -63,14 +63,18 @@ class EventStore
         $aggregateList = $this->query->aggregateList($aggregateSignature::label(), $interval);
 
         $list = [];
-
         foreach ($aggregateList as $register) {
             /** @var EventSnapshot $snapshot */
             $snapshot = EventSnapshot::factory(
                 $this->serializer->unserialize($register['eventData'])
             );
 
-            $list[] = new Descriptor($aggregateSignature, $snapshot);
+            $list[] = new Descriptor(
+                $aggregateSignature,
+                $snapshot,
+                new DateTimeImmutable($register['createdOn']),
+                new DateTimeImmutable($register['updatedOn'])
+            );
         }
 
         return $list;
@@ -121,7 +125,9 @@ class EventStore
 
             $list[] = new Descriptor(
                 $aggregateSignature,
-                EventSnapshot::factory($entity->toArray())
+                EventSnapshot::factory($entity->toArray()),
+                new DateTimeImmutable($eventRegister['createdOn']),
+                new DateTimeImmutable($eventRegister['updatedOn'])
             );
         }
 
@@ -138,36 +144,41 @@ class EventStore
             $this->query->aggregateListByDate($aggregateSignature::label(), $initialMoment, $interval)
         );
 
-        $groupedEventList = [];
-        $groupedOccurrenceList = [];
+        $groupedByAggregate = [];
+        foreach ($aggregateEvents as $eventRegister) {
+            $aggregateId = $eventRegister['aggregateId'];
 
-        foreach ($aggregateEvents as $event) {
-            $aggregateId = $event['aggregateId'];
-
-            if (isset($groupedEventList[$aggregateId]) === false) {
-                $groupedOccurrenceList[$aggregateId] = [];
-                $groupedEventList[$aggregateId] = [];
+            if (isset($groupedByAggregate[$aggregateId]) === false) {
+                $groupedByAggregate[$aggregateId] = [];
             }
 
-            $groupedOccurrenceList[$aggregateId][] = new DateTimeImmutable($event['occurredOn']);
-
-            $groupedEventList[$aggregateId][] = $this->serializer->unserialize($event['eventData']);
+            $groupedByAggregate[$aggregateId][] = $eventRegister;
         }
 
         $list = [];
+        foreach ($groupedByAggregate as $aggregateId => $eventList) {
+            $firstEvent = array_shift($eventList);
 
-        foreach ($groupedEventList as $aggregateId => $eventList) {
-            /** @var AggregateRoot $entity */
-            $entity = new $aggregateSignature();
+            /** @var StreamEntity $entity */
+            $entity = $aggregateSignature::factory(
+                $this->serializer->unserialize($firstEvent['eventData'])
+            );
 
-            $entity->estado()->setarDataCriacao($groupedOccurrenceList[$aggregateId][0]);
-
-            foreach ($eventList as $index => $event) {
-                $entity->consolidate([ $event ]);
-                $entity->estado()->setarDataAlteracao($groupedOccurrenceList[$aggregateId][$index]);
+            foreach ($eventList as $eventRegister) {
+                $entity->consolidate([ 
+                    $this->eventFactory(
+                        $eventRegister['eventLabel'],
+                        $this->serializer->unserialize($eventRegister['eventData'])
+                    )
+                 ]);
             }
 
-            $list[] = new Descriptor($aggregateSignature, new EventSnapshot($entity->toArray()));
+            $list[] = new Descriptor(
+                $aggregateSignature,
+                EventSnapshot::factory($entity->toArray()),
+                new DateTimeImmutable($eventRegister['createdOn']),
+                new DateTimeImmutable($eventRegister['updatedOn'])
+            );
         }
 
         return $list;
