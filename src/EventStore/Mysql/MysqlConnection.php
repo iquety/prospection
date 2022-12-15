@@ -23,6 +23,7 @@ class MysqlConnection
         private array $options = []
     ) {
         $dns = 'mysql:host=' . $this->host . ';port=' . $this->port . ';dbname=' . $this->dbname;
+        
         $this->pdo = new PDO($dns, $this->user, $this->password, $this->options);
     }
     

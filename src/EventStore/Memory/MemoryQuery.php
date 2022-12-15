@@ -126,10 +126,8 @@ class MemoryQuery implements Query
         return count($this->connection()->all());
     }
 
-    public function countAggregateEvents(
-        string $aggregateLabel,
-        string $aggregateId
-    ): int {
+    public function countAggregateEvents(string $aggregateLabel, string $aggregateId): int
+    {
         $eventList = [];
 
         $list = $this->connection()->all();
@@ -188,8 +186,7 @@ class MemoryQuery implements Query
 
         foreach($list as $eventRegister) {
             $isAggregateEvent = $eventRegister['aggregateLabel'] === $aggregateLabel
-                && $eventRegister['aggregateId'] === $aggregateId
-                && $eventRegister['version'] >= $version;
+                && $eventRegister['aggregateId'] === $aggregateId;
 
             if ($isAggregateEvent === false) {
                 continue;
@@ -197,6 +194,10 @@ class MemoryQuery implements Query
 
             if ($createdOn === null) {
                 $createdOn = $eventRegister['occurredOn'];
+            }
+
+            if ($eventRegister['version'] < $version) {
+                continue;
             }
 
             $updatedOn = $eventRegister['occurredOn'];
@@ -219,10 +220,8 @@ class MemoryQuery implements Query
      * último instantâneo gerado
      * @return array<int,array<string,mixed>>
      */
-    public function eventListForAggregate(
-        string $aggregateLabel,
-        string $aggregateId
-    ): array {
+    public function eventListForAggregate(string $aggregateLabel, string $aggregateId): array
+    {
         $list = $this->eventListForVersion($aggregateLabel, $aggregateId, 1);
 
         if ($list === []) {

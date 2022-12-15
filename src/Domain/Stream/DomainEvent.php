@@ -15,7 +15,6 @@ use Iquety\PubSub\Event\Event;
  */
 abstract class DomainEvent extends Event
 {
-    // todo: event está permitindo fabricar com occurredOn string
     abstract public function aggregateId(): IdentityObject;
 
     abstract public static function aggregateLabel(): string;

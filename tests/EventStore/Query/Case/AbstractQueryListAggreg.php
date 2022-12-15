@@ -16,25 +16,28 @@ trait AbstractQueryListAggreg
     public function eventListForAggregate(): void
     {
         $object = $this->queryFactory();
-        
-        $allEvents = $object->eventListForVersion('aggregate.thr', '67890', 1);
 
-        // total de eventos do agregado é 16
-        $this->assertCount(16, $allEvents);
+        // aggregate.thr = 16 eventos
+        $this->assertCount(16, $object->eventListForVersion('aggregate.thr', '67890', 1));
         
-        // o último snapshot está na versão 11
+        // aggregate.thr = 6 eventos desde o último snapshot
         $aggregateEvents = $object->eventListForAggregate('aggregate.thr', '67890');
-
         $this->assertCount(6, $aggregateEvents);
 
-        $this->assertEquals(11, $aggregateEvents[0]['version']);
-        $this->assertEquals('2022-10-10 11:10:10.000000', $aggregateEvents[0]['occurredOn']);
-        $this->assertEquals('2022-10-10 11:10:10.000000', $aggregateEvents[0]['createdOn']);
-        $this->assertEquals('2022-10-10 16:10:10.000000', $aggregateEvents[0]['updatedOn']);
+        // primeiro evento: snapshot
+        $this->assertSame('67890', $aggregateEvents[0]['aggregateId']);
+        $this->assertSame(1, $aggregateEvents[0]['snapshot']);
+        $this->assertSame(11, $aggregateEvents[0]['version']);
+        $this->assertSame('2022-10-10 11:10:10.000000', $aggregateEvents[0]['occurredOn']);
+        $this->assertSame('2022-10-10 01:10:10.000000', $aggregateEvents[0]['createdOn']);
+        $this->assertSame('2022-10-10 16:10:10.000000', $aggregateEvents[0]['updatedOn']);
 
-        $this->assertEquals(16, $aggregateEvents[5]['version']);
-        $this->assertEquals('2022-10-10 16:10:10.000000', $aggregateEvents[5]['occurredOn']);
-        $this->assertEquals('2022-10-10 11:10:10.000000', $aggregateEvents[0]['createdOn']);
-        $this->assertEquals('2022-10-10 16:10:10.000000', $aggregateEvents[0]['updatedOn']);
+        // último evento
+        $this->assertSame('67890', $aggregateEvents[5]['aggregateId']);
+        $this->assertSame(0, $aggregateEvents[5]['snapshot']);
+        $this->assertSame(16, $aggregateEvents[5]['version']);
+        $this->assertSame('2022-10-10 16:10:10.000000', $aggregateEvents[5]['occurredOn']);
+        $this->assertSame('2022-10-10 01:10:10.000000', $aggregateEvents[0]['createdOn']);
+        $this->assertSame('2022-10-10 16:10:10.000000', $aggregateEvents[0]['updatedOn']);
     }
 }
