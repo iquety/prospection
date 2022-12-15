@@ -271,9 +271,11 @@ class MysqlQuery implements Query
             return [];
         }
 
+        $aggregateLabel = $aggregateList[0]['aggregateLabel'];
+
         $filterList = [];
         foreach ($aggregateList as $register) {
-            if ($register['version'] < $register['lastVersion']) {
+            if ($register['version'] <= $register['lastVersion']) {
                 $filterList[] = "(" .
                     "aggregate_id = '{$register['aggregateId']}' AND " .
                     "version >= {$register['version']}" .
@@ -303,7 +305,7 @@ class MysqlQuery implements Query
                 LIMIT 1
             ) AS updatedOn
         FROM {$this->eventsTable} AS `event`
-        WHERE " . implode(" OR ", $filterList);
+        WHERE aggregate_label = '{$aggregateLabel}' AND " . implode(" OR ", $filterList);
 
         return $this->select($sql);
     }
