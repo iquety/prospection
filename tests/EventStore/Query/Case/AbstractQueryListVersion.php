@@ -16,9 +16,9 @@ trait AbstractQueryListVersion
     public function eventListForVersion(): void
     {
         $object = $this->queryFactory();
-        
+
         $this->assertEquals(10, $object->countAggregateEvents('aggregate.one', '12345'));
-        
+
         // a partir da versão 1
         $eventList = $object->eventListForVersion('aggregate.one', '12345', 1);
         $this->assertCount(10, $eventList);

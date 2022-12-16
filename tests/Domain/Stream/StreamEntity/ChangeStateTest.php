@@ -32,7 +32,7 @@ class ChangeStateTest extends TestCase
 
         $this->assertTrue($object->aggregateId()->equalTo(new IdentityObject('123456')));
         $this->assertEquals($value, $object->$method());
-        
+
         $snapshot = new EventSnapshot([
             'aggregateId' => new IdentityObject('123456'),
             $method => $valueChanged
@@ -53,7 +53,7 @@ class ChangeStateTest extends TestCase
         $this->assertTrue($object->aggregateId()->equalTo(new IdentityObject('123456')));
         $this->assertEquals($object->one(), 'Ricardo');
         $this->assertTrue($object->six()->equalTo(new DummyValue('test1')));
-        
+
         $object->changeState(new EventSnapshot([
             'aggregateId' => new IdentityObject('123456'),
             'six' => new DummyValue('test7')
@@ -78,7 +78,7 @@ class ChangeStateTest extends TestCase
         $this->assertTrue(
             $object->seven()->equalTo(new DummyEntity(new IdentityObject('111'), 'test1'))
         );
-        
+
         $object->changeState(new EventSnapshot([
             'aggregateId' => new IdentityObject('123456'),
             'seven' => new DummyEntity(new IdentityObject('111'), 'test7')
@@ -102,12 +102,15 @@ class ChangeStateTest extends TestCase
     public function invalidAggregateId(): void
     {
         $this->expectException(DomainException::class);
-        $this->expectExceptionMessage("The aggregation ID contained in the event does not match the aggregation root ID");
-        
+        $this->expectExceptionMessage(
+            "The aggregation ID contained in the event does " .
+            "not match the aggregation root ID"
+        );
+
         $object = $this->dummyStreamEntityFactory();
 
         $this->assertTrue($object->aggregateId()->equalTo(new IdentityObject('123456')));
-        
+
         $object->changeState(new EventSnapshot([
             'aggregateId' => new IdentityObject('123456888888'), // id diferente
             'seven' => new DummyEntity(new IdentityObject('111'), 'test7')

@@ -23,7 +23,7 @@ abstract class ValueObject
     {
         $valueList = $this->toArray();
 
-        if(count($valueList) === 1) {
+        if (count($valueList) === 1) {
             return current($valueList);
         }
 

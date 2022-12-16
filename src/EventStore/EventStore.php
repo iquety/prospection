@@ -13,6 +13,7 @@ use Iquety\PubSub\Event\Serializer\EventSerializer;
 use RuntimeException;
 use Throwable;
 
+/** @SuppressWarnings(PHPMD.TooManyPublicMethods) */
 class EventStore
 {
     private const SNAPSHOT_SIZE = 10;
@@ -48,7 +49,7 @@ class EventStore
     {
         return $this->query->countAggregates($aggregateSignature::label());
     }
-    
+
     /**
      * Devolve a lista de agregados, para ser usada em grades de dados.
      * A lista é baseada apenas no último instantaneo gerado e não possui
@@ -115,7 +116,7 @@ class EventStore
             );
 
             foreach ($eventList as $eventRegister) {
-                $entity->consolidate([ 
+                $entity->consolidate([
                     $this->eventFactory(
                         $eventRegister['eventLabel'],
                         $this->serializer->unserialize($eventRegister['eventData'])
@@ -165,7 +166,7 @@ class EventStore
             );
 
             foreach ($eventList as $eventRegister) {
-                $entity->consolidate([ 
+                $entity->consolidate([
                     $this->eventFactory(
                         $eventRegister['eventLabel'],
                         $this->serializer->unserialize($eventRegister['eventData'])
@@ -188,13 +189,12 @@ class EventStore
     {
         $this->eventRegisterList[$eventSignature::label()] = $eventSignature;
     }
-    
+
     public function remove(
         string $aggregateSignature,
         IdentityObject $aggregateId,
         int $version
-    ): void
-    {
+    ): void {
         $this->store->remove(
             $aggregateSignature::label(),
             $aggregateId->value(),
@@ -206,8 +206,7 @@ class EventStore
         string $aggregateSignature,
         IdentityObject $aggregateId,
         int $version
-    ): void
-    {
+    ): void {
         $this->store->removePrevious(
             $aggregateSignature::label(),
             $aggregateId->value(),
@@ -251,7 +250,7 @@ class EventStore
                 );
 
                 foreach ($domainEventList as $event) {
-                    if (! $event instanceof DomainEvent){
+                    if (! $event instanceof DomainEvent) {
                         throw new RuntimeException(
                             "Only domain events can be stored",
                             $commonExceptionCode
@@ -294,7 +293,7 @@ class EventStore
             } catch (Throwable $error) {
                 throw new RuntimeException(
                     $this->makeStateErrorMessage($error)
-                    . " in line " . $error->getLine() 
+                    . " in line " . $error->getLine()
                     . " of file " . $error->getFile(),
                     $error->getCode(),
                     $error

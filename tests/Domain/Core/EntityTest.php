@@ -70,9 +70,9 @@ class EntityTest extends TestCase
     {
         $object = new DummyEntity(new IdentityObject('1111'), 'one');
 
-        $this->assertEquals("DummyEntity [\n" . 
-            "    identity = IdentityObject [1111]\n" . 
-            "    myValue = one\n" . 
+        $this->assertEquals("DummyEntity [\n" .
+            "    identity = IdentityObject [1111]\n" .
+            "    myValue = one\n" .
         "]", (string)$object);
     }
 }

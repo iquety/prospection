@@ -14,8 +14,7 @@ class DummyEntityTwo extends StreamEntity
         private string $one,
         private string $two,
         private string $thr
-    )
-    {
+    ) {
         # code...
     }
 

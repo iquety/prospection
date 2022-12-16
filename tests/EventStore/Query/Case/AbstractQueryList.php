@@ -17,16 +17,16 @@ trait AbstractQueryList
     public function snapshotListTwoEntities(): void
     {
         $object = $this->queryFactory();
-        
+
         $aggregateList = $object->aggregateList('aggregate.one', new Interval(999, 0));
-        
+
         // snapshot 12345
         $this->assertSame('12345', $aggregateList[0]['aggregateId']);
         $this->assertSame(1, $aggregateList[0]['snapshot']);
         $this->assertSame(1, $aggregateList[0]['version']);
         $this->assertSame('2022-10-10 01:10:10.000000', $aggregateList[0]['occurredOn']);
-        $this->assertSame('2022-10-10 01:10:10.000000', $aggregateList[0]['createdOn']); 
-        $this->assertSame('2022-10-10 10:10:10.000000', $aggregateList[0]['updatedOn']); 
+        $this->assertSame('2022-10-10 01:10:10.000000', $aggregateList[0]['createdOn']);
+        $this->assertSame('2022-10-10 10:10:10.000000', $aggregateList[0]['updatedOn']);
 
         // snapshot 54321+5h
         $this->assertEquals('54321+5h', $aggregateList[1]['aggregateId']);
@@ -41,7 +41,7 @@ trait AbstractQueryList
     public function snapshotListLimitInterval(): void
     {
         $object = $this->queryFactory();
-        
+
         $this->assertCount(1, $object->aggregateList('aggregate.thr', new Interval(99, 0)));
 
         $this->assertCount(5, $object->aggregateList('aggregate.one', new Interval(99, 0)));
@@ -73,7 +73,7 @@ trait AbstractQueryList
     public function snapshotListSameId(): void
     {
         $object = $this->queryFactory();
-        
+
         $aggregateOne = $object->aggregateList('aggregate.one', new Interval(999));
         $aggregateList = $object->aggregateList('aggregate.two', new Interval(999, 0));
 
@@ -89,7 +89,7 @@ trait AbstractQueryList
     public function snapshotListTwoSnapshots(): void
     {
         $object = $this->queryFactory();
-        
+
         $aggregateList = $object->aggregateList('aggregate.thr', new Interval(999, 0));
 
         // existe uma única entidade para 'aggregate.thr'

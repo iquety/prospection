@@ -36,14 +36,14 @@ class EventSnapshotTest extends TestCase
             'aggregateId' => new ArrayObject([])
         ]);
     }
-    
+
     /** @test */
     public function construction(): void
     {
         /** @var InvocationMocker */
         $aggregateId = $this->createMock(IdentityObject::class);
         $aggregateId->method('value')->willReturn('1234567');
- 
+
         $event = new EventSnapshot([
             'aggregateId' => $aggregateId,
             'other' => 123
@@ -65,7 +65,7 @@ class EventSnapshotTest extends TestCase
         /** @var InvocationMocker */
         $aggregateId = $this->createMock(IdentityObject::class);
         $aggregateId->method('value')->willReturn('1234567');
- 
+
         $occurrenceDate = new DateTimeImmutable("now", new DateTimeZone("UTC"));
 
         $event = new EventSnapshot([
@@ -93,7 +93,7 @@ class EventSnapshotTest extends TestCase
         /** @var InvocationMocker */
         $aggregateId = $this->createMock(IdentityObject::class);
         $aggregateId->method('value')->willReturn('1234567');
- 
+
         $event = new EventSnapshot([
             'aggregateId' => $aggregateId
         ]);

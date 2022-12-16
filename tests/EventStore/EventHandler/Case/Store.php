@@ -59,11 +59,11 @@ trait Store
         $object = $this->eventStoreFactory();
 
         $object->storeMultiple(DummyEntityOne::class, [
-            DummyEventOne::factory([ 
+            DummyEventOne::factory([
                 'aggregateId' => new IdentityObject('12345'),
                 'one' => 'Ricardo'
             ]),
-            DummyEventOne::factory([ 
+            DummyEventOne::factory([
                 'aggregateId' => new IdentityObject('67890'),
                 'one' => 'Pereira'
             ]),
@@ -80,7 +80,7 @@ trait Store
 
         $object->storeMultiple(DummyEntityOne::class, [
             // aggregateLabel = aggregate.one
-            DummyEventOne::factory([ 
+            DummyEventOne::factory([
                 'aggregateId' => new IdentityObject('12345'),
                 'one' => 'Ricardo',
             ]),
@@ -100,19 +100,19 @@ trait Store
 
         $object = $this->eventStoreFactory();
 
-        $one = EventSnapshot::factory([ 
+        $one = EventSnapshot::factory([
             'aggregateId' => new IdentityObject('12345'),
             'one' => 'Ricardo',
             'two' => 'Pereira',
             'thr' => 'Dias',
         ]);
 
-        $two = DummyEventOne::factory([ 
+        $two = DummyEventOne::factory([
             'aggregateId' => new IdentityObject('12345'),
             'one' => 'Ricardo',
         ]);
 
-        $thr = DummyEventTwo::factory([ 
+        $thr = DummyEventTwo::factory([
             'aggregateId' => new IdentityObject('12345'),
             'two' => 'Ricardo',
         ]);
@@ -120,7 +120,7 @@ trait Store
         $object->storeMultiple(DummyEntityOne::class, [ $one, $two, $thr ]);
 
         $list = $this->getPersistedEvents();
-        
+
         // one - - - - - -
         $this->assertEquals(1, $list[0]['version']);
         $this->assertEquals($one->occurredOn()->format('Y-m-d H:i:s.u'), $list[0]['occurredOn']);
@@ -163,13 +163,13 @@ trait Store
             'thr' => 'Dias',
         ]);
 
-        $others = DummyEventOne::factory([ 
+        $others = DummyEventOne::factory([
             'aggregateId' => new IdentityObject('12345'),
             'one' => 'Ricardo',
         ]);
 
         $eventList = [ $first, ... array_fill(0, 14, $others) ];
-        
+
         $this->assertCount(15, $eventList);
 
         $object->storeMultiple(DummyEntityOne::class, $eventList);
@@ -177,7 +177,7 @@ trait Store
         $storedList = $this->getPersistedEvents();
 
         $this->assertCount(16, $storedList);
-        
+
         // first snapshot - - - - - -
         $this->assertEquals(1, $storedList[0]['version']);
         $this->assertEquals(
@@ -189,7 +189,7 @@ trait Store
             json_decode($storedList[0]['eventData'])->occurredOn->date
         );
 
-        foreach(range(2, 10) as $version) {
+        foreach (range(2, 10) as $version) {
             $index = $version - 1;
             $this->assertEquals($version, $storedList[$index]['version']);
         }
@@ -207,7 +207,7 @@ trait Store
             preg_replace('/\..*/', '', json_decode($storedList[10]['eventData'])->occurredOn->date)
         );
 
-        foreach(range(12, 16) as $version) {
+        foreach (range(12, 16) as $version) {
             $index = $version - 1;
             $this->assertEquals($version, $storedList[$index]['version']);
         }
@@ -231,13 +231,13 @@ trait Store
             'fou' => 'Extra'
         ]);
 
-        $others = DummyEventOne::factory([ 
+        $others = DummyEventOne::factory([
             'aggregateId' => new IdentityObject('12345'),
             'one' => 'Ricardo',
         ]);
 
         $eventList = [ $first, ... array_fill(0, 14, $others) ];
-        
+
         $this->assertCount(15, $eventList);
 
         $object->storeMultiple(DummyEntityOne::class, $eventList);
@@ -250,7 +250,7 @@ trait Store
 
         $object = $this->eventStoreFactory();
 
-        $event = EventSnapshot::factory([ 
+        $event = EventSnapshot::factory([
             'aggregateId' => new IdentityObject('12345'),
             'one' => 'Ricardo',
             'two' => 'Pereira',
@@ -260,7 +260,7 @@ trait Store
         $object->store(DummyEntityOne::class, $event);
 
         $list = $this->getPersistedEvents();
-        
+
         $this->assertEquals(1, $list[0]['version']);
         $this->assertEquals(
             $event->occurredOn()->format('Y-m-d H:i:s.u'),

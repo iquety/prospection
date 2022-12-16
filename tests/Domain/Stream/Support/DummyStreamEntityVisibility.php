@@ -22,7 +22,7 @@ class DummyStreamEntityVisibility extends StreamEntity
         private ArrayObject $five,
         private DummyValue $six,
         private DummyEntity $seven
-    ){
+    ) {
     }
 
     public static function label(): string

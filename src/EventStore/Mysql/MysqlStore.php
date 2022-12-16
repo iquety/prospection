@@ -80,7 +80,7 @@ class MysqlStore implements Store
     {
         return $this->connection->lastError();
     }
-    
+
     /**
      * Remove o evento especificado.
      * @todo Implementar restabelecimento da numeração de versões
@@ -137,8 +137,8 @@ class MysqlStore implements Store
             SELECT * FROM `{$this->eventsTable}`
             WHERE aggregate_label = ? AND aggregate_id = ?
         ", [$aggregateLabel, $aggregateId]);
-        
-        foreach($list as $index => $event) {
+
+        foreach ($list as $index => $event) {
             $version = $index + 1;
 
             $bind = [

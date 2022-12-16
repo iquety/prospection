@@ -21,12 +21,12 @@ class MysqlStoreTest extends AbstractStoreCase
             'devel'
         );
     }
-    
+
     public function getPersistedEvents(): array
     {
         $result = $this->connection()->select('SELECT * FROM events');
 
-        return array_map(function($item) {
+        return array_map(function ($item) {
             return [
                 'aggregateId'    => $item['aggregate_id'],
                 'aggregateLabel' => $item['aggregate_label'],
@@ -34,7 +34,7 @@ class MysqlStoreTest extends AbstractStoreCase
                 'version'        => $item['version'],
                 'snapshot'       => $item['snapshot'],
                 'eventData'      => $item['event_data'],
-                'occurredOn'     => $item['occurred_on'],   
+                'occurredOn'     => $item['occurred_on'],
                 // 'createdOn'      => $item['created_on'],
                 // 'updatedOn'      => $item['updated_on']
             ];
@@ -45,7 +45,7 @@ class MysqlStoreTest extends AbstractStoreCase
     {
         /** @var MysqlStore $object */
         $object = $this->storeFactory();
-        
+
         $object->removeTable();
         $object->createTable();
     }

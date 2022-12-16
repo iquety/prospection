@@ -20,7 +20,7 @@ class StateChangeTest extends TestCase
         /** @var InvocationMocker */
         $aggregateId = $this->createMock(IdentityObject::class);
         $aggregateId->method('value')->willReturn('1234567');
- 
+
         $eventOccurence = new DateTimeImmutable("now", new DateTimeZone("UTC"));
 
         $event = new EventSnapshot([
@@ -86,7 +86,7 @@ class StateChangeTest extends TestCase
         $state->change($eventOne);
 
         $values = $state->toArray();
-        
+
         $this->assertEquals('1234567', $values['aggregateId']->value());
         $this->assertEquals('Ricardo', $values['name']);
         $this->assertEquals('contato@gmail.com', $values['email']);
@@ -103,7 +103,7 @@ class StateChangeTest extends TestCase
             'aggregateId' => $aggregateId,
             'name'        => 'Pereira',
         ]);
- 
+
         $previousValues = $state->toArray();
 
         /** @var DomainEvent $eventTwo */

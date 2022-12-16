@@ -14,8 +14,10 @@ use Throwable;
 
 /**
  * Esta é a implementação de uma entidade que contém gerenciamento de fluxos
- * de eventos. Deve ser usada para entidades que representem a raiz de uma 
+ * de eventos. Deve ser usada para entidades que representem a raiz de uma
  * agregação destinada ao uso de Event Sourcing.
+ *
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
 abstract class StreamEntity extends Entity
 {
@@ -43,8 +45,8 @@ abstract class StreamEntity extends Entity
 
     /**
      * Aplica o evento na entidade, mudando seu estado.
-     * Os eventos aplicados após a consolidação de uma entidade são armazenados em memória 
-     * para serem obtidos posteriormente (usando método self::changes()) com a finalidade 
+     * Os eventos aplicados após a consolidação de uma entidade são armazenados em memória
+     * para serem obtidos posteriormente (usando método self::changes()) com a finalidade
      * de transmití-los (Pub/Sub) ou persistí-los (Event Sourcing).
      */
     public function changeState(DomainEvent $domainEvent): void
@@ -61,7 +63,7 @@ abstract class StreamEntity extends Entity
 
     /**
      * Consolida o estado do agregado, aplicando uma lista de eventos ocorridos.
-     * Esta lista, geralmente, será obtida de algum banco de dados a fim de 
+     * Esta lista, geralmente, será obtida de algum banco de dados a fim de
      * restabelecer o estado atual da entidade.
      * @param array<DomainEvent> $domainEventList
      */
@@ -92,7 +94,7 @@ abstract class StreamEntity extends Entity
         }
 
         // chamado aqui para verificar a visibilidade do construtor
-        $state = $instance->state(); 
+        $state = $instance->state();
 
         if (isset($stateValues['occurredOn']) === true) {
             $state->internalFactoryDateTime($stateValues['occurredOn']);
@@ -117,7 +119,7 @@ abstract class StreamEntity extends Entity
 
     public function equalTo(Entity $other): bool
     {
-        return $other instanceOf StreamEntity
+        return $other instanceof StreamEntity
             && static::label() === $other::label()
             && $this->identity()->value() === $other->identity()->value();
     }
@@ -148,7 +150,7 @@ abstract class StreamEntity extends Entity
     private function applyStateChange(DomainEvent $domainEvent): void
     {
         $this->state()->change($domainEvent);
-        
+
         $this->localChange($domainEvent);
     }
 

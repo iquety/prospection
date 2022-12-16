@@ -19,7 +19,7 @@ trait AbstractQueryListAggreg
 
         // aggregate.thr = 16 eventos
         $this->assertCount(16, $object->eventListForVersion('aggregate.thr', '67890', 1));
-        
+
         // aggregate.thr = 6 eventos desde o último snapshot
         $aggregateEvents = $object->eventListForAggregate('aggregate.thr', '67890');
         $this->assertCount(6, $aggregateEvents);

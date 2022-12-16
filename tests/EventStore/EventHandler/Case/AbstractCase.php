@@ -24,7 +24,7 @@ abstract class AbstractCase extends EventStoreCase
     use Remove;
     use Store;
     use Stream;
-    
+
     abstract public function getPersistedEvents(): array;
 
     abstract public function eventStoreFactory(): EventStore;
@@ -73,13 +73,13 @@ abstract class AbstractCase extends EventStoreCase
                 'occurredOn' => new DateTimeImmutable('2022-10-10 00:00:00')
             ]),
 
-            DummyEventOne::factory([ 
+            DummyEventOne::factory([
                 'aggregateId' => new IdentityObject($id),
                 'one' => 'Ricardo',
                 'occurredOn' => new DateTimeImmutable('2022-10-10 01:00:00')
             ]),
 
-            DummyEventTwo::factory([ 
+            DummyEventTwo::factory([
                 'aggregateId' => new IdentityObject($id),
                 'two' => 'Pereira',
                 'occurredOn' => new DateTimeImmutable('2022-10-10 02:00:00')
@@ -98,7 +98,7 @@ abstract class AbstractCase extends EventStoreCase
                 'occurredOn' => new DateTimeImmutable('2022-10-10 00:00:00')
             ]),
 
-            DummyEventThr::factory([ 
+            DummyEventThr::factory([
                 'aggregateId' => new IdentityObject($id),
                 'one' => 'Ricardo',
                 'two' => 'Pereira',

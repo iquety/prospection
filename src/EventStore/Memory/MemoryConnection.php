@@ -16,7 +16,7 @@ class MemoryConnection
 
     public static function instance(): self
     {
-        if(static::$instance === null) {
+        if (static::$instance === null) {
             static::$instance = new self();
         }
 

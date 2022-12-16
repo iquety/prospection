@@ -23,7 +23,7 @@ class ConsolidateTest extends TestCase
 
         // consolidar uma entidade, significa reaplicar todos os eventos já ocorridos
         // (e persistidos em algum banco de dados)
-        // O estado de uma entidade é composto de todos os eventos ocorridos 
+        // O estado de uma entidade é composto de todos os eventos ocorridos
         // desde que ela nasceu
         $object->consolidate([
             new EventSnapshot([
@@ -62,7 +62,7 @@ class ConsolidateTest extends TestCase
 
         // consolidar uma entidade, significa reaplicar todos os eventos já ocorridos
         // (e persistidos em algum banco de dados)
-        // O estado de uma entidade é composto de todos os eventos ocorridos 
+        // O estado de uma entidade é composto de todos os eventos ocorridos
         // desde que ela nasceu
         $object->consolidate([
             new EventSnapshot([

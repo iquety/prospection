@@ -12,8 +12,7 @@ class DummyEventOne extends DomainEvent
     protected function __construct(
         private IdentityObject $aggregateId,
         private string $one
-    )
-    {
+    ) {
         # code...
     }
 

@@ -35,7 +35,7 @@ trait Remove
         $stream = $object->streamFor(DummyEntityOne::class, new IdentityObject('12345'));
         $this->assertEquals(19, $object->countAllEvents());
         $this->assertEquals(3, $stream->count());
-        
+
         $object->remove(DummyEntityOne::class, new IdentityObject('12345'), 1);
 
         $stream = $object->streamFor(DummyEntityOne::class, new IdentityObject('12345'));
@@ -51,7 +51,7 @@ trait Remove
         $stream = $object->streamFor(DummyEntityOne::class, new IdentityObject('12345'));
         $this->assertEquals(19, $object->countAllEvents());
         $this->assertEquals(3, $stream->count());
-        
+
         $object->removePrevious(DummyEntityOne::class, new IdentityObject('12345'), 3);
 
         $stream = $object->streamFor(DummyEntityOne::class, new IdentityObject('12345'));
@@ -67,7 +67,7 @@ trait Remove
         $stream = $object->streamFor(DummyEntityOne::class, new IdentityObject('12345'));
         $this->assertEquals(19, $object->countAllEvents());
         $this->assertEquals(3, $stream->count());
-        
+
         // existe mapenas 3 eventos
         // removendo anteriores a 4
         $object->removePrevious(DummyEntityOne::class, new IdentityObject('12345'), 4);

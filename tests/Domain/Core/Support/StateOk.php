@@ -21,7 +21,7 @@ class StateOk
         private DummyValue $six,
         private DummyEntity $seven,
         private DummyEntityRoot $eight,
-    ){
+    ) {
     }
 
     /** @return array<string,mixed> */
@@ -35,4 +35,3 @@ class StateOk
         return $this->extractStateString();
     }
 }
-

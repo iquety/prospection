@@ -22,7 +22,7 @@ class DummyStreamEntitySameLabel extends DummyStreamEntity
         private ArrayObject $five,
         private DummyValue $six,
         private DummyEntity $seven
-    ){
+    ) {
     }
 
     public static function label(): string

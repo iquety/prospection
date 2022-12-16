@@ -23,27 +23,27 @@ trait Stream
     public function streamFor(): void
     {
         $this->resetDatabase();
-        
+
         $object = $this->eventStoreFactory();
 
         $object->registerEventType(DummyEventOne::class);
         $object->registerEventType(DummyEventTwo::class);
 
         /** @var EventSnapshot $one */
-        $one = EventSnapshot::factory([ 
+        $one = EventSnapshot::factory([
             'aggregateId' => new IdentityObject('12345'),
             'one' => 'Ricardo',
             'two' => 'Pereira',
         ]);
 
         /** @var DummyEventOne $two */
-        $two = DummyEventOne::factory([ 
+        $two = DummyEventOne::factory([
             'aggregateId' => new IdentityObject('12345'),
             'one' => 'Ricardo',
         ]);
 
         /** @var DummyEventTwo $thr */
-        $thr = DummyEventTwo::factory([ 
+        $thr = DummyEventTwo::factory([
             'aggregateId' => new IdentityObject('12345'),
             'two' => 'Ricardo',
         ]);
@@ -100,27 +100,27 @@ trait Stream
     public function streamSince(): void
     {
         $this->resetDatabase();
-        
+
         $object = $this->eventStoreFactory();
 
         $object->registerEventType(DummyEventOne::class);
         $object->registerEventType(DummyEventTwo::class);
 
         /** @var EventSnapshot $one */
-        $one = EventSnapshot::factory([ 
+        $one = EventSnapshot::factory([
             'aggregateId' => new IdentityObject('12345'),
             'one' => 'Ricardo',
             'two' => 'Pereira',
         ]);
 
         /** @var DummyEventOne $two */
-        $two = DummyEventOne::factory([ 
+        $two = DummyEventOne::factory([
             'aggregateId' => new IdentityObject('12345'),
             'one' => 'Ricardo',
         ]);
 
         /** @var DummyEventTwo $thr */
-        $thr = DummyEventTwo::factory([ 
+        $thr = DummyEventTwo::factory([
             'aggregateId' => new IdentityObject('12345'),
             'two' => 'Ricardo',
         ]);

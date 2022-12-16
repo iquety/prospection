@@ -27,7 +27,7 @@ class MysqlConnection
         private array $options = []
     ) {
         $dns = 'mysql:host=' . $this->host . ';port=' . $this->port . ';dbname=' . $this->dbname;
-        
+
         $this->error = new Error('', '');
 
         try {
@@ -36,7 +36,7 @@ class MysqlConnection
             $this->error = new Error((string)$exception->getCode(), $exception->getMessage());
         }
     }
-    
+
     private function hasConnection(): bool
     {
         return $this->pdo !== null;
@@ -110,7 +110,7 @@ class MysqlConnection
         if ($info[0] !== '') {
             return $this->error;
         }
-        
+
         // [0] => HY000                      -> SQLSTATE error code
         // [1] => 1                          -> Driver-specific error code.
         // [2] => near "bogus": syntax error -> Driver-specific error message.

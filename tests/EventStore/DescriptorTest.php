@@ -29,7 +29,7 @@ class DescriptorTest extends TestCase
             'seven'       => new DummyEntity(new IdentityObject('111'), 'test2'),
         ];
     }
-    
+
     /** @test */
     public function getters(): void
     {
@@ -110,7 +110,7 @@ class DescriptorTest extends TestCase
             new DateTimeImmutable("2022-10-10 11:10:10.703961")
         );
 
-        $this->assertEquals("DummyStreamEntity [\n" . 
+        $this->assertEquals("DummyStreamEntity [\n" .
             "    aggregateId = IdentityObject [123456]\n" .
             "    one = Ricardo\n" .
             "    two = 30\n" .

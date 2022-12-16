@@ -25,8 +25,8 @@ class StateConsistencyTest extends TestCase
         ];
     }
 
-    /** 
-     * @test 
+    /**
+     * @test
      * @dataProvider checkableMethodsProvider
      */
     public function consistencyCheck(string $methodName): void
@@ -58,7 +58,7 @@ class StateConsistencyTest extends TestCase
         /** @var InvocationMocker */
         $aggregateId = $this->createMock(IdentityObject::class);
         $aggregateId->method('value')->willReturn('1234567');
- 
+
         /** @var InvocationMocker */
         $eventOne = $this->createMock(DomainEvent::class);
         $eventOne->method('occurredOn')->willReturn(new DateTimeImmutable());

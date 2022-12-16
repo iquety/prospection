@@ -45,11 +45,11 @@ class StreamId
 
     public function equalTo(StreamId $other): bool
     {
-        return $this->aggregateId()->equalTo($other->aggregateId()) 
+        return $this->aggregateId()->equalTo($other->aggregateId())
             && $this->aggregateLabel() === $other->aggregateLabel()
             && $this->version() === $other->version();
     }
-    
+
     /**
      * Obtém a 'versao do estado' de um fluxo de eventos. Quando um novo evento
      * é emitido para um determinado agregado, ele é armazenado em disco contendo

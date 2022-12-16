@@ -17,7 +17,7 @@ trait AbstractQueryListConsol
     public function emptyEventListForConsolidation(): void
     {
         $object = $this->queryFactory();
-        
+
         $this->assertCount(0, $object->eventListForConsolidation([]));
     }
 
@@ -25,14 +25,14 @@ trait AbstractQueryListConsol
     public function eventListForThrConsolidation(): void
     {
         $object = $this->queryFactory();
-        
+
         $eventsAfterSnapshot = $object->eventListForConsolidation(
             $object->aggregateList('aggregate.thr', new Interval(999)),
         );
 
         // total de eventos do agregado é 16
         $this->assertCount(6, $eventsAfterSnapshot);
-        
+
         $this->assertSame(11, $eventsAfterSnapshot[0]['version']);
         $this->assertSame('2022-10-10 11:10:10.000000', $eventsAfterSnapshot[0]['occurredOn']);
 
@@ -48,7 +48,7 @@ trait AbstractQueryListConsol
             $aggregateEvents[0]['occurredOn'],
             $eventsAfterSnapshot[0]['occurredOn']
         );
-        
+
         $this->assertSame($aggregateEvents[5]['version'], $eventsAfterSnapshot[5]['version']);
         $this->assertSame(
             $aggregateEvents[5]['occurredOn'],

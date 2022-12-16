@@ -21,4 +21,3 @@ class NoConstructor
         return $this->extractStateString();
     }
 }
-

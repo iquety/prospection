@@ -20,7 +20,7 @@ use Tests\EventStore\Support\DummyEventTwo;
 trait Consolidation
 {
     /**
-     * @test 
+     * @test
      * @dataProvider eventStoreProvider
      */
     public function consolidationList(EventStore $object): void
@@ -49,7 +49,7 @@ trait Consolidation
     }
 
     /**
-     * @test 
+     * @test
      * @dataProvider eventStoreProvider
      */
     public function consolidationIntervalLimit(EventStore $object): void
@@ -63,7 +63,7 @@ trait Consolidation
     }
 
     /**
-     * @test 
+     * @test
      * @dataProvider eventStoreProvider
      */
     public function consolidationIntervalOffset(EventStore $object): void

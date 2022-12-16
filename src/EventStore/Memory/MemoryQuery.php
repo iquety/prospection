@@ -9,15 +9,17 @@ use Iquety\Prospection\EventStore\Error;
 use Iquety\Prospection\EventStore\Interval;
 use Iquety\Prospection\EventStore\Query;
 
+/** @SuppressWarnings(PHPMD.TooManyPublicMethods) */
 class MemoryQuery implements Query
 {
     private Error $error;
-    
+
     public function __construct()
     {
         $this->error = new Error('', '');
     }
-    
+
+    /** @SuppressWarnings(PHPMD.StaticAccess) */
     private function connection(): MemoryConnection
     {
         return MemoryConnection::instance();
@@ -43,31 +45,31 @@ class MemoryQuery implements Query
         $creations = [];
         $updates = [];
         $lastVersions = [];
-        
+
         // somente agregados do tipo especificado
         foreach ($eventlist as $event) {
             if ($event['aggregateLabel'] !== $aggregateLabel) {
                 continue;
             }
 
-            $id = $event['aggregateId'];
+            $eventAggregateId = $event['aggregateId'];
 
-            if (isset($creations[$id]) === false) {
-                $creations[$id] = $event['occurredOn'];
+            if (isset($creations[$eventAggregateId]) === false) {
+                $creations[$eventAggregateId] = $event['occurredOn'];
             }
 
-            $updates[$id] = $event['occurredOn'];
-            $lastVersions[$id] = $event['version'];
+            $updates[$eventAggregateId] = $event['occurredOn'];
+            $lastVersions[$eventAggregateId] = $event['version'];
 
             if ($event['snapshot'] === 1) {
                 // o primeiro evento adicionado na lista define sua ordem
                 // isso permite ordenar os agregados pela sua data de criação
-                $aggregateList[$id] = $event;
+                $aggregateList[$eventAggregateId] = $event;
             }
 
-            $aggregateList[$id]['createdOn'] = $creations[$id];
-            $aggregateList[$id]['updatedOn'] = $updates[$id];
-            $aggregateList[$id]['lastVersion'] = $lastVersions[$id];
+            $aggregateList[$eventAggregateId]['createdOn'] = $creations[$eventAggregateId];
+            $aggregateList[$eventAggregateId]['updatedOn'] = $updates[$eventAggregateId];
+            $aggregateList[$eventAggregateId]['lastVersion'] = $lastVersions[$eventAggregateId];
         }
 
         // total de entidades sem o filtro do intervalo
@@ -95,16 +97,15 @@ class MemoryQuery implements Query
         string $aggregateLabel,
         DateTimeImmutable $initialMoment,
         Interval $interval
-    ): array
-    {
+    ): array {
         $limit = $interval->registers();
         $offset = $interval->offset();
 
         $aggregateList = [];
-        
+
         $list = $this->aggregateList($aggregateLabel, new Interval(9999));
 
-        foreach($list as $event) {
+        foreach ($list as $event) {
             if (new DateTimeImmutable($event['occurredOn']) >= $initialMoment) {
                 $aggregateList[] = $event;
             }
@@ -117,7 +118,7 @@ class MemoryQuery implements Query
         }
 
         $listInterval = array_slice($aggregateList, $offset, $limit);
-        
+
         return array_values($listInterval); // para indexar sequencialmente
     }
 
@@ -132,18 +133,18 @@ class MemoryQuery implements Query
 
         $list = $this->connection()->all();
 
-        foreach($list as $event) {
+        foreach ($list as $event) {
             if ($event['aggregateLabel'] !== $aggregateLabel) {
                 continue;
             }
 
-            $id = $event['aggregateId'];
+            $eventAggregateId = $event['aggregateId'];
 
-            if ($id !== $aggregateId) {
+            if ($eventAggregateId !== $aggregateId) {
                 continue;
             }
 
-            $eventList[] = $id;
+            $eventList[] = $eventAggregateId;
         }
 
         return count($eventList);
@@ -155,14 +156,14 @@ class MemoryQuery implements Query
 
         $list = $this->connection()->all();
 
-        foreach($list as $event) {
+        foreach ($list as $event) {
             if ($event['aggregateLabel'] !== $aggregateLabel) {
                 continue;
             }
 
-            $id = $event['aggregateId'];
+            $eventAggregateId = $event['aggregateId'];
 
-            $entities[$id] = $id;
+            $entities[$eventAggregateId] = $eventAggregateId;
         }
 
         return count($entities);
@@ -184,7 +185,7 @@ class MemoryQuery implements Query
         $createdOn = null;
         $updatedOn = null;
 
-        foreach($list as $eventRegister) {
+        foreach ($list as $eventRegister) {
             $isAggregateEvent = $eventRegister['aggregateLabel'] === $aggregateLabel
                 && $eventRegister['aggregateId'] === $aggregateId;
 

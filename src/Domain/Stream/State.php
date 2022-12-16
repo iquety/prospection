@@ -6,14 +6,12 @@ namespace Iquety\Prospection\Domain\Stream;
 
 use DateTimeImmutable;
 use DomainException;
-use ErrorException;
 use InvalidArgumentException;
 use Iquety\Prospection\Domain\Core\IdentityObject;
 use Iquety\Prospection\EventStore\EventSnapshot;
 use OutOfRangeException;
-use Throwable;
-use TypeError;
 
+/** @SuppressWarnings(PHPMD.TooManyPublicMethods) */
 class State
 {
     private bool $empty = true;
@@ -87,10 +85,11 @@ class State
         return $this->state;
     }
 
+    /** @SuppressWarnings(PHPMD.StaticAccess) */
     public function toSnapshot(): EventSnapshot
     {
         $this->checkState();
-        
+
         return EventSnapshot::factory($this->toArray());
     }
 
@@ -119,7 +118,8 @@ class State
 
         if ($this->state[$name] === 'undefined') {
             throw new DomainException(
-                "The queried value '{$name}' is not filled yet");
+                "The queried value '{$name}' is not filled yet"
+            );
         }
 
         return $this->state[$name];

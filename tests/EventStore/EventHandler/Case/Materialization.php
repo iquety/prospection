@@ -21,7 +21,7 @@ use Tests\EventStore\Support\DummyEventTwo;
 trait Materialization
 {
     /**
-     * @test 
+     * @test
      * @dataProvider eventStoreProvider
      */
     public function materializationList(EventStore $object): void
@@ -31,7 +31,8 @@ trait Materialization
         $listOne = $object->listMaterialization(
             DummyEntityOne::class,
             new DateTimeImmutable($date(0)),
-            new Interval(99));
+            new Interval(99)
+        );
         $this->assertCount(5, $listOne);
 
         $this->assertInstanceOf(Descriptor::class, $listOne[0]);
@@ -45,7 +46,8 @@ trait Materialization
         $listTwo = $object->listMaterialization(
             DummyEntityTwo::class,
             new DateTimeImmutable($date(0)),
-            new Interval(99));
+            new Interval(99)
+        );
 
         $this->assertCount(2, $listTwo);
 
@@ -57,7 +59,7 @@ trait Materialization
     }
 
     /**
-     * @test 
+     * @test
      * @dataProvider eventStoreProvider
      */
     public function materializationIntervalLimit(EventStore $object): void
@@ -67,41 +69,41 @@ trait Materialization
         $this->assertCount(0, $object->listMaterialization(
             DummyEntityOne::class,
             new DateTimeImmutable($date(0)),
-            new Interval(0))
-        );
+            new Interval(0)
+        ));
         $this->assertCount(1, $object->listMaterialization(
             DummyEntityOne::class,
             new DateTimeImmutable($date(0)),
-            new Interval(1))
-        );
+            new Interval(1)
+        ));
 
         $this->assertCount(2, $object->listMaterialization(
             DummyEntityOne::class,
             new DateTimeImmutable($date(0)),
-            new Interval(2))
-        );
+            new Interval(2)
+        ));
 
         $this->assertCount(3, $object->listMaterialization(
             DummyEntityOne::class,
             new DateTimeImmutable($date(0)),
-            new Interval(3))
-        );
+            new Interval(3)
+        ));
 
         $this->assertCount(4, $object->listMaterialization(
             DummyEntityOne::class,
             new DateTimeImmutable($date(0)),
-            new Interval(4))
-        );
+            new Interval(4)
+        ));
 
         $this->assertCount(5, $object->listMaterialization(
             DummyEntityOne::class,
             new DateTimeImmutable($date(0)),
-            new Interval(5))
-        );
+            new Interval(5)
+        ));
     }
 
     /**
-     * @test 
+     * @test
      * @dataProvider eventStoreProvider
      */
     public function materializationIntervalOffset(EventStore $object): void
@@ -119,64 +121,64 @@ trait Materialization
         $this->assertCount(5, $object->listMaterialization(
             DummyEntityOne::class,
             new DateTimeImmutable($date(0)),
-            new Interval(5, 0))
-        );
+            new Interval(5, 0)
+        ));
         $this->assertCount(4, $object->listMaterialization(
             DummyEntityOne::class,
             new DateTimeImmutable($date(0)),
-            new Interval(5, 1))
-        );
+            new Interval(5, 1)
+        ));
         $this->assertCount(3, $object->listMaterialization(
             DummyEntityOne::class,
             new DateTimeImmutable($date(0)),
-            new Interval(5, 2))
-        );
+            new Interval(5, 2)
+        ));
         $this->assertCount(2, $object->listMaterialization(
             DummyEntityOne::class,
             new DateTimeImmutable($date(0)),
-            new Interval(5, 3))
-        );
+            new Interval(5, 3)
+        ));
         $this->assertCount(1, $object->listMaterialization(
             DummyEntityOne::class,
             new DateTimeImmutable($date(0)),
-            new Interval(5, 4))
-        );
+            new Interval(5, 4)
+        ));
         $this->assertCount(0, $object->listMaterialization(
             DummyEntityOne::class,
             new DateTimeImmutable($date(0)),
-            new Interval(5, 5))
-        );
+            new Interval(5, 5)
+        ));
 
         $this->assertCount(1, $object->listMaterialization(
-            DummyEntityOne::class, 
+            DummyEntityOne::class,
             new DateTimeImmutable($date(0)),
-            new Interval(1, 0))
-        );
+            new Interval(1, 0)
+        ));
         $this->assertCount(1, $object->listMaterialization(
-            DummyEntityOne::class, 
+            DummyEntityOne::class,
             new DateTimeImmutable($date(0)),
-            new Interval(1, 1))
-        );
+            new Interval(1, 1)
+        ));
         $this->assertCount(1, $object->listMaterialization(
-            DummyEntityOne::class, 
+            DummyEntityOne::class,
             new DateTimeImmutable($date(0)),
-            new Interval(1, 2))
-        );
+            new Interval(1, 2)
+        ));
         $this->assertCount(1, $object->listMaterialization(
-            DummyEntityOne::class, 
+            DummyEntityOne::class,
             new DateTimeImmutable($date(0)),
-            new Interval(1, 3))
-        );
+            new Interval(1, 3)
+        ));
         $this->assertCount(1, $object->listMaterialization(
-            DummyEntityOne::class, 
+            DummyEntityOne::class,
             new DateTimeImmutable($date(0)),
-            new Interval(1, 4))
-        );
+            new Interval(1, 4)
+        ));
 
         $this->assertCount(0, $object->listMaterialization(
-            DummyEntityOne::class, 
+            DummyEntityOne::class,
             new DateTimeImmutable($date(0)),
-            new Interval(1, 5))
-        );
+            new Interval(1, 5)
+        ));
     }
 }

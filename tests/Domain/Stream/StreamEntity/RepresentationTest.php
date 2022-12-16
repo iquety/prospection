@@ -19,7 +19,7 @@ class RepresentationTest extends TestCase
         $factoryValues['occurredOn'] = new DateTimeImmutable("now");
 
         $object = DummyStreamEntity::factory($factoryValues);
-       
+
         $compareValues = $stateValues;
         $compareValues['createdOn'] = $factoryValues['occurredOn'];
         $compareValues['updatedOn'] = $factoryValues['occurredOn'];
@@ -37,7 +37,7 @@ class RepresentationTest extends TestCase
 
         $object = DummyStreamEntity::factory($values);
 
-        $this->assertEquals("DummyStreamEntity [\n" . 
+        $this->assertEquals("DummyStreamEntity [\n" .
             "    aggregateId = IdentityObject [123456]\n" .
             "    one = Ricardo\n" .
             "    two = 30\n" .

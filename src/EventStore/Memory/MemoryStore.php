@@ -13,12 +13,13 @@ use Iquety\Prospection\EventStore\Store;
 class MemoryStore implements Store
 {
     private Error $error;
-    
+
     public function __construct()
     {
         $this->error = new Error('', '');
     }
 
+    /** @SuppressWarnings(PHPMD.StaticAccess) */
     private function connection(): MemoryConnection
     {
         return MemoryConnection::instance();
@@ -53,7 +54,7 @@ class MemoryStore implements Store
     {
         return $this->error;
     }
-    
+
     /**
      * Remove o evento especificado.
      * @todo Implementar restabelecimento da numeração de versões
@@ -65,9 +66,9 @@ class MemoryStore implements Store
     ): void {
         $list = $this->connection()->all();
 
-        foreach($list as $index => $register) {
+        foreach ($list as $index => $register) {
             if (
-                $register['aggregateLabel'] === $aggregateLabel 
+                $register['aggregateLabel'] === $aggregateLabel
                 && $register['aggregateId'] === $aggregateId
                 && $register['version'] === $version
             ) {
@@ -92,9 +93,9 @@ class MemoryStore implements Store
     ): void {
         $list = $this->connection()->all();
 
-        foreach($list as $index => $register) {
+        foreach ($list as $index => $register) {
             if (
-                $register['aggregateLabel'] === $aggregateLabel 
+                $register['aggregateLabel'] === $aggregateLabel
                 && $register['aggregateId'] === $aggregateId
                 && $register['version'] < $version
             ) {
@@ -103,7 +104,7 @@ class MemoryStore implements Store
         }
 
         $this->connection()->reindex();
-        
+
         $this->sortVersions($aggregateLabel, $aggregateId);
     }
 
@@ -123,7 +124,7 @@ class MemoryStore implements Store
 
         $eventList = $this->connection()->all();
 
-        foreach($eventList as $index => $register) {
+        foreach ($eventList as $index => $register) {
             if (
                 $register['aggregateLabel'] === $aggregateLabel
                 && $register['aggregateId'] === $aggregateId

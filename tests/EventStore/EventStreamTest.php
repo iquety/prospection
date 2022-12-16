@@ -16,7 +16,7 @@ class EventStreamTest extends TestCase
     public function addEvent(): void
     {
         $stream = new EventStream();
-        
+
         $stream->addEvent($this->eventFactory(), 1);
         $stream->addEvent($this->eventFactory(), 2);
         $stream->addEvent($this->eventFactory(), 3);

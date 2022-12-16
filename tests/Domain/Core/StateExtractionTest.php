@@ -25,7 +25,7 @@ class StateExtractionTest extends TestCase
         ];
     }
 
-    /** 
+    /**
      * @test
      * @dataProvider methodsProvider
      */
@@ -63,7 +63,7 @@ class StateExtractionTest extends TestCase
                 new DummyValue('test5'),
             ),
         );
-        
+
         $this->assertEquals([
             'one' => 'Ricardo',
             'two' => 30,
@@ -102,7 +102,7 @@ class StateExtractionTest extends TestCase
                 new DummyValue('test5'),
             ),
         );
-        
+
         $this->assertEquals("StateOk [\n" .
             "    one = Ricardo\n" .
             "    two = 30\n" .

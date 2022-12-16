@@ -32,7 +32,7 @@ class EventStoreCase extends TestCase
             'version'        => $version,
             'snapshot'       => $snapshot,
             'eventData'      => (new JsonEventSerializer())->serialize($eventData),
-            'occurredOn'     => $now->format('Y-m-d H:i:s.u') 
+            'occurredOn'     => $now->format('Y-m-d H:i:s.u')
         ];
     }
 }

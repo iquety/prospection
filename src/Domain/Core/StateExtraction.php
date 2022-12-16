@@ -52,7 +52,7 @@ trait StateExtraction
         }
 
         $constructor = $this->reflectionConstructor();
-    
+
         $this->stateFields = array_map(
             fn($item) => $item->getName(),
             $constructor->getParameters()
@@ -72,7 +72,7 @@ trait StateExtraction
 
         foreach ($propertyList as $label) {
             $property = $reflection->getProperty($label);
-            
+
             $property->setAccessible(true);
 
             $stateValues[$label] = $property->getValue($this);

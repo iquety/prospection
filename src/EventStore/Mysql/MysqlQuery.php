@@ -10,6 +10,7 @@ use Iquety\Prospection\EventStore\Interval;
 use Iquety\Prospection\EventStore\Query;
 use PDOException;
 
+/** @SuppressWarnings(PHPMD.TooManyPublicMethods) */
 class MysqlQuery implements Query
 {
     /**
@@ -91,8 +92,7 @@ class MysqlQuery implements Query
         string $aggregateLabel,
         DateTimeImmutable $initialMoment,
         Interval $interval
-    ): array
-    {
+    ): array {
         $limit = $interval->registers();
         $offset = $interval->offset();
 

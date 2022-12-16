@@ -13,8 +13,7 @@ class DummyEventThr extends DomainEvent
         private IdentityObject $aggregateId,
         private string $one,
         private string $two
-    )
-    {
+    ) {
         # code...
     }
 

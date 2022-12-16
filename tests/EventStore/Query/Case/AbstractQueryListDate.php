@@ -19,13 +19,13 @@ trait AbstractQueryListDate
     public function snapshotDateTwoEntities(): void
     {
         $object = $this->queryFactory();
-        
+
         $aggregateList = $object->aggregateListByDate(
             'aggregate.one',
             new DateTimeImmutable("2022-10-10 00:10:10"),
             new Interval(999, 0)
         );
-        
+
         // existem duas entidades para 'aggregate.one'
         $this->assertCount(5, $aggregateList);
 
@@ -36,9 +36,9 @@ trait AbstractQueryListDate
         // último snapshot
         $this->assertEquals('2022-10-10 01:10:10.000000', $aggregateList[0]['occurredOn']);
         // primeiro evento
-        $this->assertEquals('2022-10-10 01:10:10.000000', $aggregateList[0]['createdOn']); 
+        $this->assertEquals('2022-10-10 01:10:10.000000', $aggregateList[0]['createdOn']);
         // último evento
-        $this->assertEquals('2022-10-10 10:10:10.000000', $aggregateList[0]['updatedOn']); 
+        $this->assertEquals('2022-10-10 10:10:10.000000', $aggregateList[0]['updatedOn']);
 
         $this->assertEquals(10, $object->countAggregateEvents('aggregate.one', '54321+5h'));
         $this->assertEquals('54321+5h', $aggregateList[1]['aggregateId']);
@@ -55,13 +55,13 @@ trait AbstractQueryListDate
     {
         /** @var Query */
         $object = $this->queryFactory();
-        
+
         $aggregateList = $object->aggregateListByDate(
             'aggregate.one',
             new DateTimeImmutable("2022-10-10 05:10:10"),
             new Interval(999, 0)
         );
-        
+
         // existe uma entidade após 05:10:10 para 'aggregate.one'
         $this->assertCount(1, $aggregateList);
 
@@ -82,7 +82,7 @@ trait AbstractQueryListDate
     {
         /** @var Query */
         $object = $this->queryFactory();
-        
+
         $aggregateList = $object->aggregateListByDate(
             'aggregate.one',
             new DateTimeImmutable("2022-10-10 05:10:10"),
