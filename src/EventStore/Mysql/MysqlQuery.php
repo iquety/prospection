@@ -8,6 +8,7 @@ use DateTimeImmutable;
 use Iquety\Prospection\EventStore\Error;
 use Iquety\Prospection\EventStore\Interval;
 use Iquety\Prospection\EventStore\Query;
+use PDOException;
 
 class MysqlQuery implements Query
 {
@@ -19,6 +20,7 @@ class MysqlQuery implements Query
         private MysqlConnection $connection,
         private string $eventsTable
     ) {
+        $this->error = new Error('', '');
     }
 
     /**
@@ -312,12 +314,12 @@ class MysqlQuery implements Query
 
     public function hasError(): bool
     {
-        return false;
+        return $this->connection->lastError()->message() !== '';
     }
 
     public function lastError(): Error
     {
-        return new Error('', '');
+        return $this->connection->lastError();
     }
 
     public function nextVersion(string $aggregateLabel, string $aggregateId): int

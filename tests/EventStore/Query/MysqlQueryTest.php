@@ -22,6 +22,7 @@ class MysqlQueryTest extends AbstractCase
             'devel'
         );
     }
+    
     public function queryFactory(): Query
     {
         return new MysqlQuery($this->connection(), 'events');
@@ -125,15 +126,60 @@ class MysqlQueryTest extends AbstractCase
         $this->connection()->execute($sql, array_values($eventData));
     }
 
-    // /** @test */
-    // public function errors(): void
-    // {
-    //     $object = $this->queryFactory();
+    /** @test */
+    public function connectionOk(): void
+    {
+        $object = $this->queryFactory();
 
-    //     // MemoryQuery nunca possui erros
-    //     $this->assertFalse($object->hasError());
-    //     $this->assertInstanceOf(Error::class, $object->lastError());
-    //     $this->assertEquals('', $object->lastError()->code());
-    //     $this->assertEquals('', $object->lastError()->message());
-    // }
+        $this->assertFalse($object->hasError());
+        $this->assertInstanceOf(Error::class, $object->lastError());
+        $this->assertEquals('', $object->lastError()->code());
+        $this->assertEquals('', $object->lastError()->message());
+    }
+
+    /** @test */
+    public function connectionError(): void
+    {
+        $connection = new MysqlConnection(
+            'devel',
+            'invalid', // host errado
+            3306,
+            'devel',
+            'devel'
+        );
+
+        $object = new MysqlQuery($connection, 'events');
+
+        $this->assertTrue($object->hasError());
+        $this->assertInstanceOf(Error::class, $object->lastError());
+        $this->assertEquals('2002', $object->lastError()->code());
+        $this->assertStringContainsString(
+            'SQLSTATE[HY000] [2002] php_network_getaddresses',
+            $object->lastError()->message()
+        );
+    }
+
+    /** @test */
+    public function connectionQueryError(): void
+    {
+        $connection = new MysqlConnection(
+            'devel',
+            'iquety-prospection-mysql',
+            3306,
+            'devel',
+            'devel'
+        );
+
+        $object = new MysqlQuery($connection, 'not_exists');
+
+        $object->countEvents();
+
+        $this->assertTrue($object->hasError());
+        $this->assertInstanceOf(Error::class, $object->lastError());
+        $this->assertEquals('42S02', $object->lastError()->code());
+        $this->assertStringContainsString(
+            'SQLSTATE[42S02]: Base table or view not found: 1146',
+            $object->lastError()->message()
+        );
+    }
 }

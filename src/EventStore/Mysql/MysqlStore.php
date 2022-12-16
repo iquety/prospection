@@ -31,9 +31,9 @@ class MysqlStore implements Store
                 event_label VARCHAR(155) NOT NULL,
                 version INT(11) NOT NULL COMMENT 'Estado atual do agregado',
                 snapshot INT(1) NOT NULL COMMENT 'Sinalizador de um estado completo',
-                data TEXT NOT NULL COMMENT 'Dados serializados do evento',
-                occurred_on TIMESTAMP NOT NULL COMMENT 'O momento que o evento aconteceu',
-                PRIMARY KEY (`aggregate_id`, `version`)
+                event_data TEXT NOT NULL COMMENT 'Dados serializados do evento',
+                occurred_on DATETIME(6) NOT NULL COMMENT 'O momento que o evento aconteceu',
+                PRIMARY KEY (aggregate_label, aggregate_id, `version`)
             ) ENGINE=InnoDB;
         ");
     }
@@ -58,7 +58,7 @@ class MysqlStore implements Store
             'event_label'     => $eventLabel,
             'version'         => $version,
             'snapshot'        => $snapshot,
-            'data'            => $eventData,
+            'event_data'      => $eventData,
             'occurred_on'     => $occurredOn->format('Y-m-d H:i:s.u')
         ];
 
@@ -73,12 +73,12 @@ class MysqlStore implements Store
 
     public function hasError(): bool
     {
-        return false;
+        return $this->connection->lastError()->message() !== '';
     }
 
     public function lastError(): Error
     {
-        return new Error('', '');
+        return $this->connection->lastError();
     }
     
     /**
@@ -87,8 +87,16 @@ class MysqlStore implements Store
      */
     public function remove(string $aggregateLabel, string $aggregateId, int $version): void
     {
-        $sql = "DELETE FROM {$this->eventsTable} WHERE aggregate_id = ? AND `version` = ?";
-        $this->connection->execute($sql, [ $aggregateId, $version ]);
+        $sql = "
+            DELETE FROM {$this->eventsTable} 
+            WHERE aggregate_label = ?
+              AND aggregate_id = ?
+              AND `version` = ?
+        ";
+
+        $this->connection->execute($sql, [ $aggregateLabel, $aggregateId, $version ]);
+
+        $this->sortVersions($aggregateLabel, $aggregateId);
     }
 
     /**
@@ -97,8 +105,16 @@ class MysqlStore implements Store
      */
     public function removePrevious(string $aggregateLabel, string $aggregateId, int $version): void
     {
-        $sql = "DELETE FROM {$this->eventsTable} WHERE aggregate_id = ? AND `version` < ?";
-        $this->connection->execute($sql, [ $aggregateId, $version ]);
+        $sql = "
+            DELETE FROM {$this->eventsTable}
+            WHERE aggregate_label = ?
+              AND aggregate_id = ?
+              AND `version` < ?
+        ";
+
+        $this->connection->execute($sql, [ $aggregateLabel, $aggregateId, $version ]);
+
+        $this->sortVersions($aggregateLabel, $aggregateId);
     }
 
     public function removeAll(): void
@@ -113,5 +129,29 @@ class MysqlStore implements Store
         // if ($this->connection->lastError()->message() !== '') {
         //     throw new RuntimeException($this->connection->lastError()->message());
         // }
+    }
+
+    protected function sortVersions(string $aggregateLabel, string $aggregateId): void
+    {
+        $list = $this->connection->select("
+            SELECT * FROM `{$this->eventsTable}`
+            WHERE aggregate_label = ? AND aggregate_id = ?
+        ", [$aggregateLabel, $aggregateId]);
+        
+        foreach($list as $index => $event) {
+            $version = $index + 1;
+
+            $bind = [
+                $version,
+                $aggregateLabel,
+                $aggregateId,
+                $event['version']
+            ];
+
+            $this->connection->execute("
+                UPDATE `{$this->eventsTable}` SET version = ?
+                WHERE aggregate_label = ? AND aggregate_id = ? AND version = ?
+            ", $bind);
+        }
     }
 }
