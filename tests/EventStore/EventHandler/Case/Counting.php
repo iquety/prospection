@@ -24,7 +24,10 @@ trait Counting
         $this->assertEquals(19, $this->eventStoreFactory()->countAllEvents());
     }
 
-    /** @test */
+    /**
+     * @test
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
     public function countAggregateEvents(): void
     {
         $object = $this->eventStoreFactory();

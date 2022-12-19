@@ -6,7 +6,6 @@ namespace Tests;
 
 use ArrayObject;
 use DateTimeImmutable;
-use DateTimeInterface;
 use DateTimeZone;
 use Iquety\Prospection\Domain\Core\IdentityObject;
 use PHPUnit\Framework\TestCase as FrameworkTestCase;
@@ -15,6 +14,7 @@ use Tests\Domain\Core\Support\DummyEntity;
 use Tests\Domain\Core\Support\DummyValue;
 use Tests\Domain\Stream\Support\DummyStreamEntity;
 
+/** @SuppressWarnings(PHPMD.NumberOfChildren) */
 class TestCase extends FrameworkTestCase
 {
     public function getPropertyValue(object $instance, string $name): mixed
@@ -40,6 +40,7 @@ class TestCase extends FrameworkTestCase
         ];
     }
 
+    /** @SuppressWarnings(PHPMD.StaticAccess) */
     public function dummyStreamEntityFactory(
         string $expression = "now",
         string $timezone = "UTC"

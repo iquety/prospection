@@ -15,6 +15,7 @@ use Tests\Domain\Stream\Support\DummyStreamEntity;
 use Tests\Domain\Stream\Support\DummyStreamEntityVisibility;
 use Tests\TestCase;
 
+/** @SuppressWarnings(PHPMD.StaticAccess) */
 class FactoryTest extends TestCase
 {
     /** @test */

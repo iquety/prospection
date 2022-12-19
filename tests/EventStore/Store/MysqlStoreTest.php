@@ -9,6 +9,7 @@ use Iquety\Prospection\EventStore\Mysql\MysqlConnection;
 use Iquety\Prospection\EventStore\Mysql\MysqlStore;
 use Iquety\Prospection\EventStore\Store;
 
+/** @SuppressWarnings(PHPMD.StaticAccess) */
 class MysqlStoreTest extends AbstractStoreCase
 {
     private function connection(): MysqlConnection
@@ -82,14 +83,14 @@ class MysqlStoreTest extends AbstractStoreCase
     }
 
     protected function persistEvent(
-        string $id,
+        string $aggregateId,
         int $version,
         int $snapshot
     ): void {
         $eventData = $this->persistedEventData(
             "aggregate.one",
             "event.$version",
-            $id,
+            $aggregateId,
             $version,
             $snapshot,
             []

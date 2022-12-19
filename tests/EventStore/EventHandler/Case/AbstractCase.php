@@ -15,6 +15,7 @@ use Tests\EventStore\Support\DummyEventOne;
 use Tests\EventStore\Support\DummyEventThr;
 use Tests\EventStore\Support\DummyEventTwo;
 
+/** @SuppressWarnings(PHPMD.StaticAccess) */
 abstract class AbstractCase extends EventStoreCase
 {
     use Consolidation;
@@ -35,8 +36,8 @@ abstract class AbstractCase extends EventStoreCase
     {
         $this->resetDatabase();
 
-        $oneFactory  = fn($id) => $this->aggregateOneListFactory($id);
-        $twoFactory  = fn($id) => $this->aggregateTwoListFactory($id);
+        $oneFactory  = fn($aggregateId) => $this->aggregateOneListFactory($aggregateId);
+        $twoFactory  = fn($aggregateId) => $this->aggregateTwoListFactory($aggregateId);
 
         $this->eventStoreFactory()->storeMultiple(DummyEntityOne::class, $oneFactory('12345'));
         $this->eventStoreFactory()->storeMultiple(DummyEntityOne::class, $oneFactory('67890'));
@@ -62,11 +63,11 @@ abstract class AbstractCase extends EventStoreCase
         ];
     }
 
-    private function aggregateOneListFactory(string $id): array
+    private function aggregateOneListFactory(string $aggregateId): array
     {
         return [
             EventSnapshot::factory([
-                'aggregateId' => new IdentityObject($id),
+                'aggregateId' => new IdentityObject($aggregateId),
                 'one' => 'Fulano',
                 'two' => 'Ciclano',
                 'thr' => 'Naitis',
@@ -74,24 +75,24 @@ abstract class AbstractCase extends EventStoreCase
             ]),
 
             DummyEventOne::factory([
-                'aggregateId' => new IdentityObject($id),
+                'aggregateId' => new IdentityObject($aggregateId),
                 'one' => 'Ricardo',
                 'occurredOn' => new DateTimeImmutable('2022-10-10 01:00:00')
             ]),
 
             DummyEventTwo::factory([
-                'aggregateId' => new IdentityObject($id),
+                'aggregateId' => new IdentityObject($aggregateId),
                 'two' => 'Pereira',
                 'occurredOn' => new DateTimeImmutable('2022-10-10 02:00:00')
             ])
         ];
     }
 
-    private function aggregateTwoListFactory(string $id): array
+    private function aggregateTwoListFactory(string $aggregateId): array
     {
         return [
             EventSnapshot::factory([
-                'aggregateId' => new IdentityObject($id),
+                'aggregateId' => new IdentityObject($aggregateId),
                 'one' => 'Fulano',
                 'two' => 'Ciclano',
                 'thr' => 'Naitis',
@@ -99,7 +100,7 @@ abstract class AbstractCase extends EventStoreCase
             ]),
 
             DummyEventThr::factory([
-                'aggregateId' => new IdentityObject($id),
+                'aggregateId' => new IdentityObject($aggregateId),
                 'one' => 'Ricardo',
                 'two' => 'Pereira',
                 'occurredOn' => new DateTimeImmutable('2022-10-10 01:00:00')

@@ -10,6 +10,7 @@ use Tests\Domain\Stream\Support\DummyStreamEntityOtherLabel;
 use Tests\Domain\Stream\Support\DummyStreamEntitySameLabel;
 use Tests\TestCase;
 
+/** @SuppressWarnings(PHPMD.StaticAccess) */
 class EqualityTest extends TestCase
 {
     /** @test */

@@ -70,7 +70,8 @@ trait AbstractQueryListConsol
         // ambas possuem 10 eventos desde o último instantâneo
         $this->assertCount(23, $eventsAfterSnapshot);
 
-        $onlyId = fn($id, $list) => array_filter($list, fn($item) => $item['aggregateId'] === $id);
+        $onlyId = fn($aggregateId, $list)
+            => array_filter($list, fn($item) => $item['aggregateId'] === $aggregateId);
 
         $this->assertCount(10, $onlyId('12345', $eventsAfterSnapshot));
         $this->assertCount(10, $onlyId('54321+5h', $eventsAfterSnapshot));

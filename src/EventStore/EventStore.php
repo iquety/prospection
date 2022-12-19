@@ -13,7 +13,10 @@ use Iquety\PubSub\Event\Serializer\EventSerializer;
 use RuntimeException;
 use Throwable;
 
-/** @SuppressWarnings(PHPMD.TooManyPublicMethods) */
+/**
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class EventStore
 {
     private const SNAPSHOT_SIZE = 10;
@@ -58,6 +61,7 @@ class EventStore
      * - createdOn: ocorrência do primeiro evento do agregado
      * - updatedOn: ocorrência do último evento do agregado
      * @return array<int,Descriptor>
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function list(string $aggregateSignature, Interval $interval): array
     {
@@ -88,6 +92,7 @@ class EventStore
      * - createdOn: ocorrência do primeiro evento do agregado
      * - updatedOn: ocorrência do último evento do agregado
      * @return array<int,Descriptor>
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function listConsolidated(string $aggregateSignature, Interval $interval): array
     {
@@ -135,7 +140,10 @@ class EventStore
         return $list;
     }
 
-    /** @return array<int,Descritor> */
+    /**
+     * @return array<int,Descritor>
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
     public function listMaterialization(
         string $aggregateSignature,
         DateTimeImmutable $initialMoment,
@@ -224,7 +232,10 @@ class EventStore
         $this->storeMultiple($aggregateSignature, [ $event ]);
     }
 
-    /** @param array<DomainEvent> $domainEventList */
+    /**
+     * @param array<DomainEvent> $domainEventList
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     */
     public function storeMultiple(string $aggregateSignature, array $domainEventList): void
     {
         if ($domainEventList === []) {

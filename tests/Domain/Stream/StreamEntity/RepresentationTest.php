@@ -8,6 +8,7 @@ use DateTimeImmutable;
 use Tests\Domain\Stream\Support\DummyStreamEntity;
 use Tests\TestCase;
 
+/** @SuppressWarnings(PHPMD.StaticAccess) */
 class RepresentationTest extends TestCase
 {
     /** @test */

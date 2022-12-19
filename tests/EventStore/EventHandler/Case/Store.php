@@ -19,6 +19,7 @@ use Tests\EventStore\Support\DummyEventTwo;
  * @method array getPersistedEvents()
  * @method EventStore eventStoreFactory()
  * @method void resetDatabase()
+ * @SuppressWarnings(PHPMD.StaticAccess)
  */
 trait Store
 {

@@ -10,6 +10,7 @@ use Tests\Domain\Core\Support\DummyValueExtended;
 use Tests\Domain\Core\Support\DummyValueReplica;
 use Tests\TestCase;
 
+/** @SuppressWarnings(PHPMD.TooManyPublicMethods) */
 class ValueObjectTest extends TestCase
 {
     public function equalityProvider(): array

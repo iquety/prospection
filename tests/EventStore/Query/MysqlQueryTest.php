@@ -10,6 +10,7 @@ use Iquety\Prospection\EventStore\Mysql\MysqlQuery;
 use Iquety\Prospection\EventStore\Query;
 use Tests\EventStore\Query\Case\AbstractCase;
 
+/** @SuppressWarnings(PHPMD.StaticAccess) */
 class MysqlQueryTest extends AbstractCase
 {
     private function connection(): MysqlConnection
@@ -98,14 +99,14 @@ class MysqlQueryTest extends AbstractCase
 
     protected function persistEvent(
         string $aggregateLabel,
-        string $id,
+        string $aggregateId,
         int $version,
         int $snapshot
     ): void {
         $eventData = $this->persistedEventData(
             $aggregateLabel,
             "event.$version",
-            $id,
+            $aggregateId,
             $version,
             $snapshot,
             []

@@ -13,7 +13,7 @@ class EventStoreCase extends TestCase
     protected function persistedEventData(
         string $aggregateLabel,
         string $eventLabel,
-        string $id,
+        string $aggregateId,
         int $version,
         int $snapshot = 0,
         array $eventData = []
@@ -21,12 +21,12 @@ class EventStoreCase extends TestCase
         $now = new DateTimeImmutable("2022-10-10 00:10:10");
         $now = $now->modify("+$version hours");
 
-        if ($id === '54321+5h') {
+        if ($aggregateId === '54321+5h') {
             $now = $now->modify("+5 hours");
         }
 
         return [
-            'aggregateId'    => $id,
+            'aggregateId'    => $aggregateId,
             'aggregateLabel' => $aggregateLabel,
             'eventLabel'     => $eventLabel,
             'version'        => $version,

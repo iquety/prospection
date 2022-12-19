@@ -7,7 +7,6 @@ namespace Tests\EventStore\EventHandler\Case;
 use InvalidArgumentException;
 use Iquety\Prospection\Domain\Core\IdentityObject;
 use Iquety\Prospection\EventStore\EventSnapshot;
-use Iquety\Prospection\EventStore\Memory\MemoryConnection;
 use Tests\EventStore\Support\DummyEntityOne;
 use Tests\EventStore\Support\DummyEventOne;
 use Tests\EventStore\Support\DummyEventTwo;
@@ -16,6 +15,7 @@ use Tests\EventStore\Support\DummyEventTwo;
  * @method array getPersistedEvents()
  * @method EventStore eventStoreFactory()
  * @method void resetDatabase()
+ * @SuppressWarnings(PHPMD.StaticAccess)
  */
 trait Stream
 {

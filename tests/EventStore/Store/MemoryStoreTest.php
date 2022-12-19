@@ -9,6 +9,7 @@ use Iquety\Prospection\EventStore\Memory\MemoryConnection;
 use Iquety\Prospection\EventStore\Memory\MemoryStore;
 use Iquety\Prospection\EventStore\Store;
 
+/** @SuppressWarnings(PHPMD.StaticAccess) */
 class MemoryStoreTest extends AbstractStoreCase
 {
     public function getPersistedEvents(): array
@@ -41,12 +42,12 @@ class MemoryStoreTest extends AbstractStoreCase
         $this->persistEvent('54321', 4, 0);
     }
 
-    protected function persistEvent(string $id, int $version, int $snapshot): void
+    protected function persistEvent(string $aggregateId, int $version, int $snapshot): void
     {
         $eventData = $this->persistedEventData(
             "aggregate.one",
             "event.$version",
-            $id,
+            $aggregateId,
             $version,
             $snapshot
         );
