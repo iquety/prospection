@@ -12,17 +12,19 @@ class MemoryConnection
 {
     private static ?MemoryConnection $instance = null;
 
+    /** @var array<int,array<string,mixed>> */
     private array $eventList = [];
 
     public static function instance(): self
     {
-        if (static::$instance === null) {
-            static::$instance = new self();
+        if (static::$instance === null) { // @phpstan-ignore-line
+            static::$instance = new self(); // @phpstan-ignore-line
         }
 
-        return static::$instance;
+        return static::$instance; // @phpstan-ignore-line
     }
 
+    /** @param array<string,mixed> $event */
     public function add(array $event): void
     {
         $this->eventList[] = [
@@ -60,6 +62,7 @@ class MemoryConnection
         $this->eventList = [];
     }
 
+    /** @return array<int,array<string,mixed>> */
     public function all(): array
     {
         return $this->eventList;

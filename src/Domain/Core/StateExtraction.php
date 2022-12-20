@@ -18,6 +18,7 @@ trait StateExtraction
 {
     private ?ReflectionObject $reflection = null;
 
+    /** @var array<int,string> */
     private array $stateFields = [];
 
     protected function reflection(): ReflectionObject
@@ -45,6 +46,7 @@ trait StateExtraction
         return $constructor;
     }
 
+    /** @return array<int,string> */
     protected function stateProperties(): array
     {
         if ($this->stateFields !== []) {
@@ -81,6 +83,7 @@ trait StateExtraction
         return $stateValues;
     }
 
+    /** @param array<string,mixed> $stateValues */
     protected function extractStateString(array $stateValues = []): string
     {
         $stateValues = $stateValues !== [] ? $stateValues : $this->extractStateValues();
@@ -92,6 +95,7 @@ trait StateExtraction
         );
     }
 
+    /** @param array<string,mixed> $stateValues */
     private function makeStructure(array $stateValues): string
     {
         if (count($stateValues) === 1) {

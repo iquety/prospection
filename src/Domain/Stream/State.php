@@ -90,6 +90,7 @@ class State
     {
         $this->checkState();
 
+        /** @var EventSnapshot */
         return EventSnapshot::factory($this->toArray());
     }
 

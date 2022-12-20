@@ -37,14 +37,13 @@ class MysqlConnection
         }
     }
 
-    private function hasConnection(): bool
-    {
-        return $this->pdo !== null;
-    }
-
+    /**
+     * @param array<string|int,mixed> $bindedParams
+     * @return array<int,array<string,mixed>>
+     */
     public function select(string $sql, array $bindedParams = []): array
     {
-        if ($this->hasConnection() === false) {
+        if ($this->pdo === null) {
             return [];
         }
 
@@ -58,14 +57,13 @@ class MysqlConnection
             return [];
         }
 
-        $result = $statement->fetchAll(PDO::FETCH_ASSOC);
-
-        return $result !== false ? $result : [];
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
 
+     /** @param array<string|int,mixed> $bindedParams */
     public function execute(string $sql, array $bindedParams = []): int
     {
-        if ($this->hasConnection() === false) {
+        if ($this->pdo === null) {
             return 0;
         }
 
@@ -84,7 +82,7 @@ class MysqlConnection
 
     public function transaction(Closure $operation): void
     {
-        if ($this->hasConnection() === false) {
+        if ($this->pdo === null) {
             return;
         }
 
@@ -101,7 +99,7 @@ class MysqlConnection
 
     public function lastError(): Error
     {
-        if ($this->hasConnection() === false) {
+        if ($this->pdo === null) {
             return $this->error;
         }
 

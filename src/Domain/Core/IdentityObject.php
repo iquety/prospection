@@ -29,6 +29,7 @@ class IdentityObject
         return (string)$this->identity;
     }
 
+    /** @return array<string,mixed> */
     public function toArray(): array
     {
         return ['identity' => $this->identity ];

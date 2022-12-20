@@ -21,7 +21,6 @@ class MysqlQuery implements Query
         private MysqlConnection $connection,
         private string $eventsTable
     ) {
-        $this->error = new Error('', '');
     }
 
     /**
@@ -332,6 +331,10 @@ class MysqlQuery implements Query
         return $results === false ? 1 : $results['version'] + 1;
     }
 
+    /**
+     * @param array<string|int,mixed> $bindedParams
+     * @return array<int,array<string,mixed>>
+     */
     private function select(string $sql, array $bindedParams = []): array
     {
         return $this->connection->select($sql, $bindedParams);

@@ -78,7 +78,10 @@ abstract class StreamEntity extends Entity
         }
     }
 
-    /** Fabrica a entidade com base em um evento de Snapshot */
+    /**
+     * Fabrica a entidade com base em um evento de Snapshot
+     * @param array<string,mixed> $stateValues
+     */
     public static function factory(array $stateValues): self
     {
         $constructorState = $stateValues;
@@ -88,12 +91,14 @@ abstract class StreamEntity extends Entity
         }
 
         try {
-            $instance = new static(...$constructorState);
-        } catch (Throwable $exception) {
+            // a chamada static é intencional, e depende dos valores de domínio
+            // por isso o try...catch emite uma exceção DomainException
+            $instance = new static(...$constructorState); // @phpstan-ignore-line
+        } catch (Throwable $exception) { // @phpstan-ignore-line
             throw new DomainException($exception->getMessage());
         }
 
-        // chamado aqui para verificar a visibilidade do construtor
+        // método chamado para verificar a visibilidade do construtor
         $state = $instance->state();
 
         if (isset($stateValues['occurredOn']) === true) {
@@ -189,6 +194,7 @@ abstract class StreamEntity extends Entity
             $this->consolidate([ new EventSnapshot($this->extractStateValues()) ]);
         }
 
+        /** @var State */
         return $this->state;
     }
 }

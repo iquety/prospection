@@ -9,6 +9,7 @@ use DateTimeImmutable;
 use InvalidArgumentException;
 use Iquety\Prospection\Domain\Core\IdentityObject;
 use Iquety\Prospection\Domain\Stream\DomainEvent;
+use Iquety\Prospection\Domain\Stream\StreamEntity;
 use Iquety\PubSub\Event\Serializer\EventSerializer;
 use RuntimeException;
 use Throwable;
@@ -21,7 +22,7 @@ class EventStore
 {
     private const SNAPSHOT_SIZE = 10;
 
-    /** @var array<string,string> */
+    /** @var array<string,class-string<DomainEvent>> */
     private array $eventRegisterList = [];
 
     /**
@@ -120,7 +121,13 @@ class EventStore
                 $this->serializer->unserialize($firstEvent['eventData'])
             );
 
+            $createdOn = '';
+            $updatedOn = '';
+
             foreach ($eventList as $eventRegister) {
+                $createdOn = $eventRegister['createdOn'];
+                $updatedOn = $eventRegister['updatedOn'];
+
                 $entity->consolidate([
                     $this->eventFactory(
                         $eventRegister['eventLabel'],
@@ -129,11 +136,14 @@ class EventStore
                  ]);
             }
 
+            /** @var EventSnapshot */
+            $snapshot = EventSnapshot::factory($entity->toArray());
+
             $list[] = new Descriptor(
                 $aggregateSignature,
-                EventSnapshot::factory($entity->toArray()),
-                new DateTimeImmutable($eventRegister['createdOn']),
-                new DateTimeImmutable($eventRegister['updatedOn'])
+                $snapshot,
+                new DateTimeImmutable($createdOn),
+                new DateTimeImmutable($updatedOn)
             );
         }
 
@@ -141,7 +151,7 @@ class EventStore
     }
 
     /**
-     * @return array<int,Descritor>
+     * @return array<int,Descriptor>
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function listMaterialization(
@@ -173,7 +183,13 @@ class EventStore
                 $this->serializer->unserialize($firstEvent['eventData'])
             );
 
+            $createdOn = '';
+            $updatedOn = '';
+
             foreach ($eventList as $eventRegister) {
+                $createdOn = $eventRegister['createdOn'];
+                $updatedOn = $eventRegister['updatedOn'];
+
                 $entity->consolidate([
                     $this->eventFactory(
                         $eventRegister['eventLabel'],
@@ -182,20 +198,24 @@ class EventStore
                  ]);
             }
 
+            /** @var EventSnapshot */
+            $snapshot = EventSnapshot::factory($entity->toArray());
+
             $list[] = new Descriptor(
                 $aggregateSignature,
-                EventSnapshot::factory($entity->toArray()),
-                new DateTimeImmutable($eventRegister['createdOn']),
-                new DateTimeImmutable($eventRegister['updatedOn'])
+                $snapshot,
+                new DateTimeImmutable($createdOn),
+                new DateTimeImmutable($updatedOn)
             );
         }
 
         return $list;
     }
 
+    /** @param class-string<DomainEvent> $eventSignature */
     public function registerEventType(string $eventSignature): void
     {
-        $this->eventRegisterList[$eventSignature::label()] = $eventSignature;
+        $this->eventRegisterList[(string)$eventSignature::label()] = $eventSignature;
     }
 
     public function remove(
@@ -358,6 +378,7 @@ class EventStore
         return $stream;
     }
 
+    /** @param array<string,mixed> $state */
     private function eventFactory(string $eventLabel, array $state): DomainEvent
     {
         $factory = EventSnapshot::class;
