@@ -26,6 +26,15 @@ services:
       - "8082:80"
     networks:
       - iquety-prospection-network
+  redis:
+    image: redis:alpine
+    container_name: iquety-prospection-redis
+    restart: always
+    ports:
+      - "8083:6379"
+    networks:
+      - iquety-prospection-network
+networks:
 networks:
   iquety-prospection-network:
     driver: bridge

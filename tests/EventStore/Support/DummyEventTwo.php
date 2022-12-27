@@ -13,7 +13,6 @@ class DummyEventTwo extends DomainEvent
         private IdentityObject $aggregateId,
         private string $two
     ) {
-        # code...
     }
 
     public function aggregateId(): IdentityObject

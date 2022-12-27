@@ -26,6 +26,7 @@ class TestCase extends FrameworkTestCase
         return $property->getValue($instance);
     }
 
+    /** @return array<string,mixed> */
     public function stateValues(): array
     {
         return [
@@ -49,6 +50,7 @@ class TestCase extends FrameworkTestCase
         $values = $this->stateValues();
         $values['occurredOn'] = new DateTimeImmutable($expression, new DateTimeZone($timezone));
 
+        /** @var DummyStreamEntity */
         return DummyStreamEntity::factory($values);
     }
 }
