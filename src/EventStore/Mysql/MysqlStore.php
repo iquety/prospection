@@ -124,7 +124,7 @@ class MysqlStore implements Store
 
     public function transaction(Closure $operation): void
     {
-        $this->connection->transaction($operation);
+        $this->connection->transaction($operation, $this);
 
         // if ($this->connection->lastError()->message() !== '') {
         //     throw new RuntimeException($this->connection->lastError()->message());

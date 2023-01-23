@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\EventStore\Query;
+namespace Tests\EventStore\Connection;
 
 use Iquety\Prospection\EventStore\Memory\MemoryConnection;
 use OutOfRangeException;

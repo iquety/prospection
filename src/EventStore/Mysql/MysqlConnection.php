@@ -80,7 +80,7 @@ class MysqlConnection
         return $statement->rowCount();
     }
 
-    public function transaction(Closure $operation): void
+    public function transaction(Closure $operation, MysqlStore $store): void
     {
         if ($this->pdo === null) {
             return;
@@ -89,9 +89,13 @@ class MysqlConnection
         $this->pdo->beginTransaction();
 
         try {
-            $operation();
-        } catch (Throwable) {
+            $operation($store);
+        } catch (Throwable $exception) {
             $this->pdo->rollBack();
+
+            $this->error = new Error((string)$exception->getCode(), $exception->getMessage());
+
+            return;
         }
 
         $this->pdo->commit();
@@ -99,20 +103,22 @@ class MysqlConnection
 
     public function lastError(): Error
     {
-        if ($this->pdo === null) {
-            return $this->error;
-        }
+        return $this->error;
 
-        $info = $this->pdo->errorInfo();
+        // if ($this->pdo === null) {
+        //     return $this->error;
+        // }
 
-        if ($info[0] !== '') {
-            return $this->error;
-        }
+        // $info = $this->pdo->errorInfo();
 
-        // [0] => HY000                      -> SQLSTATE error code
-        // [1] => 1                          -> Driver-specific error code.
-        // [2] => near "bogus": syntax error -> Driver-specific error message.
+        // if ($info[0] !== '') {
+        //     return $this->error;
+        // }
 
-        return new Error((string)$info[1], (string)$info[2]);
+        // // [0] => HY000                      -> SQLSTATE error code
+        // // [1] => 1                          -> Driver-specific error code.
+        // // [2] => near "bogus": syntax error -> Driver-specific error message.
+
+        // return new Error((string)$info[1], (string)$info[2]);
     }
 }
