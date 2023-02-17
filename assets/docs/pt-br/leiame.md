@@ -7,7 +7,8 @@
 
 Este repositório contém as ferramentas necessárias, para a implementação de uma arquitetura baseada em eventos.
 
-Esta modalidade, também chamada de "Prospecção de Eventos", armazena os eventos de todas as entidades em uma única "tabela", removendo a necessidade de esquemas distintos para cada entidade.
+Esta modalidade, também chamada de "Prospecção de Eventos", armazena os eventos de todas as entidades 
+em uma única "tabela", removendo a necessidade de esquemas distintos para cada entidade.
 
 
 ```bash
