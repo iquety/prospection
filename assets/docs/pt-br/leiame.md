@@ -1,25 +1,24 @@
-# Iquety Security
+# Iquety Prospection
 
 [English](../../readme.md) | [Português](leiame.md)
 -- | --
 
 ## Sinopse
 
-Este repositório contém uma biblioteca com manipulações seguras para diversos propósitos.
+Este repositório contém as ferramentas necessárias, para a implementação de uma arquitetura baseada em eventos.
 
-A criação dessas funcionalidades objetivam inibir a implementação de rotinas inseguras por desenvolvedores com pouca experiência ou despreocupados com os devidos cuidados necessários para a segurança de aplicações web.
+Esta modalidade, também chamada de "Prospecção de Eventos", armazena os eventos de todas as entidades em uma única "tabela", removendo a necessidade de esquemas distintos para cada entidade.
 
-Contém ferramentas para tratamento e manipulação de diretórios, arquivos, caminhos etc.
 
 ```bash
-composer require iquety/security
+composer require iquety/prospection
 ```
 
 Para informações detalhadas, consulte o [Sumário da Documentação](indice.md).
 
 ## Características
 
-- Feito para o PHP 8.0 ou superior;
+- Feito para o PHP 8.2 ou superior;
 - Codificado com boas práticas e máxima qualidade;
 - Bem documentado e amigável para IDEs;
 - Feito com TDD (Test Driven Development);
