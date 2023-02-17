@@ -37,7 +37,7 @@ class FactoryTest extends TestCase
     }
 
     /** @test */
-    public function withOcurredOn(): void
+    public function withOccurredOn(): void
     {
         $occurredOn = new DateTimeImmutable();
 
@@ -60,7 +60,7 @@ class FactoryTest extends TestCase
     }
 
     /** @test */
-    public function withOcurredOnCustomPos(): void
+    public function withOccurredOnCustomPos(): void
     {
         $occurredOn = new DateTimeImmutable();
 

@@ -6,7 +6,6 @@ namespace Iquety\Prospection\EventStore\Mysql;
 
 use Closure;
 use DateTimeImmutable;
-use Iquety\Prospection\Domain\Core\IdentityObject;
 use Iquety\Prospection\EventStore\Error;
 use Iquety\Prospection\EventStore\Store;
 

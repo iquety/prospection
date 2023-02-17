@@ -35,6 +35,5 @@ services:
     networks:
       - iquety-prospection-network
 networks:
-networks:
   iquety-prospection-network:
     driver: bridge
