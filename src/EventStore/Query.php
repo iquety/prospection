@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Iquety\Prospection\EventStore;
 
 use DateTimeImmutable;
-use Iquety\Prospection\Domain\Core\IdentityObject;
+use Iquety\Domain\Core\IdentityObject;
 use Iquety\Prospection\EventStore\Interval;
 
 interface Query

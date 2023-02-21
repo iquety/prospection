@@ -6,7 +6,8 @@
     "license": "MIT",
     "require": {
         "php": "^8.2.0",
-        "iquety/pubsub": "dev-main"
+        "iquety/pubsub": "dev-main",
+        "iquety/domain": "dev-main"
     },
     "require-dev": {
         "codacy/coverage": "dev-master",

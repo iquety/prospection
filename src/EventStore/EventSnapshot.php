@@ -8,8 +8,8 @@ use BadMethodCallException;
 use DateTimeImmutable;
 use DateTimeZone;
 use InvalidArgumentException;
-use Iquety\Prospection\Domain\Core\IdentityObject;
-use Iquety\Prospection\Domain\Stream\DomainEvent;
+use Iquety\Domain\Core\IdentityObject;
+use Iquety\Domain\Event\DomainEvent;
 use Iquety\PubSub\Event\Event;
 
 /**

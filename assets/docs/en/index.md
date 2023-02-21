@@ -2,10 +2,10 @@
 
 --summary-nav--
 
-## Introdução
+## Introduction
 
-Bem vindo(a) à documentação da biblioteca Iquety Security. Aqui você encontra as informações necessárias para utilizar as funcionalidades disponíveis e usufruir ao máximo da biblioteca.
+Welcome to the Iquety Prospection library documentation. Here you will find the necessary information to use the available functionalities and make the most of the library.
 
-### Conteúdo
+### Contents
 
 --summary--

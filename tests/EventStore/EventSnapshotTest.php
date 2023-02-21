@@ -9,7 +9,7 @@ use BadMethodCallException;
 use DateTimeImmutable;
 use DateTimeZone;
 use InvalidArgumentException;
-use Iquety\Prospection\Domain\Core\IdentityObject;
+use Iquety\Domain\Core\IdentityObject;
 use Iquety\Prospection\EventStore\EventSnapshot;
 use Tests\TestCase;
 

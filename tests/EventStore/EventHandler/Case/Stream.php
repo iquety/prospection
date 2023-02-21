@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\EventStore\EventHandler\Case;
 
 use InvalidArgumentException;
-use Iquety\Prospection\Domain\Core\IdentityObject;
+use Iquety\Domain\Core\IdentityObject;
 use Iquety\Prospection\EventStore\EventSnapshot;
 use Tests\EventStore\Support\DummyEntityOne;
 use Tests\EventStore\Support\DummyEventOne;

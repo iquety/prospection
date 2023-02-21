@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\EventStore\Query\Case;
 
 use DateTimeImmutable;
-use Iquety\Prospection\Domain\Core\IdentityObject;
+use Iquety\Domain\Core\IdentityObject;
 use Iquety\Prospection\EventStore\Interval;
 use Iquety\Prospection\EventStore\Query;
 

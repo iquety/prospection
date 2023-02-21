@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Iquety\Prospection\EventStore;
 
 use DateTimeImmutable;
-use Iquety\Prospection\Domain\Stream\StreamEntity;
+use Iquety\Prospection\Stream\StreamEntity;
 
 /**
  * Um descritor contém os dados de um agregado de forma simplificada, para ser

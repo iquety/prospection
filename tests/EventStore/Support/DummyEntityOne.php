@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\EventStore\Support;
 
-use Iquety\Prospection\Domain\Core\IdentityObject;
-use Iquety\Prospection\Domain\Stream\StreamEntity;
+use Iquety\Domain\Core\IdentityObject;
+use Iquety\Prospection\Stream\StreamEntity;
 
 class DummyEntityOne extends StreamEntity
 {

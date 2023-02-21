@@ -7,12 +7,12 @@ namespace Tests;
 use ArrayObject;
 use DateTimeImmutable;
 use DateTimeZone;
-use Iquety\Prospection\Domain\Core\IdentityObject;
+use Iquety\Domain\Core\IdentityObject;
 use PHPUnit\Framework\TestCase as FrameworkTestCase;
 use ReflectionObject;
-use Tests\Domain\Core\Support\DummyEntity;
-use Tests\Domain\Core\Support\DummyValue;
-use Tests\Domain\Stream\Support\DummyStreamEntity;
+use Tests\Stream\Support\DummyEntity;
+use Tests\Stream\Support\DummyValue;
+use Tests\Stream\Support\DummyStreamEntity;
 
 /** @SuppressWarnings(PHPMD.NumberOfChildren) */
 class TestCase extends FrameworkTestCase

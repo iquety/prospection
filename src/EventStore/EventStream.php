@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Iquety\Prospection\EventStore;
 
-use Iquety\Prospection\Domain\Stream\DomainEvent;
+use Iquety\Domain\Event\DomainEvent;
 use RuntimeException;
 
 /**

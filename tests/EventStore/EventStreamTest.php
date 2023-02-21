@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\EventStore;
 
-use Iquety\Prospection\Domain\Stream\DomainEvent;
+use Iquety\Domain\Event\DomainEvent;
 use Iquety\Prospection\EventStore\EventStream;
 use PHPUnit\Framework\MockObject\Builder\InvocationMocker;
 use RuntimeException;

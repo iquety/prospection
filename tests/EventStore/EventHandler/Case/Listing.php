@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\EventStore\EventHandler\Case;
 
-use Iquety\Prospection\Domain\Core\IdentityObject;
+use Iquety\Domain\Core\IdentityObject;
 use Iquety\Prospection\EventStore\EventSnapshot;
 use Iquety\Prospection\EventStore\Interval;
 use Tests\EventStore\Support\DummyEntityOne;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Iquety\Prospection\EventStore;
 
-use Iquety\Prospection\Domain\Core\IdentityObject;
+use Iquety\Domain\Core\IdentityObject;
 
 /**
  * Na literatura, a identificação mínima para um fluxo de evento é feita com

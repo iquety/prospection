@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Iquety\Prospection\EventStore\Memory;
 
 use InvalidArgumentException;
-use Iquety\Prospection\Domain\Core\IdentityObject;
+use Iquety\Domain\Core\IdentityObject;
 use OutOfRangeException;
 
 class MemoryConnection
