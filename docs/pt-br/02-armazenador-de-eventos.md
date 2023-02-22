@@ -1,11 +1,28 @@
 # Armazenador de eventos
 
-[◂ Prospecção de Eventos](01-prospeccao-de-eventos.md) | [Sumário da Documentação](indice.md) | [Entidades e Valores ▸](03-entidades-e-valores.md)
+[◂ Prospecção de Eventos](01-prospeccao-de-eventos.md) | [Sumário da Documentação](indice.md) | [Entidades ▸](03-entidades.md)
 -- | -- | --
 
 ## Objetivo
 
 Em desenvolvimento.
 
-[◂ Prospecção de Eventos](01-prospeccao-de-eventos.md) | [Sumário da Documentação](indice.md) | [Entidades e Valores ▸](03-entidades-e-valores.md)
+## Métodos
+
+- countAllEvents
+- countAggregateEvents
+- countAggregates
+- list
+- listConsolidated
+- listMaterialization
+- registerEventType
+- remove
+- removePrevious
+- removeAll
+- store
+- storeMultiple
+- streamFor
+- streamSince
+
+[◂ Prospecção de Eventos](01-prospeccao-de-eventos.md) | [Sumário da Documentação](indice.md) | [Entidades ▸](03-entidades.md)
 -- | -- | --
