@@ -44,6 +44,12 @@ class Descriptor
         return $this->snapshot->toArray();
     }
 
+    /** @return array<string,mixed> */
+    public function toPrimitives(): array
+    {
+        return $this->snapshot->toPrimitives();
+    }
+
     public function toAggregate(): StreamEntity
     {
         if ($this->entity === null) {
