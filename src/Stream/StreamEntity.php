@@ -11,6 +11,7 @@ use Iquety\Domain\Core\Entity;
 use Iquety\Domain\Core\IdentityObject;
 use Iquety\Domain\Event\DomainEvent;
 use Iquety\Prospection\EventStore\EventSnapshot;
+use Iquety\Prospection\EventStore\EventStore;
 use Throwable;
 
 /**
@@ -174,11 +175,18 @@ abstract class StreamEntity extends Entity
     {
         $propertyList = $domainEvent->toArray();
 
+        // Snapshot possui dois valores adicionais que não pertencem à Entidade
+        // @see src/EventStore/EventStore.php -> storeSnapshot()
+        if ($domainEvent instanceof EventSnapshot) {
+            unset($propertyList['createdOn']);
+            unset($propertyList['updatedOn']);
+        }
+        
         foreach ($propertyList as $name => $value) {
             if ($name === 'occurredOn') {
                 continue;
             }
-
+        
             $property = $this->reflection()->getProperty($name);
             $property->setAccessible(true);
             $property->setValue($this, $value);
