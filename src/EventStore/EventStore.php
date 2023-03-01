@@ -212,7 +212,10 @@ class EventStore
         return $list;
     }
 
-    /** @param class-string<DomainEvent> $eventSignature */
+    /**
+     * Registra uma fábrica para consolidar um tipo de evento carregado do Banco de Dados.
+     * @param class-string<DomainEvent> $eventSignature
+     */
     public function registerEventType(string $eventSignature): void
     {
         $this->eventRegisterList[(string)$eventSignature::label()] = $eventSignature;
@@ -258,6 +261,13 @@ class EventStore
      */
     public function storeMultiple(string $aggregateSignature, array $domainEventList): void
     {
+        if (is_a($aggregateSignature, StreamEntity::class, true) === false) {
+            throw new InvalidArgumentException(sprintf(
+                "Only objects of type %s can be stored",
+                StreamEntity::class
+            ));
+        }
+
         if ($domainEventList === []) {
             throw new InvalidArgumentException(
                 "You must provide at least one event to store"
@@ -304,7 +314,6 @@ class EventStore
                         : $version + 1;
 
                     $snapshot = (int)($version === 1);
-
                     $this->store->add(
                         $aggregateId->value(),
                         $aggregateLabel,
@@ -318,7 +327,8 @@ class EventStore
                     $createSnapshot = ($version % self::SNAPSHOT_SIZE) === 0;
                     if ($createSnapshot === true) {
                         $version++;
-                        $this->storeSnapshot($aggregateSignature, $aggregateId);
+
+                        $this->storeSnapshot($aggregateSignature, $aggregateId, $version);
                     }
                 }
             } catch (Throwable $error) {
@@ -403,13 +413,18 @@ class EventStore
     }
 
     /** @SuppressWarnings(PHPMD.StaticAccess) */
-    private function storeSnapshot(string $aggregateSignature, IdentityObject $aggregateId): void
+    private function storeSnapshot(string $aggregateSignature, IdentityObject $aggregateId, int $version): void
     {
         $eventList = $this->streamFor($aggregateSignature, $aggregateId)->events();
+
         $stateValues = $eventList[0]->toArray();
+
+        unset($stateValues['createdOn']);
+        unset($stateValues['updatedOn']);
 
         /** @var StreamEntity $aggregate */
         $aggregate = $aggregateSignature::factory($stateValues);
+
         $aggregate->consolidate($eventList);
 
         $event = $aggregate->toSnapshot();
@@ -418,7 +433,7 @@ class EventStore
             $aggregateId->value(),
             $aggregateSignature::label(),
             $event::label(),
-            $this->query->nextVersion($aggregateSignature::label(), $aggregateId->value()),
+            $version,
             1,
             $this->serializer->serialize($event->toArray()),
             new DateTimeImmutable()
