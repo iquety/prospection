@@ -8,6 +8,7 @@ use Closure;
 use DateTimeImmutable;
 use Iquety\Prospection\EventStore\Error;
 use Iquety\Prospection\EventStore\Store;
+use RuntimeException;
 
 class MysqlStore implements Store
 {
@@ -125,9 +126,9 @@ class MysqlStore implements Store
     {
         $this->connection->transaction($operation, $this);
 
-        // if ($this->connection->lastError()->message() !== '') {
-        //     throw new RuntimeException($this->connection->lastError()->message());
-        // }
+        if ($this->connection->lastError()->message() !== '') {
+            throw new RuntimeException($this->connection->lastError()->message());
+        }
     }
 
     protected function sortVersions(string $aggregateLabel, string $aggregateId): void
