@@ -38,7 +38,7 @@ class AggregateFieldTest extends TestCase
     /** @test */
     public function extractState(): void
     {
-        $entity = $this->dummyStreamEntityFactory();
+        $entity = $this->streamEntityFactory();
         $eventSnapshot = $entity->toSnapshot();
 
         $descriptor = new Descriptor(
@@ -62,7 +62,7 @@ class AggregateFieldTest extends TestCase
             "The specified descriptor does not contain the value 'nomeCompletissimo'"
         );
 
-        $entity = $this->dummyStreamEntityFactory();
+        $entity = $this->streamEntityFactory();
         $eventSnapshot = $entity->toSnapshot();
 
         $descriptor = new Descriptor(
@@ -86,7 +86,7 @@ class AggregateFieldTest extends TestCase
             "The specified descriptor does not contain the child value 'sobrenominho' for the value 'seven'"
         );
 
-        $entity = $this->dummyStreamEntityFactory();
+        $entity = $this->streamEntityFactory();
         $eventSnapshot = $entity->toSnapshot();
 
         $descriptor = new Descriptor(

@@ -19,7 +19,7 @@ class BaseGettersTest extends TestCase
     {
         $occurredOn = '2022-10-10 10:10:10';
 
-        $object = $this->dummyStreamEntityFactory($occurredOn);
+        $object = $this->streamEntityFactory($occurredOn);
 
         $this->assertTrue($object->aggregateId()->equalTo(new IdentityObject('123456')));
         $this->assertTrue($object->identity()->equalTo(new IdentityObject('123456')));

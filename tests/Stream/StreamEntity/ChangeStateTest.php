@@ -28,7 +28,7 @@ class ChangeStateTest extends TestCase
      */
     public function changeState(string $method, mixed $value, mixed $valueChanged): void
     {
-        $object = $this->dummyStreamEntityFactory();
+        $object = $this->streamEntityFactory();
 
         $this->assertTrue($object->aggregateId()->equalTo(new IdentityObject('123456')));
         $this->assertEquals($value, $object->$method());
@@ -48,7 +48,7 @@ class ChangeStateTest extends TestCase
     /** @test */
     public function changeStateValueObject(): void
     {
-        $object = $this->dummyStreamEntityFactory();
+        $object = $this->streamEntityFactory();
 
         $this->assertTrue($object->aggregateId()->equalTo(new IdentityObject('123456')));
         $this->assertEquals($object->one(), 'Ricardo');
@@ -72,7 +72,7 @@ class ChangeStateTest extends TestCase
     /** @test */
     public function changeStateEntity(): void
     {
-        $object = $this->dummyStreamEntityFactory();
+        $object = $this->streamEntityFactory();
 
         $this->assertTrue($object->aggregateId()->equalTo(new IdentityObject('123456')));
         $this->assertTrue(
@@ -107,7 +107,7 @@ class ChangeStateTest extends TestCase
             "not match the aggregation root ID"
         );
 
-        $object = $this->dummyStreamEntityFactory();
+        $object = $this->streamEntityFactory();
 
         $this->assertTrue($object->aggregateId()->equalTo(new IdentityObject('123456')));
 

@@ -12,7 +12,7 @@ class SnapshotFactoryTest extends TestCase
     /** @test */
     public function toSnapshot(): void
     {
-        $object = $this->dummyStreamEntityFactory();
+        $object = $this->streamEntityFactory();
 
         $this->assertInstanceOf(EventSnapshot::class, $object->toSnapshot());
     }
@@ -20,7 +20,7 @@ class SnapshotFactoryTest extends TestCase
     /** @test */
     public function toSnapshotException(): void
     {
-        $object = $this->dummyStreamEntityFactory();
+        $object = $this->streamEntityFactory();
 
         $this->assertInstanceOf(EventSnapshot::class, $object->toSnapshot());
     }

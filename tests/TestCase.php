@@ -8,6 +8,7 @@ use ArrayObject;
 use DateTimeImmutable;
 use DateTimeZone;
 use Iquety\Domain\Core\IdentityObject;
+use Iquety\Prospection\Stream\StreamEntity;
 use PHPUnit\Framework\TestCase as FrameworkTestCase;
 use ReflectionObject;
 use Tests\Stream\Support\DummyEntity;
@@ -42,15 +43,16 @@ class TestCase extends FrameworkTestCase
     }
 
     /** @SuppressWarnings(PHPMD.StaticAccess) */
-    public function dummyStreamEntityFactory(
+    public function streamEntityFactory(
         string $expression = "now",
-        string $timezone = "UTC"
-    ): DummyStreamEntity {
+        string $timezone = "UTC",
+        string $entityName = DummyStreamEntity::class
+    ): StreamEntity {
 
         $values = $this->stateValues();
         $values['occurredOn'] = new DateTimeImmutable($expression, new DateTimeZone($timezone));
 
-        /** @var DummyStreamEntity */
-        return DummyStreamEntity::factory($values);
+        /** @var StreamEntity */
+        return $entityName::factory($values);
     }
 }

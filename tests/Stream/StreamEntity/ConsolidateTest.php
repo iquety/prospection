@@ -14,7 +14,7 @@ class ConsolidateTest extends TestCase
     /** @test */
     public function consolidateOnly(): void
     {
-        $object = $this->dummyStreamEntityFactory();
+        $object = $this->streamEntityFactory();
 
         $this->assertEquals('Ricardo', $object->one());
         $this->assertEquals(30, $object->two());
@@ -53,7 +53,7 @@ class ConsolidateTest extends TestCase
     /** @test */
     public function consolidateAndChanges(): void
     {
-        $object = $this->dummyStreamEntityFactory();
+        $object = $this->streamEntityFactory();
 
         $this->assertEquals('Ricardo', $object->one());
         $this->assertEquals(30, $object->two());
@@ -112,7 +112,7 @@ class ConsolidateTest extends TestCase
     /** @test */
     public function consolidateEmpty(): void
     {
-        $object = $this->dummyStreamEntityFactory();
+        $object = $this->streamEntityFactory();
 
         $object->consolidate([]);
 
