@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Stream\StreamEntity;
 
-use Iquety\Domain\Core\IdentityObject;
+use Iquety\Prospection\Domain\IdentityObject;
 use Tests\Stream\Support\DummyStreamEntity;
 use Tests\Stream\Support\DummyStreamEntityOtherLabel;
 use Tests\Stream\Support\DummyStreamEntitySameLabel;

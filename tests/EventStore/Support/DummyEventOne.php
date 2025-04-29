@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\EventStore\Support;
 
-use Iquety\Domain\Core\IdentityObject;
-use Iquety\Domain\Event\DomainEvent;
+use Iquety\Prospection\Domain\DomainEvent;
+use Iquety\Prospection\Domain\IdentityObject;
 
 class DummyEventOne extends DomainEvent
 {

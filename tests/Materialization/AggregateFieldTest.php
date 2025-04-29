@@ -7,7 +7,6 @@ namespace Tests\Materialization;
 use DateTimeImmutable;
 use InvalidArgumentException;
 use Iquety\Prospection\EventStore\Descriptor;
-use Iquety\Prospection\Materialization\Field;
 use Iquety\Prospection\Materialization\MaterialField;
 use Tests\Stream\Support\DummyStreamEntity;
 use Tests\TestCase;

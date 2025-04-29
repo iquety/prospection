@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\EventStore;
 
-use Iquety\Domain\Core\IdentityObject;
+use Iquety\Prospection\Domain\IdentityObject;
 use Iquety\Prospection\EventStore\StreamId;
 use Tests\TestCase;
 

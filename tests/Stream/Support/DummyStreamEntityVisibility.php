@@ -6,7 +6,7 @@ namespace Tests\Stream\Support;
 
 use ArrayObject;
 use DateTimeImmutable;
-use Iquety\Domain\Core\IdentityObject;
+use Iquety\Prospection\Domain\IdentityObject;
 use Iquety\Prospection\Stream\StreamEntity;
 use Tests\Stream\Support\DummyEntity;
 use Tests\Stream\Support\DummyValue;

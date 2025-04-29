@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\EventStore\EventHandler\Case;
 
 use DateTimeImmutable;
-use Iquety\Domain\Core\IdentityObject;
+use Iquety\Prospection\Domain\IdentityObject;
 use Iquety\Prospection\EventStore\EventSnapshot;
 use Iquety\Prospection\EventStore\EventStore;
 use Tests\EventStore\EventStoreCase;

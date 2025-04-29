@@ -6,7 +6,7 @@ namespace Iquety\Prospection\EventStore;
 
 use Closure;
 use DateTimeImmutable;
-use Iquety\Domain\Core\IdentityObject;
+use Iquety\Prospection\Domain\IdentityObject;
 
 interface Store
 {

@@ -6,12 +6,10 @@ namespace Iquety\Prospection\Stream;
 
 use DateTimeImmutable;
 use DomainException;
-use Exception;
-use Iquety\Domain\Core\Entity;
-use Iquety\Domain\Core\IdentityObject;
-use Iquety\Domain\Event\DomainEvent;
+use Iquety\Prospection\Domain\DomainEvent;
+use Iquety\Prospection\Domain\Entity;
+use Iquety\Prospection\Domain\IdentityObject;
 use Iquety\Prospection\EventStore\EventSnapshot;
-use Iquety\Prospection\EventStore\EventStore;
 use Throwable;
 
 /**

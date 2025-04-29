@@ -6,7 +6,7 @@ namespace Tests\EventStore;
 
 use ArrayObject;
 use DateTimeImmutable;
-use Iquety\Domain\Core\IdentityObject;
+use Iquety\Prospection\Domain\IdentityObject;
 use Iquety\Prospection\EventStore\Descriptor;
 use Iquety\Prospection\EventStore\EventSnapshot;
 use Tests\Stream\Support\DummyEntity;
