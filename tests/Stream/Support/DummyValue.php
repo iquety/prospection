@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Stream\Support;
 
-use Iquety\Domain\Core\ValueObject;
+use Iquety\Prospection\Domain\ValueObject;
 
 class DummyValue extends ValueObject
 {

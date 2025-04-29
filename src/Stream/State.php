@@ -7,8 +7,8 @@ namespace Iquety\Prospection\Stream;
 use DateTimeImmutable;
 use DomainException;
 use InvalidArgumentException;
-use Iquety\Domain\Core\IdentityObject;
-use Iquety\Domain\Event\DomainEvent;
+use Iquety\Prospection\Domain\DomainEvent;
+use Iquety\Prospection\Domain\IdentityObject;
 use Iquety\Prospection\EventStore\EventSnapshot;
 use OutOfRangeException;
 

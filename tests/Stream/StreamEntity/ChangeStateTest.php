@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Stream\StreamEntity;
 
 use DomainException;
-use Iquety\Domain\Core\IdentityObject;
+use Iquety\Prospection\Domain\IdentityObject;
 use Iquety\Prospection\EventStore\EventSnapshot;
 use Tests\Stream\Support\DummyEntity;
 use Tests\Stream\Support\DummyValue;

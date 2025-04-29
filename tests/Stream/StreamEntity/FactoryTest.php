@@ -8,7 +8,7 @@ use ArrayObject;
 use DateTime;
 use DateTimeImmutable;
 use DomainException;
-use Iquety\Domain\Core\IdentityObject;
+use Iquety\Prospection\Domain\IdentityObject;
 use Tests\Stream\Support\DummyEntity;
 use Tests\Stream\Support\DummyValue;
 use Tests\Stream\Support\DummyStreamEntity;

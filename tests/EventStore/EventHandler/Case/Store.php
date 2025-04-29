@@ -6,7 +6,7 @@ namespace Tests\EventStore\EventHandler\Case;
 
 use DateTimeImmutable;
 use InvalidArgumentException;
-use Iquety\Domain\Core\IdentityObject;
+use Iquety\Prospection\Domain\IdentityObject;
 use Iquety\Prospection\EventStore\EventSnapshot;
 use RuntimeException;
 use Tests\EventStore\Support\DummyEntityOne;

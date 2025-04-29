@@ -5,9 +5,6 @@ declare(strict_types=1);
 namespace Tests\EventStore;
 
 use DateTimeImmutable;
-use Iquety\Domain\Core\IdentityObject;
-use Iquety\Domain\Event\DomainEvent;
-use Iquety\Prospection\EventStore\EventStore;
 use Iquety\PubSub\Event\Serializer\JsonEventSerializer;
 use Tests\TestCase;
 

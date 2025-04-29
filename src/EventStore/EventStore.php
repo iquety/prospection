@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace Iquety\Prospection\EventStore;
 
-use Closure;
 use DateTimeImmutable;
 use InvalidArgumentException;
-use Iquety\Domain\Core\IdentityObject;
-use Iquety\Domain\Event\DomainEvent;
+use Iquety\Prospection\Domain\IdentityObject;
+use Iquety\Prospection\Domain\DomainEvent;
 use Iquety\Prospection\Stream\StreamEntity;
 use Iquety\PubSub\Event\Serializer\EventSerializer;
 use RuntimeException;

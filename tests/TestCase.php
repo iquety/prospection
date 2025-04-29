@@ -7,7 +7,7 @@ namespace Tests;
 use ArrayObject;
 use DateTimeImmutable;
 use DateTimeZone;
-use Iquety\Domain\Core\IdentityObject;
+use Iquety\Prospection\Domain\IdentityObject;
 use Iquety\Prospection\Stream\StreamEntity;
 use PHPUnit\Framework\TestCase as FrameworkTestCase;
 use ReflectionObject;
@@ -54,5 +54,18 @@ class TestCase extends FrameworkTestCase
 
         /** @var StreamEntity */
         return $entityName::factory($values);
+    }
+
+    /** @SuppressWarnings(PHPMD.StaticAccess) */
+    public function dummyStreamEntityFactory(
+        string $expression = "now",
+        string $timezone = "UTC"
+    ): DummyStreamEntity {
+
+        $values = $this->stateValues();
+        $values['occurredOn'] = new DateTimeImmutable($expression, new DateTimeZone($timezone));
+
+        /** @var DummyStreamEntity */
+        return DummyStreamEntity::factory($values);
     }
 }

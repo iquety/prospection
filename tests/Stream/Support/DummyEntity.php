@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Stream\Support;
 
-use Iquety\Domain\Core\Entity;
-use Iquety\Domain\Core\IdentityObject;
+use Iquety\Prospection\Domain\Entity;
+use Iquety\Prospection\Domain\IdentityObject;
 
 class DummyEntity extends Entity
 {

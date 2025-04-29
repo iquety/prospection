@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Materialization\Mysql;
 
-use DateTimeImmutable;
-use Iquety\Domain\Core\IdentityObject;
-use Iquety\Domain\Event\DomainEvent;
+use Iquety\Prospection\Domain\IdentityObject;
 use Iquety\Prospection\EventStore\EventSnapshot;
 use Iquety\Prospection\EventStore\EventStore;
 use Iquety\Prospection\EventStore\Mysql\MysqlConnection;
