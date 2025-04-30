@@ -14,22 +14,22 @@ class MysqlConnectionTest extends TestCase
     private function connection(): MysqlConnection
     {
         return new MysqlConnection(
-            'devel',
-            'iquety-prospection-mysql',
-            3306,
-            'devel',
-            'devel'
+            getenv('MYSQL_DBNAME'),
+            getenv('MYSQL_HOST'),
+            (int)getenv('MYSQL_PORT'),
+            getenv('MYSQL_USER'),
+            getenv('MYSQL_PASSWORD')
         );
     }
 
     private function errorConnection(): MysqlConnection
     {
         return new MysqlConnection(
-            'devel',
-            'iquety-prospection-mysql XXXXXX',
-            3306,
-            'devel',
-            'devel'
+            getenv('MYSQL_DBNAME'),
+            getenv('MYSQL_HOST') . ' XXXXXX',
+            (int)getenv('MYSQL_PORT'),
+            getenv('MYSQL_USER'),
+            getenv('MYSQL_PASSWORD')
         );
     }
 
