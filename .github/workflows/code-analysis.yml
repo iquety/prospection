@@ -5,6 +5,21 @@ on:
   pull_request: ~
 
 jobs:
+  services:
+    mysql:
+      image: mysql:8.0
+      env:
+        MYSQL_DATABASE: devel
+        MYSQL_USER: devel
+        MYSQL_PASSWORD: devel
+        MYSQL_ROOT_PASSWORD: devel
+      ports:
+        - 3306:3306
+      options: >-
+        --health-cmd="mysqladmin ping"
+        --health-interval=10s
+        --health-timeout=5s
+        --health-retries=3
   phpcs:
     name: PHPCodeSniffer
     runs-on: ubuntu-latest
@@ -45,7 +60,7 @@ jobs:
         if: "matrix.php == '8.3'"
 
       - run: composer update --no-progress
-      - run: vendor/bin/phpunit --no-coverage
+      - run: vendor/bin/phpunit --no-coverage -c phpunit-ci.xml
 
   phpstan:
     name: PHPStan

@@ -9,7 +9,7 @@
          failOnWarning="true"
          verbose="true">
     <php>
-        <env name="MYSQL_HOST" value="iquety-prospection-mysql" />
+        <env name="MYSQL_HOST" value="127.0.0.1" />
         <env name="MYSQL_PORT" value="3306" />
         <env name="MYSQL_DBNAME" value="devel" />
         <env name="MYSQL_USER" value="devel" />
