@@ -16,11 +16,11 @@ class MysqlQueryTest extends AbstractCase
     private function connection(): MysqlConnection
     {
         return new MysqlConnection(
-            'devel',
-            'iquety-prospection-mysql',
-            3306,
-            'devel',
-            'devel'
+            (string)getenv('MYSQL_DBNAME'),
+            (string)getenv('MYSQL_HOST'),
+            (int)getenv('MYSQL_PORT'),
+            (string)getenv('MYSQL_USER'),
+            (string)getenv('MYSQL_PASSWORD')
         );
     }
 
@@ -142,11 +142,11 @@ class MysqlQueryTest extends AbstractCase
     public function connectionError(): void
     {
         $connection = new MysqlConnection(
-            'devel',
-            'invalid', // host errado
-            3306,
-            'devel',
-            'devel'
+            (string)getenv('MYSQL_DBNAME'),
+            'invalid', // host errado,
+            (int)getenv('MYSQL_PORT'),
+            (string)getenv('MYSQL_USER'),
+            (string)getenv('MYSQL_PASSWORD')
         );
 
         $object = new MysqlQuery($connection, 'events');
@@ -163,13 +163,7 @@ class MysqlQueryTest extends AbstractCase
     /** @test */
     public function connectionQueryError(): void
     {
-        $connection = new MysqlConnection(
-            'devel',
-            'iquety-prospection-mysql',
-            3306,
-            'devel',
-            'devel'
-        );
+        $connection = $this->connection();
 
         $object = new MysqlQuery($connection, 'not_exists');
 

@@ -15,11 +15,11 @@ class MysqlStoreTest extends AbstractStoreCase
     private function connection(): MysqlConnection
     {
         return new MysqlConnection(
-            'devel',
-            'iquety-prospection-mysql',
-            3306,
-            'devel',
-            'devel'
+            (string)getenv('MYSQL_DBNAME'),
+            (string)getenv('MYSQL_HOST'),
+            (int)getenv('MYSQL_PORT'),
+            (string)getenv('MYSQL_USER'),
+            (string)getenv('MYSQL_PASSWORD')
         );
     }
 

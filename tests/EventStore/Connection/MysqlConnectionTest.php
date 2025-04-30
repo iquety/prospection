@@ -14,22 +14,22 @@ class MysqlConnectionTest extends TestCase
     private function connection(): MysqlConnection
     {
         return new MysqlConnection(
-            getenv('MYSQL_DBNAME'),
-            getenv('MYSQL_HOST'),
+            (string)getenv('MYSQL_DBNAME'),
+            (string)getenv('MYSQL_HOST'),
             (int)getenv('MYSQL_PORT'),
-            getenv('MYSQL_USER'),
-            getenv('MYSQL_PASSWORD')
+            (string)getenv('MYSQL_USER'),
+            (string)getenv('MYSQL_PASSWORD')
         );
     }
 
     private function errorConnection(): MysqlConnection
     {
         return new MysqlConnection(
-            getenv('MYSQL_DBNAME'),
-            getenv('MYSQL_HOST') . ' XXXXXX',
+            (string)getenv('MYSQL_DBNAME'),
+            (string)getenv('MYSQL_HOST') . ' XXXXXX',
             (int)getenv('MYSQL_PORT'),
-            getenv('MYSQL_USER'),
-            getenv('MYSQL_PASSWORD')
+            (string)getenv('MYSQL_USER'),
+            (string)getenv('MYSQL_PASSWORD')
         );
     }
 
@@ -47,9 +47,11 @@ class MysqlConnectionTest extends TestCase
     {
         $connection = $this->errorConnection();
 
+        $host = getenv('MYSQL_HOST') . ' XXXXXX';
+
         $this->assertStringContainsString(
             'SQLSTATE[HY000] [2002] php_network_getaddresses: ' .
-            'getaddrinfo for iquety-prospection-mysql XXXXXX failed',
+            "getaddrinfo for $host failed",
             $connection->lastError()->message()
         );
         $this->assertSame('2002', $connection->lastError()->code());
