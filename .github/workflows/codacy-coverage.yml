@@ -6,17 +6,32 @@ jobs:
   codacy-coverage-reporter:
     runs-on: ubuntu-latest
     name: codacy-coverage-reporter
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_DATABASE: devel
+          MYSQL_USER: devel
+          MYSQL_PASSWORD: devel
+          MYSQL_ROOT_PASSWORD: devel
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
     steps:
       - uses: actions/checkout@v2
 
       - uses: shivammathur/setup-php@v2
         with:
           php-version: 8.3
-          extensions: curl, mbstring, xdebug
+          extensions: curl, mbstring, xdebug, mysql
           tools: composer:v2
 
       - run: composer update --no-progress
-      - run: vendor/bin/phpunit --coverage-clover clover.xml
+      - run: vendor/bin/phpunit --coverage-clover clover.xml  -c phpunit-ci.xml
 
       - name: Run codacy-coverage-reporter
         uses: codacy/codacy-coverage-reporter-action@master
