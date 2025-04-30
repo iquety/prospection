@@ -23,6 +23,7 @@ class MysqlStoreTest extends AbstractStoreCase
         );
     }
 
+    /** @return array<int,array<string,mixed>> */
     public function getPersistedEvents(): array
     {
         $result = $this->connection()->select('SELECT * FROM events');

@@ -11,9 +11,9 @@ class DummyEntityRoot extends Entity
 {
     public function __construct(
         private IdentityObject $identity,
-        private string $simple,
-        private DummyEntity $entity,
-        private DummyValue $value
+        private string $simple, // @phpstan-ignore-line
+        private DummyEntity $entity, // @phpstan-ignore-line
+        private DummyValue $value // @phpstan-ignore-line
     ) {
     }
 

@@ -179,12 +179,12 @@ abstract class StreamEntity extends Entity
             unset($propertyList['createdOn']);
             unset($propertyList['updatedOn']);
         }
-        
+
         foreach ($propertyList as $name => $value) {
             if ($name === 'occurredOn') {
                 continue;
             }
-        
+
             $property = $this->reflection()->getProperty($name);
             $property->setAccessible(true);
             $property->setValue($this, $value);

@@ -8,11 +8,13 @@ use DomainException;
 use Iquety\Prospection\Domain\IdentityObject;
 use Iquety\Prospection\EventStore\EventSnapshot;
 use Tests\Stream\Support\DummyEntity;
+use Tests\Stream\Support\DummyStreamEntity;
 use Tests\Stream\Support\DummyValue;
 use Tests\TestCase;
 
 class ChangeStateTest extends TestCase
 {
+    /** @return array<int, array<int,float|int|string>> */
     public function changeStateProvider(): array
     {
         return [
@@ -28,6 +30,7 @@ class ChangeStateTest extends TestCase
      */
     public function changeState(string $method, mixed $value, mixed $valueChanged): void
     {
+        /** @var DummyStreamEntity $object */
         $object = $this->streamEntityFactory();
 
         $this->assertTrue($object->aggregateId()->equalTo(new IdentityObject('123456')));
@@ -48,6 +51,7 @@ class ChangeStateTest extends TestCase
     /** @test */
     public function changeStateValueObject(): void
     {
+        /** @var DummyStreamEntity $object */
         $object = $this->streamEntityFactory();
 
         $this->assertTrue($object->aggregateId()->equalTo(new IdentityObject('123456')));
@@ -72,6 +76,7 @@ class ChangeStateTest extends TestCase
     /** @test */
     public function changeStateEntity(): void
     {
+        /** @var DummyStreamEntity $object */
         $object = $this->streamEntityFactory();
 
         $this->assertTrue($object->aggregateId()->equalTo(new IdentityObject('123456')));

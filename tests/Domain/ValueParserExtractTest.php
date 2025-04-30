@@ -14,8 +14,10 @@ use RuntimeException;
 use stdClass;
 use Tests\TestCase;
 
+/** @SuppressWarnings(PHPMD.TooManyPublicMethods) */
 class ValueParserExtractTest extends TestCase
 {
+    /** @return array<string,array<int,mixed>> */
     public function statelessProvider(): array
     {
         return [
@@ -25,7 +27,7 @@ class ValueParserExtractTest extends TestCase
         ];
     }
 
-    /** 
+    /**
      * @test
      * @dataProvider statelessProvider
      */
@@ -41,13 +43,19 @@ class ValueParserExtractTest extends TestCase
         $this->assertTrue($parser->toPrimitives());
     }
 
-    /** @test */
+    /**
+     * @test
+     * @SuppressWarnings(PHPMD.UnusedPrivateField)
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
     public function convertArray(): void
     {
-        $value = new class('ricardo') extends ValueObject {
-            public function __construct(private string $name){}
+        $value = new class ('ricardo') extends ValueObject {
+            public function __construct(private string $name) // @phpstan-ignore-line
+            {
+            }
         };
-        
+
         $valueOne = [ 'name' => $value ];
 
         $this->assertSame(
@@ -83,14 +91,14 @@ class ValueParserExtractTest extends TestCase
     /** @test */
     public function noConvertArrayLevelTwo(): void
     {
-        $valueOne = [ 
+        $valueOne = [
             'name' => 'ricardo',
             'age' => 43,
             'range' => [ 'start' => 10, 'end' => 50 ]
         ];
 
         $this->assertSame(
-            [ 
+            [
                 'name' => 'ricardo',
                 'age' => 43,
                 'range' => [ 'start' => 10, 'end' => 50 ]
@@ -102,13 +110,13 @@ class ValueParserExtractTest extends TestCase
     /** @test */
     public function noConvertArrayLevelThree(): void
     {
-        $valueOne = [ 
+        $valueOne = [
             'name' => 'ricardo',
             'age' => [ 'age' => 43, 'range' => [ 'start' => 10, 'end' => 50 ] ]
         ];
 
         $this->assertSame(
-            [ 
+            [
                 'name' => 'ricardo',
                 'age' => [ 'age' => 43, 'range' => [ 'start' => 10, 'end' => 50 ] ]
             ],
@@ -116,11 +124,17 @@ class ValueParserExtractTest extends TestCase
         );
     }
 
-    /** @test */
+    /**
+     * @test
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
     public function convertValueLevelOne(): void
     {
-        $valueOne = new class('ricardo') extends ValueObject {
-            public function __construct(private string $name){}
+        $valueOne = new class ('ricardo') extends ValueObject {
+            // @phpstan-ignore-next-line
+            public function __construct(private string $name)
+            {
+            }
         };
 
         $this->assertSame(
@@ -129,27 +143,38 @@ class ValueParserExtractTest extends TestCase
         );
     }
 
-    /** @test */
+    /**
+     * @test
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
     public function convertValueLevelTwo(): void
     {
-        $valueTwoAge = new class(43) extends ValueObject {
-            public function __construct(private int $age){}
+        $valueTwoAge = new class (43) extends ValueObject {
+            // @phpstan-ignore-next-line
+            public function __construct(private int $age)
+            {
+            }
         };
 
-        $valueTwoRange = new class(10, 50) extends ValueObject {
-            public function __construct(private int $start, private int $end){}
-        };
-
-        $valueOne = new class('ricardo', $valueTwoAge, $valueTwoRange) extends ValueObject {
+        $valueTwoRange = new class (10, 50) extends ValueObject {
             public function __construct(
-                private string $name,
-                private ValueObject $age,
-                private ValueObject $range,
-            ){}
+                private int $start, // @phpstan-ignore-line
+                private int $end // @phpstan-ignore-line
+            ) {
+            }
+        };
+
+        $valueOne = new class ('ricardo', $valueTwoAge, $valueTwoRange) extends ValueObject {
+            public function __construct(
+                private string $name, // @phpstan-ignore-line
+                private ValueObject $age, // @phpstan-ignore-line
+                private ValueObject $range // @phpstan-ignore-line
+            ) {
+            }
         };
 
         $this->assertSame(
-            [ 
+            [
                 'name' => 'ricardo',
                 'age' => 43,
                 'range' => [ 'start' => 10, 'end' => 50 ]
@@ -158,26 +183,38 @@ class ValueParserExtractTest extends TestCase
         );
     }
 
-    /** @test */
+    /**
+     * @test
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
     public function convertValueLevelThree(): void
     {
-        $valueThree = new class(10, 50) extends ValueObject {
-            public function __construct(private int $start, private int $end){}
-        };
-
-        $valueTwo = new class(43, $valueThree) extends ValueObject {
-            public function __construct(private int $age, private ValueObject $range){}
-        };
-
-        $valueOne = new class('ricardo', $valueTwo) extends ValueObject {
+        $valueThree = new class (10, 50) extends ValueObject {
             public function __construct(
-                private string $name,
-                private ValueObject $age
-            ){}
+                private int $start, // @phpstan-ignore-line
+                private int $end // @phpstan-ignore-line
+            ) {
+            }
+        };
+
+        $valueTwo = new class (43, $valueThree) extends ValueObject {
+            public function __construct(
+                private int $age, // @phpstan-ignore-line
+                private ValueObject $range // @phpstan-ignore-line
+            ) {
+            }
+        };
+
+        $valueOne = new class ('ricardo', $valueTwo) extends ValueObject {
+            public function __construct(
+                private string $name, // @phpstan-ignore-line
+                private ValueObject $age // @phpstan-ignore-line
+            ) {
+            }
         };
 
         $this->assertSame(
-            [ 
+            [
                 'name' => 'ricardo',
                 'age' => [ 'age' => 43, 'range' => [ 'start' => 10, 'end' => 50 ] ]
             ],
@@ -185,17 +222,29 @@ class ValueParserExtractTest extends TestCase
         );
     }
 
-    /** @test */
+    /**
+     * @test
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
     public function convertEntityLevelOne(): void
     {
         $identity = new IdentityObject('abcdefghij');
 
-        $entityOne = new class($identity, 'ricardo') extends Entity {
-            public function __construct(private IdentityObject $identity, private string $name){}
-            public function identity(): IdentityObject { return $this->identity; }
+        $entityOne = new class ($identity, 'ricardo') extends Entity {
+            public function __construct(
+                private IdentityObject $identity,
+                private string $name // @phpstan-ignore-line
+            ) {
+            }
+
+            public function identity(): IdentityObject
+            {
+                return $this->identity;
+            }
         };
 
-        $this->assertSame([ 
+        $this->assertSame(
+            [
                 'identity' => 'abcdefghij',
                 'name' => 'ricardo',
             ],
@@ -203,38 +252,55 @@ class ValueParserExtractTest extends TestCase
         );
     }
 
-    /** @test */
+    /**
+     * @test
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
     public function convertEntityLevelTwo(): void
     {
-        $entityTwoAge = new class(new IdentityObject('ghijkl'), 43) extends Entity {
+        $entityTwoAge = new class (new IdentityObject('ghijkl'), 43) extends Entity {
             public function __construct(
                 private IdentityObject $identity,
-                private int $age
-            ){}
-            public function identity(): IdentityObject { return $this->identity; }
+                private int $age // @phpstan-ignore-line
+            ) {
+            }
+            public function identity(): IdentityObject
+            {
+                return $this->identity;
+            }
         };
 
-        $entityTwoRange = new class(new IdentityObject('mnopqr'), 10, 50) extends Entity {
+        $entityTwoRange = new class (new IdentityObject('mnopqr'), 10, 50) extends Entity {
             public function __construct(
                 private IdentityObject $identity,
-                private int $start,
-                private int $end
-            ){}
-            public function identity(): IdentityObject { return $this->identity; }
+                private int $start, // @phpstan-ignore-line
+                private int $end // @phpstan-ignore-line
+            ) {
+            }
+            public function identity(): IdentityObject
+            {
+                return $this->identity;
+            }
         };
 
-        $entityOne = new class(new IdentityObject('abcdef'), 'ricardo', $entityTwoAge, $entityTwoRange) extends Entity {
+        $identity = new IdentityObject('abcdef');
+
+        $entityOne = new class ($identity, 'ricardo', $entityTwoAge, $entityTwoRange) extends Entity {
             public function __construct(
                 private IdentityObject $identity,
-                private string $name,
-                private Entity $age,
-                private Entity $range
-            ){}
-            public function identity(): IdentityObject { return $this->identity; }
+                private string $name, // @phpstan-ignore-line
+                private Entity $age, // @phpstan-ignore-line
+                private Entity $range // @phpstan-ignore-line
+            ) {
+            }
+            public function identity(): IdentityObject
+            {
+                return $this->identity;
+            }
         };
 
         $this->assertSame(
-            [ 
+            [
                 'identity' => 'abcdef',
                 'name' => 'ricardo',
                 'age' => [ 'identity' => 'ghijkl', 'age' => 43 ],
@@ -244,39 +310,54 @@ class ValueParserExtractTest extends TestCase
         );
     }
 
-    /** @test */
+    /**
+     * @test
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
     public function convertEntityLevelThree(): void
     {
-        $entityThree = new class(new IdentityObject('ghijkl'), 43) extends Entity {
+        $entityThree = new class (new IdentityObject('ghijkl'), 43) extends Entity {
             public function __construct(
                 private IdentityObject $identity,
-                private int $age
-            ){}
-            public function identity(): IdentityObject { return $this->identity; }
+                private int $age // @phpstan-ignore-line
+            ) {
+            }
+            public function identity(): IdentityObject
+            {
+                return $this->identity;
+            }
         };
 
 
-        $entityTwo = new class(new IdentityObject('mnopqr'), $entityThree, 10, 50) extends Entity {
+        $entityTwo = new class (new IdentityObject('mnopqr'), $entityThree, 10, 50) extends Entity {
             public function __construct(
                 private IdentityObject $identity,
-                private Entity $age,
-                private int $start,
-                private int $end
-            ){}
-            public function identity(): IdentityObject { return $this->identity; }
+                private Entity $age, // @phpstan-ignore-line
+                private int $start, // @phpstan-ignore-line
+                private int $end // @phpstan-ignore-line
+            ) {
+            }
+            public function identity(): IdentityObject
+            {
+                return $this->identity;
+            }
         };
 
-        $entityOne = new class(new IdentityObject('abcdef'), 'ricardo', $entityTwo) extends Entity {
+        $entityOne = new class (new IdentityObject('abcdef'), 'ricardo', $entityTwo) extends Entity {
             public function __construct(
                 private IdentityObject $identity,
-                private string $name,
-                private Entity $range
-            ){}
-            public function identity(): IdentityObject { return $this->identity; }
+                private string $name, // @phpstan-ignore-line
+                private Entity $range // @phpstan-ignore-line
+            ) {
+            }
+            public function identity(): IdentityObject
+            {
+                return $this->identity;
+            }
         };
 
         $this->assertSame(
-            [ 
+            [
                 'identity' => 'abcdef',
                 'name' => 'ricardo',
                 'range' => [

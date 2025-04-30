@@ -10,6 +10,10 @@ use Tests\TestCase;
 
 class EventStoreCase extends TestCase
 {
+    /**
+     * @param array<string,mixed> $eventData
+     * @return array<string,mixed>
+     */
     protected function persistedEventData(
         string $aggregateLabel,
         string $eventLabel,
@@ -65,6 +69,6 @@ class EventStoreCase extends TestCase
 
     //     // $eventStore->store(DummyStreamEntity::label(), DomainEvent $event);
 
-        
+
     // }
 }

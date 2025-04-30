@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace Tests\EventStore\Query\Case;
 
 use DateTimeImmutable;
-use Iquety\Prospection\Domain\IdentityObject;
 use Iquety\Prospection\EventStore\Interval;
 use Iquety\Prospection\EventStore\Query;
 
 /**
- * @method Query queryFactory
- * @method void resetDatabase
+ * @method Query queryFactory()
+ * @method void resetDatabase()
  */
 trait AbstractQueryListDate
 {

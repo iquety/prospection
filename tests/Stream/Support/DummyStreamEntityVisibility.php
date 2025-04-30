@@ -13,15 +13,16 @@ use Tests\Stream\Support\DummyValue;
 
 class DummyStreamEntityVisibility extends StreamEntity
 {
+    /** @param ArrayObject<int,string> $five */
     public function __construct(
-        private IdentityObject $aggregateId,
-        private string $one,
-        private int $two,
-        private float $three,
-        private DateTimeImmutable $four,
-        private ArrayObject $five,
-        private DummyValue $six,
-        private DummyEntity $seven
+        private IdentityObject $aggregateId, // @phpstan-ignore-line
+        private string $one, // @phpstan-ignore-line
+        private int $two, // @phpstan-ignore-line
+        private float $three, // @phpstan-ignore-line
+        private DateTimeImmutable $four, // @phpstan-ignore-line
+        private ArrayObject $five, // @phpstan-ignore-line
+        private DummyValue $six, // @phpstan-ignore-line
+        private DummyEntity $seven // @phpstan-ignore-line
     ) {
     }
 

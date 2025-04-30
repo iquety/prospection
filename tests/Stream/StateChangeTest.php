@@ -10,6 +10,7 @@ use Iquety\Prospection\Domain\DomainEvent;
 use Iquety\Prospection\Domain\IdentityObject;
 use Iquety\Prospection\Stream\State;
 use Iquety\Prospection\EventStore\EventSnapshot;
+use PHPUnit\Framework\MockObject\Builder\InvocationMocker;
 use Tests\TestCase;
 
 class StateChangeTest extends TestCase

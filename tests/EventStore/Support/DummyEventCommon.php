@@ -11,8 +11,8 @@ class DummyEventCommon extends Event
 {
     protected function __construct(
         private IdentityObject $aggregateId,
-        private string $one,
-        private string $two
+        private string $one, // @phpstan-ignore-line
+        private string $two // @phpstan-ignore-line
     ) {
     }
 

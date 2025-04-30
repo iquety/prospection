@@ -11,9 +11,9 @@ class DummyEntityOne extends StreamEntity
 {
     protected function __construct(
         private IdentityObject $aggregateId,
-        private string $one,
-        private string $two,
-        private string $thr
+        private string $one, // @phpstan-ignore-line
+        private string $two, // @phpstan-ignore-line
+        private string $thr // @phpstan-ignore-line
     ) {
         # code...
     }

@@ -11,7 +11,7 @@ class DummyEventTwo extends DomainEvent
 {
     protected function __construct(
         private IdentityObject $aggregateId,
-        private string $two
+        private string $two // @phpstan-ignore-line
     ) {
     }
 

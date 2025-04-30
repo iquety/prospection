@@ -12,7 +12,7 @@ class MaterialField
     public const LENGTH         = 'length';
     public const TIMEZONE       = 'timezone';
     public const TYPE           = 'type';
-    
+
     public const SORTING_BY         = 'sorting_by';
     public const SORTING_ASCENDANCY = 'ascendancy';
     public const SORTING_DESCENT    = 'descent';

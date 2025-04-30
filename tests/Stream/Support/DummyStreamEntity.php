@@ -13,8 +13,9 @@ use Tests\Stream\Support\DummyValue;
 
 class DummyStreamEntity extends StreamEntity
 {
+    /** @param ArrayObject<int,string> $five */
     protected function __construct(
-        private IdentityObject $aggregateId,
+        private IdentityObject $aggregateId, // @phpstan-ignore-line
         private string $one,
         private int $two,
         private float $three,
@@ -50,6 +51,7 @@ class DummyStreamEntity extends StreamEntity
         return $this->four;
     }
 
+    /** @return ArrayObject<int,string> */
     public function five(): ArrayObject
     {
         return $this->five;

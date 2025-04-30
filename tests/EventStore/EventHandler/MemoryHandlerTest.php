@@ -13,6 +13,7 @@ use Tests\EventStore\EventHandler\Case\AbstractCase;
 
 class MemoryHandlerTest extends AbstractCase
 {
+    /** @return array<int,array<string,mixed>> */
     public function getPersistedEvents(): array
     {
         return MemoryConnection::instance()->all();

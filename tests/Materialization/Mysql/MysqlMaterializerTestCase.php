@@ -25,6 +25,7 @@ use Tests\Stream\Support\DummyStreamEntity;
 use Tests\Stream\Support\DummyStreamEntityOtherLabel;
 use Tests\TestCase;
 
+/** @SuppressWarnings(PHPMD.CouplingBetweenObjects) */
 class MysqlMaterializerTestCase extends EventStoreCase
 {
     private static function connectionFactory(): MysqlConnection
@@ -81,7 +82,7 @@ class MysqlMaterializerTestCase extends EventStoreCase
 
     //     return $materialization;
     // }
-    
+
     // public function materializerFactory(): MysqlMaterializer
     // {
     //     return new MysqlMaterializer($this->connectionFactory(), $this->queryFactory());
@@ -103,7 +104,7 @@ class MysqlMaterializerTestCase extends EventStoreCase
     //     /** @var DomainEvent $event */
     //     return $event;
     // }
-    
+
     protected function randomWord(): string
     {
         $list = [
@@ -125,29 +126,41 @@ class MysqlMaterializerTestCase extends EventStoreCase
         return $list[0];
     }
 
+    /** @SuppressWarnings(PHPMD.StaticAccess) */
     protected function dummyOneFactory(): DummyEventOne
     {
-        return DummyEventOne::factory([
+        /** @var DummyEventOne $event */
+        $event = DummyEventOne::factory([
             'aggregateId' => new IdentityObject('123'),
             'one' => $this->randomWord()
         ]);
+
+        return $event;
     }
 
+    /** @SuppressWarnings(PHPMD.StaticAccess) */
     protected function dummyTwoFactory(): DummyEventTwo
     {
-        return DummyEventTwo::factory([
+        /** @var DummyEventTwo $event */
+        $event = DummyEventTwo::factory([
             'aggregateId' => new IdentityObject('123'),
             'two' => $this->randomWord()
         ]);
+
+        return $event;
     }
 
+    /** @SuppressWarnings(PHPMD.StaticAccess) */
     protected function dummyThrFactory(): DummyEventThr
     {
-        return DummyEventThr::factory([
+        /** @var DummyEventThr $event */
+        $event = DummyEventThr::factory([
             'aggregateId' => new IdentityObject('123'),
             'one' => $this->randomWord(),
             'two' => $this->randomWord()
         ]);
+
+        return $event;
     }
 
     protected function makeEvents(): void
@@ -168,10 +181,10 @@ class MysqlMaterializerTestCase extends EventStoreCase
         $eventStore->store(DummyEntityTwo::class, $event);
         $eventStore->store(DummyEntityThr::class, $event);
 
-        for($x=0; $x < 25; $x++) {
+        for ($x = 0; $x < 25; $x++) {
             $eventStore->store(DummyEntityOne::class, $this->dummyOneFactory());
             $eventStore->store(DummyEntityOne::class, $this->dummyTwoFactory());
-    
+
             $eventStore->store(DummyEntityTwo::class, $this->dummyThrFactory());
             $eventStore->store(DummyEntityTwo::class, $this->dummyThrFactory());
         }

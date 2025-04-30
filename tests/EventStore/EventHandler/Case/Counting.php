@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\EventStore\EventHandler\Case;
 
+use Iquety\Prospection\Domain\DomainEvent;
 use Iquety\Prospection\Domain\IdentityObject;
 use Iquety\Prospection\EventStore\EventSnapshot;
 use Iquety\Prospection\EventStore\EventStore;
 use Tests\EventStore\Support\DummyEntityOne;
-use Tests\EventStore\Support\DummyEntityThr;
 use Tests\EventStore\Support\DummyEntityTwo;
 
 /**
@@ -32,14 +32,15 @@ trait Counting
     {
         $object = $this->eventStoreFactory();
 
-        $this->eventStoreFactory()->storeMultiple(DummyEntityOne::class, [
-            EventSnapshot::factory([
-                'aggregateId' => new IdentityObject('77777'),
-                'one' => 'Fulano',
-                'two' => 'Ciclano',
-                'thr' => 'Naitis'
-            ]),
+        /** @var DomainEvent $event */
+        $event = EventSnapshot::factory([
+            'aggregateId' => new IdentityObject('77777'),
+            'one' => 'Fulano',
+            'two' => 'Ciclano',
+            'thr' => 'Naitis'
         ]);
+
+        $this->eventStoreFactory()->storeMultiple(DummyEntityOne::class, [$event]);
 
         $count = $object->countAggregateEvents(DummyEntityOne::class, new IdentityObject('77777'));
         $this->assertEquals(1, $count);

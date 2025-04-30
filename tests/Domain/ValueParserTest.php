@@ -18,6 +18,7 @@ use Tests\TestCase;
 
 class ValueParserTest extends TestCase
 {
+    /** @return array<string,array<int,mixed>> */
     public function primitiveProvider(): array
     {
         return [
@@ -35,6 +36,7 @@ class ValueParserTest extends TestCase
         ];
     }
 
+    /** @return array<string,array<int,mixed>> */
     public function objectProvider(): array
     {
         return [
@@ -44,25 +46,45 @@ class ValueParserTest extends TestCase
         ];
     }
 
+    /**
+     * @return array<string,array<int,mixed>>
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
     public function valueObjectProvider(): array
     {
         return [
             DummyValue::class  => [ new DummyValue('ricardo') ],
             DummyValueExtended::class => [ new DummyValueExtended('ricardo') ],
-            'anonimous class' => [ new class() extends ValueObject { 
-                private string $name = 'ricardo'; 
+            'anonimous class' => [ new class () extends ValueObject {
+                public function __construct(
+                    private string $name = 'ricardo' // @phpstan-ignore-line
+                ) {
+                    # code...
+                }
             } ],
         ];
     }
 
+    /**
+     * @return array<string,array<int,mixed>>
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
     public function entityProvider(): array
     {
         return [
             DummyEntity::class  => [ new DummyEntity(new IdentityObject('abc'), 'ricardo') ],
             DummyEntityExtended::class => [ new DummyEntityExtended(new IdentityObject('abc'), 'ricardo') ],
-            'anonimous class' => [ new class() extends Entity { 
-                private string $name = 'ricardo'; 
-                public function identity(): IdentityObject { return new IdentityObject('abc'); }
+            'anonimous class' => [ new class () extends Entity {
+                public function __construct(
+                    private string $name = 'ricardo' // @phpstan-ignore-line
+                ) {
+                    // code...
+                }
+
+                public function identity(): IdentityObject
+                {
+                    return new IdentityObject('abc');
+                }
             } ],
         ];
     }

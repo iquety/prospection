@@ -11,7 +11,7 @@ class DummyEntityReplica extends Entity
 {
     public function __construct(
         private IdentityObject $identity,
-        private string $myValue
+        private string $myValue // @phpstan-ignore-line
     ) {
     }
 

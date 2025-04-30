@@ -30,9 +30,7 @@ class StateConstructTest extends TestCase
             "The value '123' provided is invalid"
         );
 
-        new State([
-            123
-        ]);
+        new State([123]); // @phpstan-ignore-line
     }
 
     /** @test */

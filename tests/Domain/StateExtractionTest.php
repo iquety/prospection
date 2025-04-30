@@ -17,6 +17,7 @@ use Tests\TestCase;
 
 class StateExtractionTest extends TestCase
 {
+    /** @return array<string,array<int,string>> */
     public function methodsProvider(): array
     {
         return [
