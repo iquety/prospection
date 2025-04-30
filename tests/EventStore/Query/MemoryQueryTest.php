@@ -15,7 +15,7 @@ class MemoryQueryTest extends AbstractCase
 {
     public function queryFactory(): Query
     {
-        return new MemoryQuery(MemoryConnection::instance());
+        return new MemoryQuery();
     }
 
     public function resetDatabase(): void

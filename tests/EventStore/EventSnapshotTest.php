@@ -11,6 +11,7 @@ use DateTimeZone;
 use InvalidArgumentException;
 use Iquety\Prospection\Domain\IdentityObject;
 use Iquety\Prospection\EventStore\EventSnapshot;
+use PHPUnit\Framework\MockObject\Builder\InvocationMocker;
 use Tests\TestCase;
 
 class EventSnapshotTest extends TestCase

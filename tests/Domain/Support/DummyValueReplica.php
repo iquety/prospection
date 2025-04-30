@@ -8,6 +8,7 @@ use Iquety\Prospection\Domain\ValueObject;
 
 class DummyValueReplica extends ValueObject
 {
+    // @phpstan-ignore-next-line
     public function __construct(private string $myValue)
     {
     }

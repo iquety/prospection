@@ -7,8 +7,8 @@ namespace Tests\EventStore\Query\Case;
 use Iquety\Prospection\EventStore\Query;
 
 /**
- * @method Query queryFactory
- * @method void resetDatabase
+ * @method Query queryFactory()
+ * @method void resetDatabase()
  */
 trait AbstractQueryNext
 {

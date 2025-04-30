@@ -17,6 +17,7 @@ class IdentityObjectTest extends TestCase
         $this->assertIsString((new IdentityObject(123.45))->value());
     }
 
+    /** @return array<int,array<int,mixed>> */
     public function equalityProvider(): array
     {
         return [
@@ -46,6 +47,7 @@ class IdentityObjectTest extends TestCase
         $this->assertTrue($objectOne->equalTo($objectTwo));
     }
 
+    /** @return array<int,array<int,mixed>> */
     public function inequalityProvider(): array
     {
         return [

@@ -9,6 +9,7 @@ use DateTime;
 use DateTimeImmutable;
 use Iquety\Prospection\Domain\IdentityObject;
 use Tests\Stream\Support\DummyEntity;
+use Tests\Stream\Support\DummyStreamEntity;
 use Tests\Stream\Support\DummyValue;
 use Tests\TestCase;
 
@@ -19,6 +20,7 @@ class BaseGettersTest extends TestCase
     {
         $occurredOn = '2022-10-10 10:10:10';
 
+        /** @var DummyStreamEntity $object */
         $object = $this->streamEntityFactory($occurredOn);
 
         $this->assertTrue($object->aggregateId()->equalTo(new IdentityObject('123456')));

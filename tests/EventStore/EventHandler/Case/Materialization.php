@@ -10,13 +10,12 @@ use Iquety\Prospection\EventStore\EventStore;
 use Iquety\Prospection\EventStore\Interval;
 use Tests\EventStore\Support\DummyEntityOne;
 use Tests\EventStore\Support\DummyEntityTwo;
-use Tests\EventStore\Support\DummyEventOne;
-use Tests\EventStore\Support\DummyEventTwo;
 
 /**
  * @method array getPersistedEvents()
  * @method EventStore eventStoreFactory()
  * @method void resetDatabase()
+ * @method array aggregateOneListFactory(string $aggregateId)
  */
 trait Materialization
 {

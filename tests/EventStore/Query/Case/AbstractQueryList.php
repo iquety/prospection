@@ -8,8 +8,8 @@ use Iquety\Prospection\EventStore\Interval;
 use Iquety\Prospection\EventStore\Query;
 
 /**
- * @method Query queryFactory
- * @method void resetDatabase
+ * @method Query queryFactory()
+ * @method void resetDatabase()
  */
 trait AbstractQueryList
 {

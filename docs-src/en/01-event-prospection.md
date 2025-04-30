@@ -2,7 +2,9 @@
 
 --page-nav--
 
-## "DataBase First" approach
+## 1. "DataBase First" approach
+
+### 1.1. What is it?
 
 In the "DataBase First" approach, much of the concern is focused on structuring the database. First, the structure of the database is modeled, and then the application is implemented.
 
@@ -20,13 +22,13 @@ Maintenance follows the following flow:
 3. **Automation in creating tables**: create scripts to update tables in the database;
 4. **Implementation**: the business rules are implemented based on the new database entities.
 
-### Benefits
+### 1.2. Benefits
 
 Each entity will have a related table in the database, so that, when looking at its structure, we can easily identify the values that form the current state of each entity in the system.
 
 Easier to understand, teach and implement.
 
-### Disadvantages
+### 1.3. Disadvantages
 
 To keep the data consolidated, insert and update operations need to be used. Inserts are very fast, but updates are more costly for the database (mainly in heavily accessed applications).
 
@@ -34,7 +36,9 @@ Before implementing evolutions or maintenance in the application, it is necessar
 
 We will only have the final data of each entity, which will make the understanding process difficult (mainly in complex routines). We will periodically be asked the question, "How did the user manage to produce this result?"
 
-## "Event Sourcing" approach
+## 2. "Event Sourcing" approach
+
+### 2.1. What is it?
 
 Unlike the "DataBase First" approach, "Event Sourcing" (also known as "Event Prospection") does not focus on the data, but on the events that occurred during the execution of the rule.
 
@@ -53,7 +57,7 @@ Maintenance follows the following flow:
 2. **Domain modeling**: determine what will be changed or added to entities and events;
 3. **Implementation**: Business rules are updated based on defined entities and events.
 
-### Benefits
+### 2.1. Benefits
 
 Any operation previously performed may be undone or re-executed at any time.
 
@@ -67,7 +71,7 @@ It makes it possible to identify exactly what the user did to reach a certain re
 
 As there is no concern with the "schema" of the database. As materializations create their structures at runtime, deployment becomes easier and safer, depending only on the implemented source code.
 
-### Disadvantages
+### 2.3. Disadvantages
 
 All entities will have their events stored in a standard way, intentionally formatted for the system to understand. This way, when looking at the table of events, it will not be so easy for us to understand the structure of entities, but it will be easy for us to understand the flow of events.
 

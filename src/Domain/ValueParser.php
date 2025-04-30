@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Iquety\Prospection\Domain;
 
 use DateTimeImmutable;
-use OutOfBoundsException;
 use RuntimeException;
 
 class ValueParser
@@ -74,7 +73,7 @@ class ValueParser
         return true;
     }
 
-    public function toPrimitives(): array
+    public function toPrimitives(): mixed
     {
         if (is_array($this->value) === true) {
             return $this->convertToPrimitives($this->value);
@@ -95,12 +94,16 @@ class ValueParser
         throw new RuntimeException('Only stateful or DateTimeImmutable values can be converted to primitives');
     }
 
-    private function convertToPrimitives(array $state): mixed
+    /**
+     * @param array<string,mixed> $state
+     * @return array<string,string|int|float|bool>
+     */
+    private function convertToPrimitives(array $state): array
     {
-        foreach($state as $param => $value) {
+        foreach ($state as $param => $value) {
             if (is_array($value) === true) {
                 $state[$param] = $this->convertToPrimitives($value);
-                
+
                 continue;
             }
 
@@ -120,7 +123,7 @@ class ValueParser
 
             if (count($valueState) === 1) {
                 $state[$param] = $value->value();
-                
+
                 continue;
             }
 

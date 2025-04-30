@@ -12,3 +12,4 @@ Welcome to the Iquety Prospection library documentation. Here you will find the 
 - [Event Prospection](01-event-prospection.md)
 - [Event Store](02-event-store.md)
 - [Entities](03-entities.md)
+- [Materialization](04-materialization.md)

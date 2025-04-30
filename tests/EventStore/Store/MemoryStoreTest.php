@@ -12,6 +12,7 @@ use Iquety\Prospection\EventStore\Store;
 /** @SuppressWarnings(PHPMD.StaticAccess) */
 class MemoryStoreTest extends AbstractStoreCase
 {
+    /** @return array<int,array<string,mixed>> */
     public function getPersistedEvents(): array
     {
         return MemoryConnection::instance()->all();
@@ -24,7 +25,7 @@ class MemoryStoreTest extends AbstractStoreCase
 
     public function storeFactory(): Store
     {
-        return new MemoryStore(MemoryConnection::instance());
+        return new MemoryStore();
     }
 
     public function setUp(): void

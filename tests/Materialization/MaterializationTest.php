@@ -69,6 +69,10 @@ class MaterializationTest extends TestCase
         $this->assertTrue($materialization->hasSortingField('name'));
     }
 
+    /**
+     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
+     * @return array<string,array<int,mixed>>
+     */
     public function fieldsProvider(): array
     {
         $list = [];
@@ -129,7 +133,7 @@ class MaterializationTest extends TestCase
             MaterialField::TIMEZONE => 'America_SaoPaulo'
         ];
         $list['hour with timezone'] = [ 'hour', $arguments, $config ];
-                
+
         // identity
         $arguments = [ 'id' ];
         $config = [
@@ -186,6 +190,8 @@ class MaterializationTest extends TestCase
     /**
      * @test
      * @dataProvider fieldsProvider
+     * @param array<int,mixed> $arguments
+     * @param array<string,mixed> $configList
      */
     public function materialField(string $method, array $arguments, array $configList): void
     {
@@ -245,13 +251,14 @@ class MaterializationTest extends TestCase
         );
     }
 
+    /** @return array<string,array<int,mixed>> */
     public function sortingProvider(): array
     {
         $list = [];
 
         // sortByAscendancy
         $arguments = [ 'name' ];
-        $config = [ 
+        $config = [
             MaterialField::TYPE => MaterialField::TYPE_SORTING,
             MaterialField::SORTING_BY => MaterialField::SORTING_ASCENDANCY
         ];
@@ -259,7 +266,7 @@ class MaterializationTest extends TestCase
 
         // sortByDescent
         $arguments = [ 'name' ];
-        $config = [ 
+        $config = [
             MaterialField::TYPE => MaterialField::TYPE_SORTING,
             MaterialField::SORTING_BY => MaterialField::SORTING_DESCENT
         ];
@@ -271,6 +278,8 @@ class MaterializationTest extends TestCase
     /**
      * @test
      * @dataProvider sortingProvider
+     * @param array<int,mixed> $arguments
+     * @param array<string,mixed> $configList
      */
     public function sortingField(string $method, array $arguments, array $configList): void
     {

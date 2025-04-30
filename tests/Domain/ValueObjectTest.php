@@ -13,6 +13,7 @@ use Tests\TestCase;
 /** @SuppressWarnings(PHPMD.TooManyPublicMethods) */
 class ValueObjectTest extends TestCase
 {
+    /** @return array<int,array<int,string>> */
     public function equalityProvider(): array
     {
         return [
@@ -35,6 +36,7 @@ class ValueObjectTest extends TestCase
         $this->assertTrue($objectOne->equalTo($objectTwo));
     }
 
+    /** @return array<int,array<int,string>> */
     public function inequalityProvider(): array
     {
         return [

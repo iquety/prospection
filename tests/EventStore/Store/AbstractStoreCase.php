@@ -5,15 +5,12 @@ declare(strict_types=1);
 namespace Tests\EventStore\Store;
 
 use DateTimeImmutable;
-use Iquety\Prospection\Domain\IdentityObject;
-use Iquety\Prospection\EventStore\Memory\MemoryConnection;
 use Iquety\Prospection\EventStore\Store;
 use Tests\EventStore\EventStoreCase;
-use Tests\EventStore\UseFactories;
-use Tests\TestCase;
 
 abstract class AbstractStoreCase extends EventStoreCase
 {
+    /** @return array<int,array<string,mixed>> */
     abstract public function getPersistedEvents(): array;
 
     abstract public function resetDatabase(): void;
@@ -119,7 +116,7 @@ abstract class AbstractStoreCase extends EventStoreCase
 
         $store = $this->storeFactory();
 
-        $store->transaction(function(Store $store){
+        $store->transaction(function (Store $store) {
             $store->removeAll();
         });
 

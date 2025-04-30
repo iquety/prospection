@@ -42,13 +42,13 @@ trait Store
 
         $object = $this->eventStoreFactory();
 
-        $object->storeMultiple(DummyEntityOne::class, [
-            DummyEventCommon::factory([ // não é um DomainEvent
-                'aggregateId' => new IdentityObject('12345'),
-                'one' => 'Ricardo',
-                'two' => 'Pereira'
-            ])
+        $event = DummyEventCommon::factory([ // não é um DomainEvent
+            'aggregateId' => new IdentityObject('12345'),
+            'one' => 'Ricardo',
+            'two' => 'Pereira'
         ]);
+
+        $object->storeMultiple(DummyEntityOne::class, [$event]); // @phpstan-ignore-line
     }
 
     /** @test */
@@ -59,16 +59,17 @@ trait Store
 
         $object = $this->eventStoreFactory();
 
-        $object->storeMultiple(DummyEntityOne::class, [
-            DummyEventOne::factory([
-                'aggregateId' => new IdentityObject('12345'),
-                'one' => 'Ricardo'
-            ]),
-            DummyEventOne::factory([
-                'aggregateId' => new IdentityObject('67890'),
-                'one' => 'Pereira'
-            ]),
+        $eventOne = DummyEventOne::factory([
+            'aggregateId' => new IdentityObject('12345'),
+            'one' => 'Ricardo'
         ]);
+
+        $eventTwo = DummyEventOne::factory([
+            'aggregateId' => new IdentityObject('67890'),
+            'one' => 'Pereira'
+        ]);
+
+        $object->storeMultiple(DummyEntityOne::class, [$eventOne, $eventTwo]); // @phpstan-ignore-line
     }
 
     /** @test */
@@ -79,19 +80,20 @@ trait Store
 
         $object = $this->eventStoreFactory();
 
-        $object->storeMultiple(DummyEntityOne::class, [
-            // aggregateLabel = aggregate.one
-            DummyEventOne::factory([
-                'aggregateId' => new IdentityObject('12345'),
-                'one' => 'Ricardo',
-            ]),
-            // aggregateLabel = aggregate.two
-            DummyEventThr::factory([
-                'aggregateId' => new IdentityObject('12345'),
-                'one' => 'Ricardo',
-                'two' => 'Pereira'
-            ])
+        // aggregateLabel = aggregate.one
+        $eventOne = DummyEventOne::factory([
+            'aggregateId' => new IdentityObject('12345'),
+            'one' => 'Ricardo',
         ]);
+
+        // aggregateLabel = aggregate.two
+        $eventTwo = DummyEventThr::factory([
+            'aggregateId' => new IdentityObject('12345'),
+            'one' => 'Ricardo',
+            'two' => 'Pereira'
+        ]);
+
+        $object->storeMultiple(DummyEntityOne::class, [$eventOne, $eventTwo]); // @phpstan-ignore-line
     }
 
     /** @test */
@@ -118,7 +120,7 @@ trait Store
             'two' => 'Ricardo',
         ]);
 
-        $object->storeMultiple(DummyEntityOne::class, [ $one, $two, $thr ]);
+        $object->storeMultiple(DummyEntityOne::class, [ $one, $two, $thr ]); // @phpstan-ignore-line
 
         $list = $this->getPersistedEvents();
 
@@ -173,7 +175,7 @@ trait Store
 
         $this->assertCount(15, $eventList);
 
-        $object->storeMultiple(DummyEntityOne::class, $eventList);
+        $object->storeMultiple(DummyEntityOne::class, $eventList); // @phpstan-ignore-line
 
         $storedList = $this->getPersistedEvents();
 
@@ -241,7 +243,7 @@ trait Store
 
         $this->assertCount(15, $eventList);
 
-        $object->storeMultiple(DummyEntityOne::class, $eventList);
+        $object->storeMultiple(DummyEntityOne::class, $eventList); // @phpstan-ignore-line
     }
 
     /** @test */
@@ -258,7 +260,7 @@ trait Store
             'thr' => 'Dias',
         ]);
 
-        $object->store(DummyEntityOne::class, $event);
+        $object->store(DummyEntityOne::class, $event); // @phpstan-ignore-line
 
         $list = $this->getPersistedEvents();
 

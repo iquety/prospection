@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Tests\EventStore\EventHandler\Case;
 
 use DateTimeImmutable;
+use Iquety\Prospection\Domain\DomainEvent;
 use Iquety\Prospection\Domain\IdentityObject;
 use Iquety\Prospection\EventStore\EventSnapshot;
 use Iquety\Prospection\EventStore\EventStore;
+use Iquety\PubSub\Event\Event;
 use Tests\EventStore\EventStoreCase;
 use Tests\EventStore\Support\DummyEntityOne;
 use Tests\EventStore\Support\DummyEntityTwo;
@@ -26,6 +28,7 @@ abstract class AbstractCase extends EventStoreCase
     use Store;
     use Stream;
 
+    /** @return array<int,array<string,mixed>> */
     abstract public function getPersistedEvents(): array;
 
     abstract public function eventStoreFactory(): EventStore;
@@ -45,10 +48,17 @@ abstract class AbstractCase extends EventStoreCase
         $this->eventStoreFactory()->storeMultiple(DummyEntityOne::class, $oneFactory('fghij'));
         $this->eventStoreFactory()->storeMultiple(DummyEntityOne::class, $oneFactory('tuvxyz'));
 
-        $this->eventStoreFactory()->storeMultiple(DummyEntityTwo::class, $twoFactory('12345'));
-        $this->eventStoreFactory()->storeMultiple(DummyEntityTwo::class, $twoFactory('abcde'));
+        /** @var array<int,DomainEvent> $eventOne */
+        $eventOne = $twoFactory('12345');
+
+        /** @var array<int,DomainEvent> $eventTwo */
+        $eventTwo = $twoFactory('abcde');
+
+        $this->eventStoreFactory()->storeMultiple(DummyEntityTwo::class, $eventOne);
+        $this->eventStoreFactory()->storeMultiple(DummyEntityTwo::class, $eventTwo);
     }
 
+    /** @return array<int,array<int,EventStore>> */
     public function eventStoreProvider(): array
     {
         $simple = $this->eventStoreFactory();
@@ -63,7 +73,8 @@ abstract class AbstractCase extends EventStoreCase
         ];
     }
 
-    private function aggregateOneListFactory(string $aggregateId): array
+    /** @return array<int,Event>> */
+    protected function aggregateOneListFactory(string $aggregateId): array
     {
         return [
             EventSnapshot::factory([
@@ -88,6 +99,7 @@ abstract class AbstractCase extends EventStoreCase
         ];
     }
 
+    /** @return array<int,Event> */
     private function aggregateTwoListFactory(string $aggregateId): array
     {
         return [

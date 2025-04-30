@@ -7,6 +7,7 @@ namespace Tests\Stream\StreamEntity;
 use Iquety\Prospection\Domain\DomainEvent;
 use Iquety\Prospection\Domain\IdentityObject;
 use Iquety\Prospection\EventStore\EventSnapshot;
+use Tests\Stream\Support\DummyStreamEntity;
 use Tests\TestCase;
 
 class ConsolidateTest extends TestCase
@@ -14,6 +15,7 @@ class ConsolidateTest extends TestCase
     /** @test */
     public function consolidateOnly(): void
     {
+        /** @var DummyStreamEntity $object */
         $object = $this->streamEntityFactory();
 
         $this->assertEquals('Ricardo', $object->one());
@@ -53,6 +55,7 @@ class ConsolidateTest extends TestCase
     /** @test */
     public function consolidateAndChanges(): void
     {
+        /** @var DummyStreamEntity $object */
         $object = $this->streamEntityFactory();
 
         $this->assertEquals('Ricardo', $object->one());
@@ -112,6 +115,7 @@ class ConsolidateTest extends TestCase
     /** @test */
     public function consolidateEmpty(): void
     {
+        /** @var DummyStreamEntity $object */
         $object = $this->streamEntityFactory();
 
         $object->consolidate([]);

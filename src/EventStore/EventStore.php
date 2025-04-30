@@ -257,6 +257,7 @@ class EventStore
     /**
      * @param array<DomainEvent> $domainEventList
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     public function storeMultiple(string $aggregateSignature, array $domainEventList): void
     {
@@ -396,7 +397,10 @@ class EventStore
             $factory = $this->eventRegisterList[$eventLabel];
         }
 
-        return call_user_func([$factory, "factory"], $state);
+        /** @var DomainEvent $event */
+        $event = call_user_func([$factory, "factory"], $state);
+
+        return $event;
     }
 
     private function makeStateErrorMessage(Throwable $exception): string

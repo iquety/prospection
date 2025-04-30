@@ -4,32 +4,30 @@ declare(strict_types=1);
 
 namespace Tests\EventStore\Connection;
 
-use Exception;
-use Iquety\Prospection\EventStore\Mysql\MysqlStore;
 use Iquety\Prospection\EventStore\Redis\RedisConnection;
 use Tests\TestCase;
 
 class RedisConnectionTest extends TestCase
 {
-    private function connection(): RedisConnection
-    {
-        return new RedisConnection(
-            'iquety-prospection-redis',
-            3306,
-            'devel',
-            'devel'
-        );
-    }
+    // private function connection(): RedisConnection
+    // {
+    //     return new RedisConnection(
+    //         'iquety-prospection-redis',
+    //         3306,
+    //         'devel',
+    //         'devel'
+    //     );
+    // }
 
-    private function errorConnection(): RedisConnection
-    {
-        return new RedisConnection(
-            'iquety-prospection-redis XXXXXX',
-            3306,
-            'devel',
-            'devel'
-        );
-    }
+    // private function errorConnection(): RedisConnection
+    // {
+    //     return new RedisConnection(
+    //         'iquety-prospection-redis XXXXXX',
+    //         3306,
+    //         'devel',
+    //         'devel'
+    //     );
+    // }
 
     /** @test */
     public function dummy(): void

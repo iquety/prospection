@@ -50,7 +50,7 @@ class MysqlConnectionTest extends TestCase
         $this->assertStringContainsString(
             'SQLSTATE[HY000] [2002] php_network_getaddresses: ' .
             'getaddrinfo for iquety-prospection-mysql XXXXXX failed',
-             $connection->lastError()->message()
+            $connection->lastError()->message()
         );
         $this->assertSame('2002', $connection->lastError()->code());
     }
@@ -112,7 +112,7 @@ class MysqlConnectionTest extends TestCase
         $this->assertStringContainsString(
             'SQLSTATE[42000]: Syntax error or access violation: ' .
             '1064 You have an error in your SQL syntax',
-             $connection->lastError()->message()
+            $connection->lastError()->message()
         );
         $this->assertSame('42000', $connection->lastError()->code());
     }
@@ -155,7 +155,7 @@ class MysqlConnectionTest extends TestCase
 
         $this->assertStringContainsString(
             'x',
-             $connection->lastError()->message()
+            $connection->lastError()->message()
         );
         $this->assertSame('777', $connection->lastError()->code());
     }

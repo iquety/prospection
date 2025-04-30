@@ -9,10 +9,12 @@ use DomainException;
 use Iquety\Prospection\Domain\DomainEvent;
 use Iquety\Prospection\Domain\IdentityObject;
 use Iquety\Prospection\Stream\State;
+use PHPUnit\Framework\MockObject\Builder\InvocationMocker;
 use Tests\TestCase;
 
 class StateConsistencyTest extends TestCase
 {
+    /** @return array<string,array<int,string>> */
     public function checkableMethodsProvider(): array
     {
         return [
