@@ -28,7 +28,7 @@ dockerUp()
 
 dockerUp
 
-if [ "$1" == "analyse" ] && [ "$2" == "--lint" ]; then
+if [ "$1" == "analyse" ] || [ "$1" == "lint" ]; then
     docker run \
         -e RUN_LOCAL=true \
         -e VALIDATE_MARKDOWN=true \
