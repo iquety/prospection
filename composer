@@ -26,6 +26,11 @@ dockerUp()
     fi
 }
 
+dockerSafeDirectory()
+{
+    docker exec -it $PHP_CONTAINER git config --global --add safe.directory /application
+}
+
 dockerUp
 
 if [ "$1" == "analyse" ] || [ "$1" == "lint" ]; then
@@ -36,9 +41,13 @@ if [ "$1" == "analyse" ] || [ "$1" == "lint" ]; then
         -e FILTER_REGEX_INCLUDE="/docs/.*" \
         -v "$(pwd)/docs/.lint.yml":"/action/lib/.automation/docs/.lint.yml" \
         -v "$(pwd)":"/tmp/lint" github/super-linter
-
-    exit 0
 fi
+
+if [ "$1" == "lint" ]; then
+    exit;
+fi 
+
+dockerSafeDirectory
 
 docker exec -it $PHP_CONTAINER \
     composer $@

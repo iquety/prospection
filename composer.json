@@ -5,16 +5,16 @@
     "keywords": ["framework", "event sourcing", "prospection", "materialization"],
     "license": "MIT",
     "require": {
-        "php": "^8.3.0",
+        "php": "^8.4",
         "iquety/pubsub": "dev-main"
     },
     "require-dev": {
         "codacy/coverage": "dev-master",
-        "phpunit/phpunit": "^9",
-        "phpstan/phpstan": "^1.9",
         "phpmd/phpmd": "@stable",
-        "iquety/docmap": "*",
-        "squizlabs/php_codesniffer": "3.*"
+        "phpstan/phpstan": "^1.8",
+        "phpunit/phpunit": "^9",
+        "squizlabs/php_codesniffer": "3.*",
+        "iquety/docmap": "*"
     },
     "autoload": {
         "psr-4": {
